@@ -1,0 +1,694 @@
+#=====  FUNCTION  ===============================================================
+#          NAME:  addUserAccount
+#   DESCRIPTION:  Cleans up the archived log directory
+#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#       RETURNS:  0 regardless of result.
+#==============================================================================
+function addUserAccount
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    if [ ${#} -eq 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Add a new user account to the current system";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "No specific usage notes are required, however, the script must be run elevated.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    if [ ${EUID} -ne 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset -r ETC_PASSWORD="/etc/passwd";
+    typeset -r ETC_SHADOW="/etc/shadow";
+    typeset -r ETC_GROUP="/etc/group";
+    typeset -r HOME_DIR="/home";
+    typeset -ri STRING_LENGTH=64;
+
+    case "$(uname)" in
+        [Aa][Ii][Xx]|[Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+            typeset DEFAULT_SHELL="/bin/ksh";
+            ;;
+        [Ll][Ii][Nn][Uu][Xx])
+            typeset DEFAULT_SHELL="/bin/bash";
+            ;;
+        *)
+            typeset DEFAULT_SHELL="/bin/sh";
+            ;;
+    esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ETC_PASSWORD -> ${ETC_PASSWORD}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ETC_SHADOW -> ${ETC_SHADOW}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ETC_GROUP -> ${ETC_GROUP}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "HOME_DIR -> ${HOME_DIR}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "STRING_LENGTH -> ${STRING_LENGTH}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DEFAULT_SHELL -> ${DEFAULT_SHELL}";
+
+    while true
+    do
+        reset; clear;
+
+        printf "\n
+            \t\t+-------------------------------------------------------------------+
+            \t\t                        Add a new User
+            \t\t+-------------------------------------------------------------------+
+            \t\tHostname: $(/usr/bin/env uname -n)
+            \t\tUptime: $(/usr/bin/env uptime | /usr/bin/env cut -d "," -f 1 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g')
+            \t\t+-------------------------------------------------------------------+\n\n";
+
+        printf "Please provide the username:\n\n";
+
+        read USERNAME;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USERNAME -> ${USERNAME}";
+
+        if [ $(grep -c "${USERNAME}" "${ETC_PASSWORD}") -ne 0 ]
+        then
+            printf "The provided username - %s - is already in use on this system. Please choose another username.\n" "${USERNAME}";
+
+            sleep ${MESSAGE_DELAY}; reset; clear; continue;
+        fi
+
+        while true
+        do
+            reset; clear;
+
+            printf "Please provide the UID (if required):\n\n";
+
+            read PROVIDED_UID;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_UID -> ${PROVIDED_UID}";
+
+            case PROVIDED_UID in
+                0)
+                    ## cannot be zero
+                    printf "The provided UID - %s - is already in use on this system. Please choose another UID.\n" "${PROVIDED_UID}";
+
+                    sleep ${MESSAGE_DELAY}; reset; clear; continue;
+                    ;;
+                *)
+                    [ -z "${USER_UID}" ] && (( USER_UID += (( $(awk -F ":" '{print $3}' "${ETC_PASSWORD}" | sort -nr | head -1) + 1 )) ));
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_UID -> ${USER_UID}";
+
+                    if [ $(grep -c "${PROVIDED_UID}" "${ETC_PASSWORD}") -ne 0 ]
+                    then
+                        printf "The provided UID - %s - is already in use on this system. Please choose another UID.\n" "${PROVIDED_UID}";
+
+                        sleep ${MESSAGE_DELAY}; reset; clear; continue;
+                    fi
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_UID -> ${USER_UID}";
+
+                    break;
+                    ;;
+            esac
+        done
+
+        while true
+        do
+            reset; clear;
+
+            printf "Please provide the GUID (if required):\n\n";
+
+            read PROVIDED_GUID;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_GUID -> ${PROVIDED_GUID}";
+
+            case PROVIDED_GUID in
+                0)
+                    ## cannot be zero
+                    printf "The provided GUID - %s - is already in use on this system. Please choose another GUID.\n" "${PROVIDED_GUID}";
+
+                    sleep ${MESSAGE_DELAY}; reset; clear; continue;
+                    ;;
+                *)
+                    if [ -z "${PROVIDED_GUID}" ]
+                    then
+                        typeset -i USER_GUID=$(awk -F ":" '/\<users\>/{print $3}' /etc/group);
+                    else
+                        if [ $(grep -c "${PROVIDED_GUID}" "${ETC_GROUP}") -ne 0 ]
+                        then
+                            printf "The provided GUID - %s - is already in use on this system. Please choose another GUID.\n" "${PROVIDED_GUID}";
+
+                            sleep ${MESSAGE_DELAY}; reset; clear; continue;
+                        fi
+                    fi
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_GUID -> ${USER_GUID}";
+
+                    break;
+                    ;;
+            esac
+        done
+
+        while true
+        do
+            reset; clear;
+
+            printf "Please provide the user's full name:\n\n";
+
+            read FULL_NAME;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "FULL_NAME -> ${FULL_NAME}";
+
+            if [ -z "${FULL_NAME}" ]
+            then
+                printf "A full user name must be provided.";
+
+                sleep ${MESSAGE_DELAY}; reset; clear; continue;
+            fi
+
+            break;
+        done
+
+        while true
+        do
+            reset; clear;
+
+            printf "%s\n\n" "Please provide the user's home directory, if other than ${HOME_DIR}/${USERNAME}:";
+
+            read PROVIDED_HOME;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_HOME -> ${PROVIDED_HOME}";
+
+            [ -z "${PROVIDED_HOME}" ] && typeset HOME_DIRECTORY="${HOME_DIR}/${USERNAME}" || typeset HOME_DIRECTORY="${PROVIDED_HOME}";
+
+            break;
+        done
+
+        while true
+        do
+            reset; clear;
+
+            printf "%s\n\n" "Please provide the desired shell. If no shell is specified, ${DEFAULT_SHELL} will be provided.:";
+
+            read PROVIDED_SHELL;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_SHELL -> ${PROVIDED_SHELL}";
+
+            [ -z "${PROVIDED_SHELL}" ] && typeset SHELL_NAME="${DEFAULT_SHELL}" || typeset SHELL_NAME="${PROVIDED_SHELL}";
+
+            break;
+        done
+
+        ## complete, create account
+        case "$(uname)" in
+            [Ll][Ii][Nn][Uu][Xx])
+                /usr/bin/env useradd -b "${HOME_DIRECTORY}" -d "${HOME_DIRECTORY}" -e -f -g "${USER_GUID}" -G -m -N -s "${SHELL_NAME}" -u "${USER_UID}" "${USERNAME}";
+
+                /usr/bin/env mkdir -pv "${HOME_DIRECTORY}";
+
+                /usr/bin/env find "${HOME_DIRECTORY}" -print | /usr/bin/env xargs /usr/bin/env chown "${USERNAME}" "${USER_GUID}";
+                ;;
+            *)
+                printf "%s:x:%s:%s:%s:%s:%s" "${USERNAME}" "${USER_UID}" "${USER_GUID}" "${FULL_NAME}" "${HOME_DIRECTORY}" "${SHELL_NAME}" >> "${ETC_PASSWORD}";
+                printf "%s:x:%s:%s" "${USERNAME}" "${USER_GUID}" "${USERNAME}" >> "${ETC_GROUP}";
+
+                /usr/bin/env mkdir -pv "${HOME_DIRECTORY}";
+
+                /usr/bin/env cp -Rp /etc/skel/.[a-zA-Z]* "${HOME_DIRECTORY}";
+
+                /usr/bin/env chmod -R 755 "${HOME_DIRECTORY}";
+                /usr/bin/env chown -R 755 "${USER_UID}:${USER_GUID}";
+                ;;
+        esac
+
+        ## set initial password
+        typeset NEW_PASSWORD=$(/usr/bin/env cat /dev/urandom | /usr/bin/env tr -cd '[:graph:]' | /usr/bin/env head -c ${STRING_LENGTH});
+
+        /usr/bin/env printf "${NEW_PASSWORD}" "${NEW_PASSWORD}" | passwd;
+
+        ## force expiration
+        /usr/bin/env chage "$(date +"%Y-%m-%d")" "${USERNAME}";
+    done
+
+    [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+    [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+    [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+    [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+    [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+    [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+    [ ! -z "${USERNAME}" ] && unset USERNAME;
+    [ ! -z "${USER_UID}" ] && unset USER_UID;
+    [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+    [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+    [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+    [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+    [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  ===============================================================
+#          NAME:  suspendUserAccount
+#   DESCRIPTION:  Suspends a provided user by changing the password
+#                 and locking the account out
+#    PARAMETERS:  user name
+#       RETURNS:  0 if successful, 1 otherwise
+#==============================================================================
+function suspendUserAccount
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    if [ ${#} -eq 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Suspend a user account on a given system"
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
+                -> The user name to modify.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    if [ ${EUID} -ne 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset -i ELAPSED=0;
+    typeset -i INTERVAL=1;
+    typeset USER_NAME="${1}";
+    typeset USER_TTY="$(awk '{print $2}' <<< "$(who | grep "${USER_NAME}")")"
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_NAME -> ${USER_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_TTY -> ${USER_TTY}";
+
+    if [ ! -z "${USER_TTY}" ]
+    then
+        writeLogEntry "STDOUT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${USER_NAME} is currently logged on. Logging out account...";
+
+        cat "${TERMINATE_ACCESS}" >| /dev/${USER_TTY};
+
+        sleep ${THREAD_TIMEOUT};
+
+        typeset -a PID_LIST=( $(ps -ef | grep "${USER_NAME}" | grep -v grep | awk '{print $2}') );
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LIST -> ${PID_LIST[*]}";
+
+        writeLogEntry "STDOUT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Terminating any existing user processes.";
+
+        for PID in ${PID_LIST[*]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID -> ${PID}";
+
+            (( ELAPSED = THREAD_TIMEOUT ));
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TIMEOUT -> ${TIMEOUT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+
+            while (( ELAPSED > 0 ))
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+
+                sleep ${INTERVAL};
+                kill -0 ${PID} || exit 0;
+
+                (( ELAPSED -= INTERVAL ));
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+            done
+
+            # Be nice, post SIGTERM first.
+            kill -15 ${PID} && kill -0 ${PID} || typeset TERMINATED="${_TRUE}";
+            [ ${ELAPSED} -ge ${INTERVAL} ] && sleep ${THREAD_TIMEOUT} && kill -9 ${PID};
+
+            (( ELAPSED = THREAD_TIMEOUT ));
+
+            [ ! -z "${PID}" ] && unset PID;
+        done
+    fi
+
+    ## freeze the home directory
+    chown root:root "/home/${USERNAME}";
+    chmod 700 "/home/${USERNAME}";
+
+    ## lock out account
+    /usr/bin/env passwd -s /bin/false -l "${USER_NAME}";
+
+    ## change password
+    modifyAccountPassword "$(hostname)" "${USER_NAME}";
+
+    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
+    [ ! -z "${USER_TTY}" ] && unset USER_TTY;
+    [ ! -z "${PID_LIST[*]}" ] && unset PID_LIST;
+    [ ! -z "${PID}" ] && unset PID;
+    [ ! -z "${ELAPSED}" ] && unset ELAPSED;
+    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  ===============================================================
+#          NAME:  deleteUserAccount
+#   DESCRIPTION:  Deletes a provided user and all related files
+#    PARAMETERS:  user name
+#       RETURNS:  0 if successful, 1 otherwise
+#==============================================================================
+function deleteUserAccount
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    if [ ${#} -eq 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Delete a user account on a given system"
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
+                -> The user name to modify.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    if [ ${EUID} -ne 0 ]
+    then
+        typeset RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
+
+        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${USER_UID}" ] && unset USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset -i ELAPSED=0;
+    typeset -i INTERVAL=1;
+    typeset USER_NAME="${1}";
+    typeset USER_UID="$(cut -d "=" -f 2 <<< "$(/usr/bin/env id "${USER_NAME}")" | awk -F "(" '{print $1}')";
+    typeset USER_TTY="$(awk '{print $2}' <<< "$(who | grep "${USER_NAME}")")";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_NAME -> ${USER_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_UID -> ${USER_UID}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_TTY -> ${USER_TTY}";
+
+    if [ ! -z "${USER_TTY}" ]
+    then
+        writeLogEntry "STDOUT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${USER_NAME} is currently logged on. Logging out account...";
+
+        cat "${TERMINATE_ACCESS}" >| /dev/${USER_TTY};
+
+        sleep ${THREAD_TIMEOUT};
+
+        typeset -a PID_LIST=( $(ps -ef | grep "${USER_NAME}" | grep -v grep | awk '{print $2}') );
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID_LIST -> ${PID_LIST[*]}";
+
+        writeLogEntry "STDOUT" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Terminating any existing user processes.";
+
+        for PID in ${PID_LIST[*]}
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PID -> ${PID}";
+
+            (( ELAPSED = THREAD_TIMEOUT ));
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TIMEOUT -> ${TIMEOUT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+
+            while (( ELAPSED > 0 ))
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+
+                sleep ${INTERVAL};
+                kill -0 ${PID} || exit 0;
+
+                (( ELAPSED -= ${INTERVAL} ));
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
+            done
+
+            # Be nice, post SIGTERM first.
+            kill -15 ${PID} && kill -0 ${PID} || typeset TERMINATED="${_TRUE}";
+            [ ${ELAPSED} -ge ${INTERVAL} ] && sleep ${THREAD_TIMEOUT} && kill -9 ${PID};
+
+            (( ELAPSED = THREAD_TIMEOUT ));
+
+            [ ! -z "${PID}" ] && unset PID;
+        done
+    fi
+
+    ## delete the account first
+    case "$(uname)" in
+        [Aa][Ii][Xx])
+            /usr/bin/env rmuser -p "${USER_NAME}";
+            ;;
+        [Ll][Ii][Nn][Uu][Xx]|[Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+            /usr/bin/env userdel -r "${USER_NAME}";
+            ;;
+        *)
+    esac
+
+    ## delete home directory if it exists
+    [ -d "/home/${USER_NAME:?}" ] && rm -rf "/home/${USER_NAME:?}";
+
+    ## then, delete any other files that might still exist on the box
+    typeset -a USER_FILES=( $(find / -uid ${USER_UID} -print) );
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_FILES -> ${USER_FILES[*]}";
+
+    for FILE in ${USER_FILES[*]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE -> ${FILE[*]}";
+
+        [ -z "${FILE}" ] && continue;
+        [ ! -f "nmonadm" ] && [ ! -d "nmonadm" ] && continue;
+
+        rm -rf "${FILE}";
+    done
+
+    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
+    [ ! -z "${USER_UID}" ] && unset USER_UID;
+    [ ! -z "${USER_TTY}" ] && unset USER_TTY;
+    [ ! -z "${PID_LIST[*]}" ] && unset PID_LIST;
+    [ ! -z "${PID}" ] && unset PID;
+    [ ! -z "${FILE}" ] && unset FILE;
+    [ ! -z "${USER_FILES[*]}" ] && unset USER_FILES;
+    [ ! -z "${ELAPSED}" ] && unset ELAPSED;
+    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}

@@ -1,0 +1,23 @@
+## standard options
+set append
+set ask
+set askcc
+set dot
+set noheader
+set nosave
+set verbose
+set nss-config-dir=~/.mail/keys
+set EDITOR=/usr/bin/vim
+set VISUAL=/usr/bin/vim
+set PAGER=/usr/bin/less
+set folder=~/.mail
+set record=~/.mail/sent
+
+account gmail {
+    set smtp=smtp://smtp.gmail.com:587
+    set smtp-use-starttls
+    set smtp-auth=login
+    set smtp-auth-user=kmhuntly@gmail.com
+    set smtp-auth-password=opligjjnmxxsbdlp
+    set from="Kevin Huntly <kmhuntly@gmail.com>"
+}

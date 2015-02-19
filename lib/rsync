@@ -1,0 +1,201 @@
+#!/usr/bin/env expect
+#==============================================================================
+#
+#          FILE:  rsync
+#         USAGE:  ./rsync
+#   DESCRIPTION:  Executes an scp connection to a pre-defined server
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+if { [ info exists env(ENABLE_VERBOSE) ] } {
+    if { [ string match -nocase $env(ENABLE_VERBOSE) "true" ] == 1 } {
+        log_user 1
+    } else {
+        log_user 0
+    }
+} else {
+    log_user 0
+}
+
+if { [ info exists env(ENABLE_TRACE) ] } {
+    if { [ string match -nocase $env(ENABLE_TRACE) "true" ] == 1 } {
+        exp_internal 1
+    }
+}
+
+log_file -a $env(HOME)/.log/rsync.log
+
+## set up some class info
+global env
+global _CNAME
+global _METHOD_NAME
+global _LINE_TERMINATOR
+
+set _CNAME "rsync"
+set _METHOD_NAME "rsync"
+set _LINE_TERMINATOR "\r\n"
+set timeout -1
+
+proc usage {} {
+    global _METHOD_NAME
+
+    puts stderr "$_METHOD_NAME Perform an automated SCP-based task without user interaction.";
+    puts stderr "Usage: $_METHOD_NAME \[ host \] \[ username \] \[ type \] \[ src \] \[ dst \] ( timeout )";
+    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."
+    puts stderr "\tusername            The user to connect to the remote system as."
+    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required."
+    puts stderr "\tsrc                 The source path/file to operate against."
+    puts stderr "\tdst                 The target path/file to operate into."
+    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."
+
+    exit 1;
+}
+
+# make sure we have all our arguments
+if { [ expr { $argc < 4 } ] } {
+    usage;
+} else {
+    source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+
+    # set runtime information
+    set _TARGET_SYSTEM [ lindex $argv 0 ]
+    set _USER_LOGINID [ lindex $argv 1 ]
+    set _TRANSFER_TYPE [ lindex $argv 2 ]
+    set _SRC_FILE [ lindex $argv 3 ]
+    set _DST_FILE [ lindex $argv 4 ]
+    set _AUTH_DATA [ split [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID "file:$env(HOME)/.etc/password.asc" "GPG" ] ":" ];
+
+    switch [ llength $_AUTH_DATA ] {
+        1 {
+            set _USER_PASSWD $_AUTH_DATA;
+        }
+        2 {
+            set _USER_KEY [ lindex $_AUTH_DATA 0 ];
+            set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
+        }
+    }
+
+    if { [ expr { $argc eq 5 } ] } {
+        set timeout [ lindex $argv 4 ];
+    }
+}
+
+switch [ info exists _USER_LOGINID ] {
+    0 {
+        switch [ info exists _USER_KEY ] {
+            0 {
+                set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log\" "
+                append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+            }
+            1 {
+                if { [ string match -nocase $_USER_KEY "default" ] } {
+                    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCk -E $env(HOME)/.log/ssh.log\" "
+                    append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                    append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+                } else {
+                    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -i $_USER_KEY\" "
+                    append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                    append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+                }
+            }
+        }
+    }
+    1 {
+        switch [ info exists _USER_KEY ] {
+            0 {
+                set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -l $_USER_LOGINID\" "
+                append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+            }
+            1 {
+                if { [ string match -nocase $_USER_KEY "default" ] } {
+                    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -l $_USER_LOGINID\" "
+                    append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                    append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+                } else {
+                    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -l $_USER_LOGINID -i $_USER_KEY\" "
+                    append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress "
+                    append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log "
+                }
+            }
+        }
+    }
+}
+
+switch -nocase $_TRANSFER_TYPE {
+    local {
+        append _RSYNC_COMMAND " $_SRC_FILE $_TARGET_SYSTEM:$_DST_FILE"
+    }
+    remote {
+        append _RSYNC_COMMAND " $_TARGET_SYSTEM:$_DST_FILE $_SRC_FILE"
+    }
+}
+
+if { [ info exists _RSYNC_COMMAND ] } {
+    eval spawn $_RSYNC_COMMAND
+
+    set i 0
+
+    expect {
+        "*(yes/no)? " {
+            exp_send "yes\r"
+            exp_continue
+        }
+        "*id_?sa*" {
+            if { [ info exists _USER_PASSWD ] } {
+                exp_send "$_USER_PASSWD"
+            }
+
+            exp_send "\r"
+            exp_continue
+        }
+        "*?assword:*" {
+            if { [ expr { $i == 1 } ] } {
+                puts stderr "An invalid password was provided for user account $_USER_LOGINID on host $_TARGET_SYSTEM"
+
+                exit 1
+            }
+
+            set i [ expr { $i + 1 } ]
+
+            exp_send "$_USER_PASSWD\r"
+            exp_continue
+        }
+        $_LINE_TERMINATOR {
+            append output $expect_out(buffer); exp_continue
+        }
+        eof {
+            append output $expect_out(buffer)
+        }
+    }
+
+    if { [ info exists output ] } {
+        regsub -all -line {^[ \r\t]+|[ \r\t]+$} $output "" _RETURN_DATA
+        set _PRINT_DATA [ string trimright $_RETURN_DATA ]
+
+        if { [ string compare -nocase $_PRINT_DATA "" ] != 0 } {
+            if { [ string is integer $_PRINT_DATA ] } {
+                exit $_PRINT_DATA
+            } else {
+                puts $_PRINT_DATA
+
+                exit 0
+            }
+        } else {
+            exit 0
+        }
+    }
+} else {
+    puts stderr "No valid SSH command was generated. Cannot continue."
+    exit 27
+}

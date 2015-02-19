@@ -1,0 +1,90 @@
+#!/usr/bin/env expect
+#==============================================================================
+#
+#          FILE:  gpg
+#         USAGE:  ./gpg
+#   DESCRIPTION:  Executes an scp connection to a pre-defined server
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+if { [ info exists env(ENABLE_LOG_USER) ] } {
+    if { [ string match -nocase $env(ENABLE_LOG_USER) "true" ] == 1 } {
+        log_user 1;
+    } else {
+        log_user 0;
+    }
+} else {
+    log_user 0;
+}
+
+if { [ info exists env(DEBUG_TCL) ] } {
+    if { [ string match -nocase $env(DEBUG_TCL) "true" ] == 1 } {
+        exp_internal 1;
+    }
+}
+
+log_file -a $env(HOME)/.log/gpg.log;
+
+## set up some class info
+global env;
+global _CNAME;
+global _METHOD_NAME;
+global _LINE_TERMINATOR;
+
+set _CNAME "gpg";
+set _METHOD_NAME "gpg";
+set _LINE_TERMINATOR "\r\n";
+set _PASSWORD_FILE "file:$env(HOME)/.gnupg/conf";
+set timeout 10;
+
+if { [info exists env(THREAD_TIMEOUT)] } {
+    set timeout $env(THREAD_TIMEOUT);
+}
+
+proc usage {} {
+    global _METHOD_NAME;
+
+    puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
+    puts stderr "Usage: $_METHOD_NAME \[ input \] \[ output \] \[ passphrase \] ( timeout )";
+    puts stderr "\tinput               The input file to encrypt via GPG";
+    puts stderr "\toutput              The output file to store GPG encrypted data";
+    puts stderr "\tpassphrase          The passphrase to utilize.";
+    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used.";
+
+    exit 1;
+}
+
+## make sure we have all our arguments
+if { [ expr { $argc < 2 } ] } {
+    usage;
+} else {
+    source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+    source [ file join [ file dirname [ info script ] ] gpg-encrypt.tcl ];
+
+    ## set runtime information
+    set _INPUT_FILE [ lindex $argv 0 ];
+    set _OUTPUT_FILE [ lindex $argv 1 ];
+    set _AUTH_FILE [ lindex $argv 2 ];
+
+    if { [ string length $_AUTH_FILE ] == 0 } {
+        set _AUTH_DATA [ getAuthValue "" "" $_PASSWORD_FILE "" "" ];
+    } else {
+        set _AUTH_DATA [ getAuthValue "" "" [ lindex $argv 2 ] "" "" ];
+    }
+
+    puts $_AUTH_DATA
+    if { [ expr { $argc eq 4 } ] } {
+        set timeout [ lindex $argv 3 ];
+    }
+
+    gpg-encrypt $_INPUT_FILE $_OUTPUT_FILE $_AUTH_DATA;
+}

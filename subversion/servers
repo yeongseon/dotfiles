@@ -1,0 +1,28 @@
+# [groups]
+#   group1 = *.collab.net
+#   othergroup = repository.blarggitywhoomph.com
+#   thirdgroup = *.example.com
+
+# [group1]
+# http-proxy-host = proxy1.some-domain-name.com
+# http-proxy-port = 80
+# http-proxy-username = blah
+# http-proxy-password = doubleblah
+# http-timeout = 60
+# neon-debug-mask = 130
+# store-plaintext-passwords = no
+# username = harry
+
+[global]
+http-proxy-exceptions = *.hsbc
+http-proxy-host = chibcarray.us.hsbc
+http-proxy-port = 8080
+http-proxy-username = 35033355
+http-proxy-password = UJ18dcnkduthvvtj
+http-compression = yes
+http-timeout = 30
+# ssl-authority-files = /path/to/CAcert.pem;/path/to/CAcert2.pem
+store-passwords = no
+store-ssl-client-cert-pp = no
+store-plaintext-passwords = no
+store-ssl-client-cert-pp-plaintext = no

@@ -1,0 +1,218 @@
+#!/usr/bin/env expect
+#==============================================================================
+#
+#          FILE:  scp
+#         USAGE:  ./scp
+#   DESCRIPTION:  Executes an scp connection to a pre-defined server
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+if { [ info exists env(ENABLE_VERBOSE) ] } {
+    if { [ string match -nocase $env(ENABLE_VERBOSE) "true" ] == 1 } {
+        log_user 1
+    } else {
+        log_user 0
+    }
+} else {
+    log_user 0
+}
+
+if { [ info exists env(ENABLE_TRACE) ] } {
+    if { [ string match -nocase $env(ENABLE_TRACE) "true" ] == 1 } {
+        exp_internal 1
+    }
+}
+
+log_file -a $env(HOME)/.log/scp.log
+
+# set up some class info
+global env
+global _CNAME
+global _METHOD_NAME
+global _LINE_TERMINATOR
+
+set _CNAME "scp"
+set _METHOD_NAME "scp"
+set _LINE_TERMINATOR "\r\n"
+set timeout -1; ## set an infinite timeout. user can override as necessary
+
+if { [info exists env(THREAD_TIMEOUT)] } {
+    set timeout $env(THREAD_TIMEOUT)
+}
+
+proc usage {} {
+    global _METHOD_NAME
+
+    puts stderr "$_METHOD_NAME Perform an automated SCP-based task without user interaction.";
+    puts stderr "Usage: $_METHOD_NAME \[ host \] \[ username \] \[ type \] \[ src \] \[ dst \] ( timeout )";
+    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."
+    puts stderr "\tusername            The user to connect to the remote system as."
+    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required."
+    puts stderr "\tsrc                 The source path/file to operate against."
+    puts stderr "\tdst                 The target path/file to operate into."
+    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."
+
+    exit 1;
+}
+
+## make sure we have all our arguments
+if { [ expr { $argc < 3 } ] } {
+    usage;
+} else {
+    source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+
+    ## set runtime information
+    set _TARGET_SYSTEM [ lindex $argv 0 ];
+    set _USER_LOGINID [ lindex $argv 1 ];
+    set _TRANSFER_TYPE [ lindex $argv 2 ];
+    set _SRC_FILE [ lindex $argv 3 ];
+    set _DST_FILE [ lindex $argv 4 ];
+    set _AUTH_DATA [ split [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID "file:$env(HOME)/.etc/password" ] ":" ];
+
+    switch [ llength $_AUTH_DATA ] {
+        1 {
+            set _USER_PASSWD $_AUTH_DATA;
+        }
+        2 {
+            set _USER_KEY [ lindex $_AUTH_DATA 0 ];
+            set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
+        }
+    }
+
+    if { [ expr { $argc eq 6 } ] } {
+        set timeout [ lindex $argv 5 ];
+    }
+}
+
+switch [ info exists _USER_LOGINID ] {
+    0 {
+        switch [ string match -nocase $_TRANSFER_TYPE "local" ] {
+            0 {
+                eval spawn scp -pqrC $_TARGET_SYSTEM:$_DST_FILE $_SRC_FILE
+            }
+            1 {
+                eval spawn scp -pqrC $_SRC_FILE $_TARGET_SYSTEM:$_DST_FILE
+            }
+            default {
+                puts stderr "An invalid transfer type was provided.. Cannot continue."
+
+                exit 1
+            }
+        }
+    }
+    1 {
+        switch [ info exists _USER_KEY ] {
+            0 {
+                switch [ string match -nocase $_TRANSFER_TYPE "local" ] {
+                    0 {
+                        eval spawn scp -pqrC $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE $_SRC_FILE
+                    }
+                    1 {
+                        eval spawn scp -pqrC $_SRC_FILE $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE
+                    }
+                    default {
+                        puts stderr "An invalid transfer type was provided.. Cannot continue."
+
+                        exit 1
+                    }
+                }
+            }
+            1 {
+                if { [ string match -nocase $_USER_KEY "default" ] } {
+                    switch [ string match -nocase $_TRANSFER_TYPE "local" ] {
+                        0 {
+                            eval spawn scp -pqrC $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE $_SRC_FILE
+                        }
+                        1 {
+                            eval spawn scp -pqrC $_SRC_FILE $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE
+                        }
+                        default {
+                            puts stderr "An invalid transfer type was provided.. Cannot continue."
+
+                            exit 1
+                        }
+                    }
+                } else {
+                    switch [ string match -nocase $_TRANSFER_TYPE "local" ] {
+                        0 {
+                            eval spawn scp -pqrC -i $_USER_KEY $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE $_SRC_FILE
+                        }
+                        1 {
+                            eval spawn scp -pqrC -i $_USER_KEY $_SRC_FILE $_USER_LOGINID@$_TARGET_SYSTEM:$_DST_FILE
+                        }
+                        default {
+                            puts stderr "An invalid transfer type was provided.. Cannot continue."
+
+                            exit 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+expect {
+    "*(yes/no)? " {
+        exp_send "yes\r"
+        exp_continue
+    }
+    "*passphrase*" {
+        if { [ info exists _USER_KEY ] } {
+            exp_send "$_USER_PASSWD\r"
+            exp_continue
+        }
+
+        exp_send "\r"
+        exp_continue
+    }
+    "*WARNING: Your password has expired.*" {
+        puts stderr "Password has expired for user $_USER_LOGINID on host $_TARGET_SYSTEM";
+
+        exit 1;
+    }
+    "*?assword:*" {
+        if { [ expr { $i == 1 } ] } {
+            puts stderr "An invalid password was provided for user account $_USER_LOGINID on host $_TARGET_SYSTEM"
+
+            exit 1
+        }
+
+        set i [ expr { $i + 1 } ]
+
+        exp_send "$_USER_PASSWD\r"
+        exp_continue
+    }
+    eof {
+        catch wait _EXIT_CODE;
+        append output $expect_out(buffer);
+    }
+}
+
+if { [ info exists output ] } {
+    regsub -all -line {^[ \r\t]+|[ \r\t]+$} $output "" _RETURN_DATA
+    set _PRINT_DATA [ string trimright $_RETURN_DATA ]
+
+    if { [ string compare -nocase $_PRINT_DATA "" ] != 0 } {
+        if { [ string is integer $_PRINT_DATA ] } {
+            exit $_PRINT_DATA
+        } else {
+            puts $_PRINT_DATA
+
+            exit 0
+        }
+    } else {
+        exit 0
+    }
+} elseif { [ info exists result ] } {
+    exit $_EXIT_CODE;
+}

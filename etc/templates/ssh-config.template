@@ -1,0 +1,34 @@
+
+
+Host *
+    AddressFamily               = inet
+    CanonicalizeHostname        = yes
+    CanonicalizeFallbackLocal   = no
+    CheckHostIP                 = yes
+    Compression                 = yes
+    ConnectionAttempts          = 2
+    ConnectTimeout              = 10
+    EscapeChar                  = ~
+    ForwardAgent                = no
+    ForwardX11                  = no
+    ForwardX11Trusted           = yes
+    GlobalKnownHostsFile        = /etc/ssh/known_hosts
+    UserKnownHostsFile          = ~/.ssh/known_hosts
+    HashKnownHosts              = yes
+    HostbasedAuthentication     = no
+    PubkeyAuthentication        = yes
+    LogLevel                    = INFO
+    NumberOfPasswordPrompts     = 3
+    PreferredAuthentications    = publickey,keyboard-interactive,password
+    Protocol                    = 2
+    ServerAliveCountMax         = 30
+    ServerAliveInterval         = 60
+    StrictHostKeyChecking       = yes
+    TCPKeepAlive                = yes
+    VerifyHostKeyDNS            = ask
+    VisualHostKey               = yes
+    XAuthLocation               = /usr/bin/xauth
+    User                        = %USERNAME%
+    IdentitiesOnly              = yes
+    IdentityFile                = ~/.ssh/id_rsa
+    IdentityFile                = ~/.ssh/id_dsa

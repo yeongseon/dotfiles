@@ -1,0 +1,859 @@
+#=====  FUNCTION  ===============================================================
+#          NAME:  installBuild
+#   DESCRIPTION:  Processes and implements a DNS site failover
+#    PARAMETERS:  Parameters obtained via command-line flags
+#       RETURNS:  0 for positive result, >1 for non-positive
+#==============================================================================
+function installBuild
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    if [ ${#} -lt 5 ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Installs an available application build";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ groupId ] [ artifactId ] [ installed-version ] [ new-version ] [ type ]
+                 -> groupId -> The maven group ID of the package.
+                 -> artifactid -> The maven artifact ID of the package.
+                 -> installed-version -> The current version of the package.
+                 -> new-version -> The new version of the package.
+                 -> type -> The type of package to be installed."
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+        [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+        [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+        [ ! -z "${FILE}" ] && unset FILE;
+        [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+        [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+        [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+        [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+        [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+        [ ! -z "${TYPE}" ] && unset TYPE;
+        [ ! -z "${FILENAME}" ] && unset FILENAME;
+        [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+        [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+        [ ! -z "${WAR}" ] && unset WAR;
+        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset GROUP_ID="${1}";
+    typeset ARTIFACT_ID="${2}";
+    typeset INSTALLED_VERSION="${3}";
+    typeset NEW_VERSION="${4}";
+    typeset TYPE="${5}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "GROUP_ID -> ${GROUP_ID}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARTIFACT_ID -> ${ARTIFACT_ID}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INSTALLED_VERSION -> ${INSTALLED_VERSION}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "NEW_VERSION -> ${NEW_VERSION}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TYPE -> ${TYPE}";
+
+    [ ! -d /appvol/applications/${GROUP_ID}/${ARTIFACT_ID} ] && mkdir /appvol/applications/${GROUP_ID}/${ARTIFACT_ID};
+
+    RET_CODE=$(/opt/Apache/maven/current/bin/mvn dependency:get -DgroupId=${GROUP_ID} -DartifactId=${ARTIFACT_ID} \
+        -Dversion=${NEW_VERSION} -Dpackaging=${TYPE});
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        RETURN_CODE=1;
+
+        writeLogEntry "ERROR" "Unable to retrieve provided package from maven repository.";
+        writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+        [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+        [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+        [ ! -z "${FILE}" ] && unset FILE;
+        [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+        [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+        [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+        [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+        [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+        [ ! -z "${TYPE}" ] && unset TYPE;
+        [ ! -z "${FILENAME}" ] && unset FILENAME;
+        [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+        [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+        [ ! -z "${WAR}" ] && unset WAR;
+        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    case "${SERVER}" in
+        [Ww][Ee][Bb][Ss][Pp][Hh][Ee][Rr][Ee])
+            ;;
+        [Tt][Oo][Mm][Cc][Aa][Tt]|[Cc][Aa][Tt][Aa][Ll][Ii][Nn][Aa])
+            typeset FILE_LIST=$(find /opt/home/jenkins/deployableFiles -type f);
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_LIST -> ${FILE_LIST}";
+
+            if [ -z "${FILE_LIST}" ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "No deployable files were located. Cannot continue.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            for FILE in ${FILE_LIST}
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE -> ${FILE}";
+
+                typeset ACTUAL_FILE="$(basename ${FILE})";
+                typeset APPLICATION_NAME="$(basename ${ACTUAL_FILE} | cut -d "." -f 1)";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ACTUAL_FILE -> ${ACTUAL_FILE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_NAME -> ${APPLICATION_NAME}";
+
+                [ ! -d ${INSTALLABLE_APPS}/${APPLICATION_NAME} ] && mkdir ${INSTALLABLE_APPS}/${APPLICATION_NAME};
+
+                typeset INSTALLABLE_DIR="${INSTALLABLE_APPS}/${APPLICATION_NAME}/$(date +"%Y%m%d%H%M%S")";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INSTALLABLE_DIR -> ${INSTALLABLE_DIR}";
+
+                [ ! -d "${INSTALLABLE_DIR}" ] && mkdir "${INSTALLABLE_DIR}";
+
+                cp "${FILE}" "${INSTALLABLE_DIR}/${ACTUAL_FILE}";
+
+                if [ ! -f "${INSTALLABLE_DIR}/${FILE}" ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to deploy application files to server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Removing package ${GROUP_ID}/${ARTIFACT_ID}/${INSTALLED_VERSION}/${TYPE}";
+
+                [ ! -d "${INSTALLED_APPS}/${APPLICATION_NAME}" ] && mkdir "${INSTALLED_APPS}/${APPLICATION_NAME}" || rm -rf "${INSTALLED_APPS}/${APPLICATION_NAME}/*";
+                [ ! -d "${INSTALLED_APPS}/${APPLICATION_NAME}" ] && mkdir "${INSTALLED_APPS}/${APPLICATION_NAME}" || rm -rf "${INSTALLED_APPS}/${APPLICATION_NAME}/*";
+                [ ! -d "${INSTALLED_APPS}/${APPLICATION_NAME}/${ACTUAL_FILE}" ] && mkdir "${INSTALLED_APPS}/${APPLICATION_NAME}/${ACTUAL_FILE}";
+
+                ## extract it
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Installing package ${GROUP_ID}/${ARTIFACT_ID}/${INSTALLED_VERSION}/${TYPE}";
+
+                extract "${INSTALLABLE_DIR}/${ACTUAL_FILE}" "${INSTALLED_APPS}/${APPLICATION_NAME}/${ACTUAL_FILE}";
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to deploy application files to server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Installation complete. Restarting server..";
+
+                ## installation complete. restart the server
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                controlTomcat stop ${SERVER_NAME} appsrv;
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to shut down application server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                ## installation complete. restart the server
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                controlTomcat start ${SERVER_NAME} appsrv;
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to startup application server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Server restart complete.";
+            done
+            ;;
+        [Aa][Pp][Aa][Cc][Hh][Ee]|[Hh][Tt][Tt][Pp][Dd]|[Ii][Hh][Ss])
+            typeset FILE_LIST=$(find /opt/home/jenkins/deployableFiles -type f);
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_LIST -> ${FILE_LIST}";
+
+            if [ -z "${FILE_LIST}" ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "No deployable files were located. Cannot continue.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            for FILE in ${FILE_LIST}
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE -> ${FILE}";
+
+                typeset APPLICATION_NAME="$(basename ${FILE} | cut -d "." -f 1)";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_NAME -> ${APPLICATION_NAME}";
+
+                [ ! -d /appvol/AWS24/${APPLICATION_NAME}/webcontent ] && mkdir /appvol/AWS24/${APPLICATION_NAME}/webcontent;
+
+                ## extract it
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Installing package ${GROUP_ID}/${ARTIFACT_ID}/${INSTALLED_VERSION}/${TYPE}";
+
+                extract "${FILE}" "/appvol/AWS24/${APPLICATION_NAME}/webcontent";
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to deploy application files to server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Installation complete. Restarting server..";
+
+                ## installation complete. restart the server
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                controlWebserver stop ${APPLICATION_NAME} websrv;
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to shut down application server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                ## installation complete. restart the server
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                controlWebserver start ${APPLICATION_NAME} websrv;
+                typeset -i RET_CODE=${?};
+
+                set +o noclobber;
+                typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                then
+                    RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "Failed to startup application server.";
+                    writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                    [ ! -z "${FILE}" ] && unset FILE;
+                    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                    [ ! -z "${TYPE}" ] && unset TYPE;
+                    [ ! -z "${FILENAME}" ] && unset FILENAME;
+                    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                    [ ! -z "${WAR}" ] && unset WAR;
+                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    return ${RETURN_CODE};
+                fi
+
+                writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Server restart complete.";
+            done
+            ;;
+        [Ww][Ee][Bb][Ll][Oo][Gg][Ii][Cc])
+            ;;
+        [Gg][Ee][Rr][Oo][Nn][Ii][Mm][Oo])
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Undeploying existing package..";
+
+            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Removing package ${GROUP_ID}/${ARTIFACT_ID}/${INSTALLED_VERSION}/${TYPE}";
+
+            /opt/Apache/geronimo/current/bin/deploy undeploy ${GROUP_ID}/${ARTIFACT_ID}/${INSTALLED_VERSION}/${TYPE};
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "Failed to properly remove existing package from application server repository.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Clean existing application directory..";
+
+            cd /appvol/applications/${GROUP_ID}/${ARTIFACT_ID}; rm -rf *;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Installing new package..";
+
+            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Installing package ${GROUP_ID}/${ARTIFACT_ID}/${NEW_VERSION}/${TYPE}";
+
+            /opt/Apache/geronimo/current/bin/deploy deploy --inPlace ${PWD};
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "Failed to properly install new package to application server repository.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Package installation complete. Restarting server..";
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            serverControl stop geronimo;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            set +o noclobber;
+            typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "Failed to properly stop application server.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            serverControl start geronimo;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            set +o noclobber;
+            typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                RETURN_CODE=1;
+
+                writeLogEntry "ERROR" "Failed to properly start application server.";
+                writeLogEntry "STDERR" "Failed to execute the requested command. Please try again later.";
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+                [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+                [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+                [ ! -z "${FILE}" ] && unset FILE;
+                [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+                [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+                [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+                [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+                [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+                [ ! -z "${TYPE}" ] && unset TYPE;
+                [ ! -z "${FILENAME}" ] && unset FILENAME;
+                [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+                [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+                [ ! -z "${WAR}" ] && unset WAR;
+                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                return ${RETURN_CODE};
+            fi
+
+            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Server startup complete.";
+            ;;
+    esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${INSTALLABLE_DIR}" ] && unset INSTALLABLE_DIR;
+    [ ! -z "${APPLICATION_NAME}" ] && unset APPLICATION_NAME;
+    [ ! -z "${ACTUAL_FILE}" ] && unset ACTUAL_FILE;
+    [ ! -z "${FILE}" ] && unset FILE;
+    [ ! -z "${FILE_LIST}" ] && unset FILE_LIST;
+    [ ! -z "${GROUP_ID}" ] && unset GROUP_ID;
+    [ ! -z "${ARTIFACT_ID}" ] && unset ARTIFACT_ID;
+    [ ! -z "${INSTALLED_VERSION}" ] && unset INSTALLED_VERSION;
+    [ ! -z "${NEW_VERSION}" ] && unset NEW_VERSION;
+    [ ! -z "${TYPE}" ] && unset TYPE;
+    [ ! -z "${FILENAME}" ] && unset FILENAME;
+    [ ! -z "${FILE_TYPE}" ] && unset FILE_TYPE;
+    [ ! -z "${WAR_FILE}" ] && unset WAR_FILE;
+    [ ! -z "${WAR}" ] && unset WAR;
+    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}

@@ -1,0 +1,71 @@
+### Section for authentication and authorization customizations.
+[auth]
+password-stores =
+ssl-client-cert-file-prompt = no
+store-passwords = no
+store-auth-creds = no
+
+[helpers]
+### Set editor-cmd to the command used to invoke your text editor.
+# editor-cmd = editor (vi, emacs, notepad, etc.)
+# diff-cmd = diff_program (diff, gdiff, etc.)
+# diff-extensions = -u -p
+# diff3-cmd = diff3_program (diff3, gdiff3, etc.)
+# diff3-has-program-arg = [yes | no]
+# merge-tool-cmd = merge_command
+
+[tunnels]
+# ssh = $SVN_SSH ssh -q
+
+### Section for configuring miscellaneous Subversion options.
+[miscellany]
+global-ignores = *.o *.lo *.la *.al .libs *.so *.so.[0-9]* *.a *.pyc *.pyo __pycache__ *.rej *~ #*# .#* .*.swp .DS_Store
+log-encoding = UTF8
+use-commit-times = yes
+no-unlock = yes
+# mime-types-file = /path/to/mime.types
+preserved-conflict-file-exts = doc ppt xls od?
+enable-auto-props = yes
+interactive-conflicts = yes
+memory-cache-size = 16
+
+### Section for configuring automatic properties.
+[auto-props]
+*.css = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.eot = svn:mime-type=application/vnd.ms-fontobject
+*.gif = svn:mime-type=image/gif
+*.ico = svn:mime-type=image/vnd.microsoft.icon
+*.inc = svn:eol-style=native
+*.info = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.install=svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.java = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.jpeg = svn:mime-type=image/jpeg
+*.jpg = svn:mime-type=image/jpeg
+*.js = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.jsp = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.module = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.php5 = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.php = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.java = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.xml = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.properties = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.pl = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.pm = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.png = svn:mime-type=image/png
+*.py = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.sh = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.sql = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.svg = svn:mime-type=image/svg+xml
+*.tpl = svn:eol-style=native
+*.ttf = svn:mime-type=application/x-font-ttf
+*.txt = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+*.woff = svn:mime-type=application/x-woff
+*.xcf = svn:mime-type=image/x-xcf
+Makefile = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+SConscript = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+SConstruct = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+USERINFO = svn:eol-style=native; svn:keywords="Author Date Id Rev";
+
+### Section for configuring working copies.
+[working-copy]
+exclusive-locking = false

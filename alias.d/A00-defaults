@@ -1,0 +1,71 @@
+#==============================================================================
+#
+#          FILE:  defaults
+#         USAGE:  . functions
+#   DESCRIPTION:  Sets application-wide functions
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
+
+## defaults
+alias diff='/usr/bin/env colordiff';
+alias mountt='/usr/bin/env mount | column -t';
+alias ls='/usr/bin/env ls -lhgpF --color=auto';
+alias grep='/usr/bin/env grep --color=auto';
+alias egrep='/usr/bin/env egrep --color=auto';
+alias fgrep='/usr/bin/env fgrep --color=auto';
+alias wget='/usr/bin/env wget -c';
+alias stat='/usr/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
+alias ssh='/usr/bin/env ssh -qaCkt';
+alias scp='/usr/bin/env scp -pqrC';
+alias sftp='/usr/bin/env sftp -2fCfpqr';
+alias ssh-keygen='/usr/bin/env ssh-keygen -C ""';
+alias ssh-keyscan='/usr/bin/env ssh-keyscan -H';
+alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
+alias mailx='/usr/bin/env mutt';
+alias du='/usr/bin/env du -sk';
+alias netstat='/usr/bin/env netstat -an';
+alias ldapsearch='/usr/bin/env ldapsearch -h localhost -p 10389 -b "dc=caspersbox,dc=com" -D "uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" -W';
+alias ping='/usr/bin/env ping -a -n 1 -l 512 -w 3';
+alias mysql="/usr/bin/env mysql --protocol tcp -h localhost -u ${LOGNAME} -p";
+alias nc="/usr/bin/env nc -w ${THREAD_TIMEOUT}";
+alias jmap='/usr/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
+alias pssh='/usr/bin/env pssh -p 10 -o ${HOME}/.log -e ${HOME}/.log -t ${THREAD_TIMEOUT} -P'; # multiplexer
+alias recode='/usr/bin/env recode -qt';
+
+case $(uname) in
+    SunOS)
+        alias ls='/usr/ucb/ls';
+        alias ps='/usr/ucb/ps -auxww';
+        alias whoami='/usr/ucb/whoami';
+        alias grep='/usr/xpg4/bin/grep -v grep';
+        alias egrep='/usr/xpg4/bin/egrep -v grep';
+        alias fgrep='/usr/xpg4/bin/fgrep -v grep';
+        ;;
+    *CYGWIN*)
+        alias sqlplus='/cygdrive/c/ORACLE/ORA92/bin/sqlplus.exe';
+
+        case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
+            [Ss][Hh]|[Bb][Aa][Ss][Hh])
+                alias print='echo -ne';
+                ;;
+        esac
+        ;;
+esac
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

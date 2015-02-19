@@ -1,0 +1,152 @@
+#!/usr/bin/env expect
+#==============================================================================
+#
+#          FILE:  sshCopyIdentity
+#         USAGE:  ./sshCopyIdentity
+#   DESCRIPTION:  Executes an scp connection to a pre-defined server
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
+if { [ info exists env(ENABLE_VERBOSE) ] } {
+    if { [ string match -nocase $env(ENABLE_VERBOSE) "true" ] == 1 } {
+        log_user 1
+    } else {
+        log_user 0
+    }
+} else {
+    log_user 0
+}
+
+if { [ info exists env(ENABLE_TRACE) ] } {
+    if { [ string match -nocase $env(ENABLE_TRACE) "true" ] == 1 } {
+        exp_internal 1
+    }
+}
+
+log_file -a $env(HOME)/.log/sshCopyIdentity.log
+
+## set up some class info
+global env
+global _CNAME
+global _METHOD_NAME
+global _LINE_TERMINATOR
+
+set _CNAME "sshCopyIdentity"
+set _METHOD_NAME "sshCopyIdentity"
+set _LINE_TERMINATOR "\r\n"
+set timeout 30
+
+if { [ info exists env(THREAD_TIMEOUT) ] } {
+    set timeout $env(THREAD_TIMEOUT)
+}
+
+proc usage {} {
+    global _METHOD_NAME
+
+    puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
+    puts stderr "Usage: $_METHOD_NAME \[ host \] \[ user \] \[ identity \] ( authentication mechanism ) ( timeout )";
+    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."
+    puts stderr "\tusername            The user to connect to the remote system as."
+    puts stderr "\tidentity            The identity file to send"
+    puts stderr "\tauthentication      Specify an authentication mechanism. One of 'pass' or 'file' can be provided, in the following formats:"
+    puts stderr "\t\t For password authentication: pass:the-password"
+    puts stderr "\t\t To use a file containing the authentication information. The following syntaxes are available:"
+    puts stderr "\t\t\t hostname:username:type:value(:value)"
+    puts stderr "\t\t The same syntax rules as above apply here as well."
+    puts stderr "\tNote that key-based authentication cannot be utilized here."
+    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."
+}
+
+## make sure we have all our arguments
+if { [ expr { $argc < 3 } ] } {
+    usage
+
+    exit 1
+} else {
+    ## set runtime information
+    set _TARGET_SYSTEM [ lindex $argv 0 ]
+    set _USER_LOGINID [ lindex $argv 1 ]
+    set _IDENTITY_FILE [ lindex $argv 2 ]
+    set _AUTH_STRING [ lindex $argv 3 ]
+
+    # type it
+    switch [ lindex $_AUTH_STRING 0 ] {
+        "pass" - "file" - "key" {
+            source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+
+            set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $_AUTH_STRING ];
+
+            switch [ llength $_AUTH_DATA ] {
+                1 {
+                    set _USER_PASSWD $_AUTH_DATA;
+                }
+                2 {
+                    set _USER_KEY [ lindex $_AUTH_DATA 0 ];
+                    set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
+                }
+            }
+        }
+        default {
+            puts stderr "No valid authentication type was provided. Cannot continue.";
+
+            usage;
+        }
+    }
+
+    if { [string compare -nocase [ lindex $argv 4 ] ""] != 0 } {
+        set timeout [ lindex $argv 4 ]
+    } else {
+        set timeout 10
+    }
+}
+
+if { ! [ info exists _USER_PASSWD ] } {
+    puts stderr "No password was found. Cannot continue."
+    exit 1
+}
+
+eval spawn /usr/bin/env ssh-copy-id -i "$_IDENTITY_FILE" "$_USER_LOGINID@$_TARGET_SYSTEM";
+
+set i 0
+
+expect {
+    "*(yes/no)? " {
+        exp_send "yes\r"
+        exp_continue
+    }
+    "*?assword*" {
+        if { [ expr { $i == 1 } ] } {
+            puts stderr "An invalid password was provided for user account $_USER_LOGINID on host $_TARGET_SYSTEM"
+
+            exit 1
+        }
+
+        set i [ expr { $i + 1 } ]
+
+        exp_send "$_USER_PASSWD\r"
+        exp_continue
+    }
+    "*All keys were skipped*" {
+        puts "Keyfile $_IDENTITY_FILE already exists on host $_TARGET_SYSTEM for user $_USER_LOGINID"
+
+        exit 0
+    }
+    "\r\nNumber of key(s) added: 1\r\n" {
+        puts "Keyfile $_IDENTITY_FILE added to host $_TARGET_SYSTEM for user $_USER_LOGINID"
+
+        exit 0
+    }
+    eof {
+        append output $expect_out(buffer)
+        exp_continue
+    }
+}

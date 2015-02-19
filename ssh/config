@@ -1,0 +1,9 @@
+
+
+Host *
+    User                        = k33355
+    IdentitiesOnly              = yes
+    IdentityFile                = ~/.ssh/id_rsa
+    IdentityFile                = ~/.ssh/id_dsa
+    IdentityFile                = ~/.ssh/id_ecdsa
+

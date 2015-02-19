@@ -1,0 +1,30 @@
+[user]
+    name = Kevin Huntly
+    email = kmhuntly@gmail.com
+
+[core]
+    editor = vi
+    pager = less
+
+[help]
+    autocorrect = 1
+
+[color]
+    ui = true
+
+[http]
+    proxy =
+
+[https]
+    proxy =
+
+[push]
+    default = simple
+
+[alias]
+    st = status
+    ci = commit
+    sup = !git stash && git svn fetch && git svn rebase && git stash apply
+    sci = !rake spec:rcov:verify && git svn dcommit
+    nb = checkout -b
+    up = !git stash && git pull origin master && git stash apply

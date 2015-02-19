@@ -1,0 +1,67 @@
+#==============================================================================
+#
+#          FILE:  functions
+#         USAGE:  . functions
+#   DESCRIPTION:  Sets application-wide functions
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+
+## activemq
+export ACTIVEMQ_HOME                    ; ACTIVEMQ_HOME="/opt/Apache/activemq/current";
+
+## apacheds
+export APACHEDS_HOME                    ; APACHEDS_HOME="/opt/Apache/apacheds/current";
+
+## ant
+export ANT_HOME                         ; ANT_HOME="/opt/Apache/ant/current";
+export ANT_OPTS                         ; ANT_OPTS="${JAVA_OPTS}";
+
+## maven
+export MAVEN_HOME                       ; MAVEN_HOME="/opt/Apache/maven/current";
+export MAVEN_OPTS                       ; MAVEN_OPTS="${JAVA_OPTS} -DskipTests -Dmaven.test.skip=true";
+export M2_HOME                          ; M2_HOME="/opt/Apache/maven/current";
+export M2_OPTS                          ; M2_OPTS="${JAVA_OPTS} -DskipTests -Dmaven.test.skip=true";
+export MAVEN_REPOSITORY                 ; MAVEN_REPOSITORY="/cygdrive/c/sandbox/.m2/repository";
+
+## tomcat
+export CATALINA_HOME                    ; CATALINA_HOME="/opt/Apache/tomcat/current";
+export CATALINA_BASE                    ; CATALINA_BASE="/opt/Apache/tomcat/current";
+export CATALINA_OPTS                    ; CATALINA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMX_PORT}";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.tribes.dns_lookups=true -Dorg.apache.jasper.compiler.Generator.STRICT_GET_PROPERTY=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=true -Dorg.apache.jasper.compiler.Parser.STRICT_WHITESPACE=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=false -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=false";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.STRICT_SERVLET_COMPLIANCE=true -Dorg.apache.tomcat.websocket.STRICT_SPEC_COMPLIANCE=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.tomcat.util.http.ServerCookie.ALWAYS_ADD_EXPIRES=true -Dorg.apache.tomcat.util.http.ServerCookie.FWD_SLASH_IS_SEPARATOR=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.tomcat.util.http.ServerCookie.STRICT_NAMING=true -Dorg.apache.catalina.core.StandardHostValve.ACCESS_SESSION=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.session.StandardSession.ACTIVITY_CHECK=true -Dorg.apache.catalina.session.StandardSession.LAST_ACCESS_AT_START=true";
+export CATALINA_OPTS                    ; CATALINA_OPTS="${CATALINA_OPTS} -Dorg.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true";
+
+## geronimo
+export GERONIMO_HOME                    ; GERONIMO_HOME="/opt/Apache/geronimo/current";
+
+## add to path
+export PATH                             ; PATH="${PATH}:${GERONIMO_HOME}/bin:${M2_HOME}/bin:${ANT_HOME}/bin:${ACTIVEMQ_HOME}/bin:${APACHEDS_HOME}/bin:${CATALINA_HOME}/bin";
+
+## add to libs
+export LD_LIBRARY_PATH                  ; LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GERONIMO_HOME}/bin:${GERONIMO_HOME}/lib:${M2_HOME}/lib:${ANT_HOME}/lib:${ACTIVEMQ_HOME}/lib:${APACHEDS_HOME}/lib:${CATALINA_HOME}/lib:${CATALINA_HOME}/bin:${CATALINA_HOME}/lib";
+export LIBPATH                          ; LIBPATH="${LIBPATH}:${GERONIMO_HOME}/bin:${GERONIMO_HOME}/lib:${M2_HOME}/lib:${ANT_HOME}/lib:${ACTIVEMQ_HOME}/lib:${APACHEDS_HOME}/lib:${CATALINA_HOME}/lib:${CATALINA_HOME}/bin:${CATALINA_HOME}/lib";
+export LIB_PATH                         ; LIB_PATH="${LIB_PATH}:${GERONIMO_HOME}/bin:${GERONIMO_HOME}/lib:${M2_HOME}/lib:${ANT_HOME}/lib:${ACTIVEMQ_HOME}/lib:${APACHEDS_HOME}/lib:${CATALINA_HOME}/lib:${CATALINA_HOME}/bin:${CATALINA_HOME}/lib";
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

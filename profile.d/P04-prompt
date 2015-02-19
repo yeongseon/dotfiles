@@ -1,0 +1,55 @@
+#==============================================================================
+#
+#          FILE:  prompt
+#         USAGE:  . prompt
+#   DESCRIPTION:  Sets custom shell prompt
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v || set +v;
+
+trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+
+export REAL_USER                        ; [ "${LOGNAME}" != "$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')" ] && REAL_USER="$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')";
+export HOSTNAME                         ; HOSTNAME="$(/usr/bin/env uname -n)";
+export DOMAINNAME                       ; DOMAINNAME=$(/usr/bin/env awk '/^domain/ {print $2}' /etc/resolv.conf 2>/dev/null);
+export PS2                              ; PS2="continue -> ";
+export PS3                              ; PS3="Enter selection: ";
+export PS4                              ; PS4="[ Line: ${LINENO} ] [ File: ${0} ] [ Function: ${FUNCNAME[0]:-${SHELL}} ] [ Level: TRACE ] - ";
+
+case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
+    [Kk][Ss][Hh])
+        PS1="";
+
+        case "${REAL_USER}" in
+            "")
+                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
+                PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+                ;;
+            *)
+                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
+                PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+                ;;
+        esac
+        ;;
+    [Bb][Aa][Ss][Hh])
+        typeset REAL_USER_PROMPT='history -a; history -n; echo -ne "\033]0;$(printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007"; setPromptCommand;';
+        typeset USER_PROMPT='history -a; history -n; echo -ne "\033]0;$(printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007"; setPromptCommand;';
+
+        export PROMPT_COMMAND                   ; [ ! -z "${REAL_USER}" ] && PROMPT_COMMAND=${REAL_USER_PROMPT} || PROMPT_COMMAND=${USER_PROMPT};
+        ;;
+esac
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
