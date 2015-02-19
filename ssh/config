@@ -1,4 +1,7 @@
-
+Host github.com
+    HostName                    = github.com
+    IdentityFile                = ~/.ssh/id_cws-khuntly
+    IdentitiesOnly              = yes
 
 Host *
     User                        = k33355
@@ -6,4 +9,3 @@ Host *
     IdentityFile                = ~/.ssh/id_rsa
     IdentityFile                = ~/.ssh/id_dsa
     IdentityFile                = ~/.ssh/id_ecdsa
-

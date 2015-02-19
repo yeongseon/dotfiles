@@ -13,19 +13,18 @@
     ~/.kshrc: kshrc
     ~/.alias: alias
     ~/.functions: functions
-    ~/.bin/: bin/
-    ~/.functions.d/: functions.d/
-    ~/.gnupg/: gnupg/
-    ~/.wget/: wget
-    ~/.lib/: lib/
-    ~/.bashrc: .bashrc
+    ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
-    ~/.etc/: etc
-    ~/.alias.d/: alias.d/
-    ~/.gitconfig: gitconfig
-    ~/.profile.d/: profile.d/
-    ~/.ssh/: ssh
     ~/.tmux.conf: tmux.conf
+    ~/.bin: bin/
+    ~/.functions.d: functions.d/
+    ~/.gnupg: gnupg/
+    ~/.lib: lib/
+    ~/.etc: etc/
+    ~/.alias.d: alias.d/
+    ~/.gitconfig: gitconfig
+    ~/.profile.d: profile.d/
+    ~/.ssh: ssh/
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
     - [mkdir -p ~/.log/archive, Making log directories]

@@ -2,11 +2,10 @@
 
 set -e
 
-CONFIG="../etc/install.conf.yaml"
-DOTBOT_DIR="dotbot"
-
-DOTBOT_BIN="bin/dotbot"
-BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+typeset BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+typeset CONFIG="${BASEDIR}/etc/install.conf.yaml"
+typeset DOTBOT_DIR="dotbot"
+typeset DOTBOT_BIN="bin/dotbot"
 
 cd "${BASEDIR}"
 git submodule update --init --recursive "${DOTBOT_DIR}"
