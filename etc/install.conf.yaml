@@ -1,4 +1,8 @@
 - clean: ['~']
+- shell:
+    - [git submodule update --init --recursive, Installing submodules]
+    - [mkdir -p ~/.log/archive, Making log directories]
+    - [mkdir -p ~/.ssh/, Making SSH directory]
 - link:
     ~/.dotfiles: ''
     ~/.my.cnf: my.cnf
@@ -24,7 +28,4 @@
     ~/.alias.d: alias.d/
     ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
-    ~/.ssh: ssh/
-- shell:
-    - [git submodule update --init --recursive, Installing submodules]
-    - [mkdir -p ~/.log/archive, Making log directories]
+    ~/.ssh/config: etc/config
