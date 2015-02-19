@@ -28,3 +28,4 @@
     ~/.tmux.conf: tmux.conf
 - shell:
     - [git submodule update --init --recursive, Installing submodules]
+    - [mkdir -p ~/.log/archive, Making log directories]
