@@ -30,6 +30,6 @@
     nb = checkout -b
     up = !git stash && git pull origin master && git stash apply
 
-[commit]
+#[commit]
     gpgsign = true
 
