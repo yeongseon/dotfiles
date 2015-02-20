@@ -21,6 +21,8 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
+export LANG                             ; LANG="en_US.UTF-8";
+export LC_ALL                           ; LC_ALL="en_US.UTF-8";
 export LOGNAME                          ; [ -z "${LOGNAME}" ] && LOGNAME="$(/usr/bin/env whoami)";
 export INPUTRC                          ; INPUTRC="${HOME}/.inputrc";
 export TIMEFORMAT                       ; TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n';
@@ -48,13 +50,6 @@ case "$(uname)" in
         export PATHSEP                          ; PATHSEP=":";
         ;;
 esac
-
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)";
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
-
-export LANG='en_US.UTF-8';
-export LC_ALL='en_US.UTF-8';
-
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;

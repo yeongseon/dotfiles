@@ -694,11 +694,11 @@ function setPromptCommand
     case "${REAL_USER}" in
         "")
             /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf "( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s\e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
             ;;
         *)
             /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s\e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
             ;;
     esac
 
@@ -742,6 +742,52 @@ function logoutUser
     if [ -d "${HOME}/workspace/cws-esolutions" ]
     then
         cd "${HOME}/workspace/cws-esolutions";
+
+        setArray COMMITTABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep modified | /usr/bin/env cut -d ":" -f 2);
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
+
+        if [ ! -z "${COMMITTABLE_ENTRIES[*]}" ]
+        then
+            for COMMITTABLE_ENTRY in ${COMMITTABLE_ENTRIES[*]}
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
+
+                /usr/bin/env git add "${COMMITTABLE_ENTRY}";
+
+                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
+            done
+
+            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
+            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
+        fi
+
+        setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REMOVEABLE_ENTRIES -> ${REMOVEABLE_ENTRIES[*]}";
+
+        if [ ! -z "${REMOVEABLE_ENTRIES[*]}" ]
+        then
+            for REMOVEABLE_ENTRY in ${REMOVEABLE_ENTRIES[*]}
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
+
+                /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
+
+                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
+            done
+
+            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
+            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+        fi
+
+        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
+        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+    fi
+
+    if [ -d "${HOME}/.dotfiles" ]
+    then
+        cd "${HOME}/.dotfiles";
 
         setArray COMMITTABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep modified | /usr/bin/env cut -d ":" -f 2);
 

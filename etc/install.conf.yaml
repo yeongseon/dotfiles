@@ -1,8 +1,10 @@
 - clean: ['~']
 - shell:
+    - [git pull, Updating repository]
     - [git submodule update --init --recursive, Installing submodules]
     - [mkdir -p ~/.log/archive, Making log directories]
     - [mkdir -p ~/.ssh/, Making SSH directory]
+    - [mkdir -p ~/.gnupg/, Making GPG directory]
 - link:
     ~/.dotfiles: ''
     ~/.my.cnf: my.cnf
@@ -12,7 +14,6 @@
     ~/.wgetrc: wgetrc
     ~/.mailrc: mailrc
     ~/.digrc: digrc
-    ~/.viminfo: viminfo
     ~/.profile: profile
     ~/.kshrc: kshrc
     ~/.alias: alias
@@ -22,10 +23,17 @@
     ~/.tmux.conf: tmux.conf
     ~/.bin: bin/
     ~/.functions.d: functions.d/
-    ~/.gnupg: gnupg/
+    ~/.gnupg/gpg.conf: gnupg/gpg.conf
+    ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
+    ~/.ssh/config: ssh/config
     ~/.lib: lib/
     ~/.etc: etc/
     ~/.alias.d: alias.d/
     ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
     ~/.ssh/config: etc/config
+    ~/.curlrc: curlrc
+    ~/.subversion: subversion/
+    ~/.inputrc: inputrc
+    ~/.colordiffrc: colordiffrc
+

@@ -24,7 +24,7 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 ## defaults
 alias diff='/usr/bin/env colordiff';
 alias mountt='/usr/bin/env mount | column -t';
-alias ls='/usr/bin/env ls -lhgpF --color=auto';
+alias ls='/usr/bin/env ls -lhpF --color=auto';
 alias grep='/usr/bin/env grep --color=auto';
 alias egrep='/usr/bin/env egrep --color=auto';
 alias fgrep='/usr/bin/env fgrep --color=auto';
