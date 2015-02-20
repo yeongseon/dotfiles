@@ -1,3 +1,14 @@
+Host bitbucket.org
+    HostName                    = bitbucket.org
+    User                        = cws-khuntly
+    IdentityFile                = ~/.ssh/id_cws-khuntly
+    IdentitiesOnly              = yes
+
+Host github.com
+    HostName                    = bitbucket.org
+    User                        = git
+    IdentityFile                = ~/.ssh/id_cws-khuntly
+    IdentitiesOnly              = yes
 
 Host *
     AddressFamily               = inet
@@ -27,7 +38,7 @@ Host *
     VerifyHostKeyDNS            = ask
     VisualHostKey               = yes
     XAuthLocation               = /usr/bin/xauth
-    User                        = k33355
+    User                        = khuntly
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     IdentityFile                = ~/.ssh/id_dsa
