@@ -1,6 +1,7 @@
 [user]
     name = Kevin Huntly
     email = kmhuntly@gmail.com
+    signingkey = DD3D01AB
 
 [core]
     editor = vi
@@ -28,3 +29,7 @@
     sci = !rake spec:rcov:verify && git svn dcommit
     nb = checkout -b
     up = !git stash && git pull origin master && git stash apply
+
+[commit]
+    gpgsign = true
+
