@@ -36,6 +36,7 @@ case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
         shopt -s cdspell 2>/dev/null;
         shopt -s dirspell 2>/dev/null;
         shopt -s mailwarn 2>/dev/null;
+        shopt -s checkjobs 2>/dev/null;
         ;;
 esac
 
