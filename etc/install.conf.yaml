@@ -36,4 +36,4 @@
     ~/.curlrc: curlrc
     ~/.subversion: subversion/
     ~/.colordiffrc: colordiffrc
-
+    ~/.pythonrc: pythonrc
