@@ -48,6 +48,8 @@ alias pdftotext='/usr/bin/env pdftotext -enc UTF-8 -layout';
 alias ff='/usr/bin/env find . -type f';
 alias fd='/usr/bin/env find . -type d';
 alias clearScroll='/usr/bin/env printf "\033c"';
+alias threadAnalyzer="java -jar ${HOME}/.lib/jca457.jar";
+alias heapAnalyzer="java -jar ${HOME}/.lib/ha454.jar";
 
 ## script tracing
 alias debug="[ ! -z \"${ENABLE_DEBUG}\" ] && [ \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
