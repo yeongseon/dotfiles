@@ -30,7 +30,7 @@ Host github.com
 
 Host *
     AddressFamily               = inet
-    CanonicalizeHostname        = yes
+    CanonicalizeHostname        = no
     CanonicalizeFallbackLocal   = no
     CheckHostIP                 = yes
     Compression                 = yes
@@ -63,3 +63,4 @@ Host *
     IdentityFile                = ~/.ssh/id_ecdsa
     ControlMaster               = auto
     ControlPath                 = ~/.ssh/master-%r@%h:%p
+

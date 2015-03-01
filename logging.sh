@@ -1,4 +1,4 @@
-﻿#======  FUNTION  ===============================================================
+#======  FUNTION  ===============================================================
 #          NAME:  rotateLogsByTime
 #   DESCRIPTION:  Rotates log files based on size or time.
 #    PARAMETERS:  The log file name to take action against
