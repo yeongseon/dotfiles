@@ -21,9 +21,9 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-export SOFTTOKEN_DIR                    ; SOFTTOKEN_DIR="${HOME}/.sunw";
-export NSS_SSL_ENABLE_RENEGOTIATION     ; NSS_SSL_ENABLE_RENEGOTIATION=0;
-export TOKEN_NAME                       ; [ -s /usr/sbin/cryptoadm ] && TOKEN_NAME=$(cryptoadm list metaslot | grep token | cut -d ":" -f 2 | sed -e "s/^ *//g");
+[ -d "/opt/iplanet" ] && typeset -x SOFTTOKEN_DIR="${HOME}/.sunw";
+[ -d "/opt/iplanet" ] && typeset -x NSS_SSL_ENABLE_RENEGOTIATION=0;
+[ -s /usr/sbin/cryptoadm ] && typeset -x TOKEN_NAME=$(cryptoadm list metaslot | grep token | cut -d ":" -f 2 | sed -e "s/^ *//g");
 
 ## add to path
 export PATH                             ; PATH="${PATH}:${IPLANET_HOME}/bin";

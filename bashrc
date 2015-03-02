@@ -25,10 +25,7 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 
 trap 'logoutUser; exit' 0;
 
-export PATH                         ; PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
-
-[ -f /etc/environment ] && source /etc/environment > /dev/null 2>&1;
-[ -f /etc/profile ] && source /etc/profile > /dev/null 2>&1;
+typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
 ## load profile
 for PROFILE in ${HOME}/.profile.d/*

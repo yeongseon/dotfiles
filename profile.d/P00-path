@@ -22,8 +22,7 @@
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
 ## path
-export USER_PATH                        ; USER_PATH="${HOME}/.bin:${HOME}:/.bin/pickup";
-export PATH                             ; PATH="${PATH}:${USER_PATH}";
+export PATH                             ; PATH="${PATH}:${HOME}/.bin:${HOME}:/.bin/pickup";
 export MANPATH                          ; MANPATH="/usr/man:/usr/local/man:/usr/share/man";
 
 ## libpath

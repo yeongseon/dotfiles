@@ -21,8 +21,8 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-export MAIL                             ; MAIL="/var/spool/mail/${LOGNAME:?}";
-export MAILCHECK                        ; MAILCHECK=10;
+typeset -x MAIL="/var/spool/mail/${LOGNAME:?}";
+typeset -x MAILCHECK=10;
 
 [ ! -d ${HOME}/.mail ] && mkdir ${HOME}/.mail;
 [ ! -z "$(/usr/bin/env mail -E 2>/dev/null)" ] && echo "$(/usr/bin/env mail -E)";
