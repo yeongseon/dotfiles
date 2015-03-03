@@ -25,7 +25,6 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 
 typeset -x LANG="en_US.UTF-8";
 typeset -x LC_ALL="en_US.UTF-8";
-typeset -x INPUTRC="${HOME}/.inputrc";
 typeset -x TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n';
 typeset -x LESS="-QR";
 typeset -x IGNOREEOF=1;
