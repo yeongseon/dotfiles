@@ -34,7 +34,7 @@ function mysql
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -59,7 +59,7 @@ function mysql
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred executing autossh to create the tunnel. RET_CODE -> ${RET_CODE}";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred executing the command. Cannot continue.";
 
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -77,7 +77,7 @@ function mysql
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

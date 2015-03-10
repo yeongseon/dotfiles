@@ -35,11 +35,11 @@ function netinfo
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${INET_ADDR_1}" ] && unset INET_ADDR_1;
-    [ ! -z "${INET_ADDR_2}" ] && unset INET_ADDR_2;
-    [ ! -z "${BROADCAST}" ] && unset BROADCAST;
-    [ ! -z "${HWADDR}" ] && unset HWADDR;
-    [ ! -z "${EXTERNAL_ADDR}" ] && unset EXTERNAL_ADDR;
+    [ ! -z "${INET_ADDR_1}" ] && unset -v INET_ADDR_1;
+    [ ! -z "${INET_ADDR_2}" ] && unset -v INET_ADDR_2;
+    [ ! -z "${BROADCAST}" ] && unset -v BROADCAST;
+    [ ! -z "${HWADDR}" ] && unset -v HWADDR;
+    [ ! -z "${EXTERNAL_ADDR}" ] && unset -v EXTERNAL_ADDR;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -86,7 +86,7 @@ function wake
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -109,7 +109,7 @@ function wake
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -157,8 +157,8 @@ function validateServerAvailability
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${VALIDATE_HOSTNAME}" ] && unset VALIDATE_HOSTNAME;
-        [ ! -z "${VALIDATE_PORT}" ] && unset VALIDATE_PORT;
+        [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+        [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -203,8 +203,8 @@ function validateServerAvailability
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${VALIDATE_HOSTNAME}" ] && unset VALIDATE_HOSTNAME;
-            [ ! -z "${VALIDATE_PORT}" ] && unset VALIDATE_PORT;
+            [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+            [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -223,8 +223,8 @@ function validateServerAvailability
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${VALIDATE_HOSTNAME}" ] && unset VALIDATE_HOSTNAME;
-    [ ! -z "${VALIDATE_PORT}" ] && unset VALIDATE_PORT;
+    [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+    [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -281,21 +281,21 @@ function sendNotification
         [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
         [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-        [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-        [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-        [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-        [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-        [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-        [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-        [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-        [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-        [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-        [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-        [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+        [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+        [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+        [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+        [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+        [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+        [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+        [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+        [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+        [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+        [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -355,21 +355,21 @@ function sendNotification
                     [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
                     [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-                    [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-                    [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-                    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                    [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-                    [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-                    [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-                    [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-                    [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-                    [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-                    [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-                    [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-                    [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-                    [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-                    [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+                    [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+                    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                    [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+                    [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+                    [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+                    [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+                    [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+                    [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+                    [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+                    [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+                    [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+                    [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+                    [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
 
                     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -392,21 +392,21 @@ function sendNotification
                         [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
                         [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-                        [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-                        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-                        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                        [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-                        [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-                        [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-                        [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-                        [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-                        [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-                        [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-                        [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-                        [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-                        [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-                        [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-                        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                        [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+                        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+                        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                        [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+                        [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+                        [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+                        [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+                        [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+                        [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+                        [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+                        [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+                        [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+                        [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+                        [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+                        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
                         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
@@ -434,21 +434,21 @@ function sendNotification
                 [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
                 [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-                [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-                [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-                [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-                [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-                [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-                [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-                [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-                [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-                [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-                [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-                [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-                [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-                [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+                [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+                [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+                [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+                [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+                [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+                [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+                [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+                [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+                [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+                [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+                [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+                [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -476,21 +476,21 @@ function sendNotification
         [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
         [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-        [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-        [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-        [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-        [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-        [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-        [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-        [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-        [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-        [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-        [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-        [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+        [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+        [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+        [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+        [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+        [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+        [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+        [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+        [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+        [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+        [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -594,21 +594,21 @@ function sendNotification
         [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
         [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-        [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-        [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-        [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-        [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-        [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-        [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-        [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-        [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-        [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-        [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-        [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+        [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+        [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+        [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+        [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+        [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+        [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+        [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+        [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+        [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+        [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+        [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -622,8 +622,8 @@ function sendNotification
         return ${RETURN_CODE};
     fi
 
-    ## unset mailer code so we can re-use it
-    unset MAILER_CODE;
+    ## unset -v mailer code so we can re-use it
+    unset -v MAILER_CODE;
 
     ## message generated, mail it out
     if [ -s "${MESSAGE_FILE}" ]
@@ -712,21 +712,21 @@ function sendNotification
     [ ! -z "${MESSAGE_FILE}" ] && [ -f "${MESSAGE_FILE}" ] && rm -rf "${MESSAGE_FILE}";
     [ ! -z "${TEMP_FILE}" ] && [ -f "${TEMP_FILE}" ] && rm -rf "${TEMP_FILE}";
 
-    [ ! -z "${OPTIONS}" ] && unset OPTIONS;
-    [ ! -z "${MESSAGE_TEMPLATE}" ] && unset MESSAGE_TEMPLATE;
-    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-    [ ! -z "${SEND_TO}" ] && unset SEND_TO;
-    [ ! -z "${ATTACH_FILE}" ] && unset ATTACH_FILE;
-    [ ! -z "${MAIL_CMD}" ] && unset MAIL_CMD;
-    [ ! -z "${MESSAGE_FILE}" ] && unset MESSAGE_FILE;
-    [ ! -z "${TEMP_FILE}" ] && unset TEMP_FILE;
-    [ ! -z "${TEMPLATE_FILE}" ] && unset TEMPLATE_FILE;
-    [ ! -z "${MESSAGE_SUBJECT}" ] && unset MESSAGE_SUBJECT;
-    [ ! -z "${REPLACEMENT_ITEM}" ] && unset REPLACEMENT_ITEM;
-    [ ! -z "${MAILER_CODE}" ] && unset MAILER_CODE;
-    [ ! -z "${PRE_FILE_SIZE}" ] && unset PRE_FILE_SIZE;
-    [ ! -z "${POST_FILE_SIZE}" ] && unset POST_FILE_SIZE;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${OPTIONS}" ] && unset -v OPTIONS;
+    [ ! -z "${MESSAGE_TEMPLATE}" ] && unset -v MESSAGE_TEMPLATE;
+    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+    [ ! -z "${SEND_TO}" ] && unset -v SEND_TO;
+    [ ! -z "${ATTACH_FILE}" ] && unset -v ATTACH_FILE;
+    [ ! -z "${MAIL_CMD}" ] && unset -v MAIL_CMD;
+    [ ! -z "${MESSAGE_FILE}" ] && unset -v MESSAGE_FILE;
+    [ ! -z "${TEMP_FILE}" ] && unset -v TEMP_FILE;
+    [ ! -z "${TEMPLATE_FILE}" ] && unset -v TEMPLATE_FILE;
+    [ ! -z "${MESSAGE_SUBJECT}" ] && unset -v MESSAGE_SUBJECT;
+    [ ! -z "${REPLACEMENT_ITEM}" ] && unset -v REPLACEMENT_ITEM;
+    [ ! -z "${MAILER_CODE}" ] && unset -v MAILER_CODE;
+    [ ! -z "${PRE_FILE_SIZE}" ] && unset -v PRE_FILE_SIZE;
+    [ ! -z "${POST_FILE_SIZE}" ] && unset -v POST_FILE_SIZE;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -799,16 +799,16 @@ function setProxy
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-                [ ! -z "${DEFAULT_PORT}" ] && unset DEFAULT_PORT;
-                [ ! -z "${ANSWER}" ] && unset ANSWER;
-                [ ! -z "${PROXY_USER}" ] && unset PROXY_USER;
-                [ ! -z "${PROXY_PASSWORD}" ] && unset PROXY_PASSWORD;
-                [ ! -z "${CONFIRM}" ] && unset CONFIRM;
-                [ ! -z "${PROXY_HOST}" ] && unset PROXY_HOST;
-                [ ! -z "${PROXY_HOSTNAME}" ] && unset PROXY_HOSTNAME;
-                [ ! -z "${PROXY_PORT}" ] && unset PROXY_PORT;
-                [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+                [ ! -z "${DEFAULT_PORT}" ] && unset -v DEFAULT_PORT;
+                [ ! -z "${ANSWER}" ] && unset -v ANSWER;
+                [ ! -z "${PROXY_USER}" ] && unset -v PROXY_USER;
+                [ ! -z "${PROXY_PASSWORD}" ] && unset -v PROXY_PASSWORD;
+                [ ! -z "${CONFIRM}" ] && unset -v CONFIRM;
+                [ ! -z "${PROXY_HOST}" ] && unset -v PROXY_HOST;
+                [ ! -z "${PROXY_HOSTNAME}" ] && unset -v PROXY_HOSTNAME;
+                [ ! -z "${PROXY_PORT}" ] && unset -v PROXY_PORT;
+                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                 return ${RETURN_CODE};
                 ;;
@@ -860,16 +860,16 @@ function setProxy
                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                                    [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-                                    [ ! -z "${DEFAULT_PORT}" ] && unset DEFAULT_PORT;
-                                    [ ! -z "${ANSWER}" ] && unset ANSWER;
-                                    [ ! -z "${PROXY_USER}" ] && unset PROXY_USER;
-                                    [ ! -z "${PROXY_PASSWORD}" ] && unset PROXY_PASSWORD;
-                                    [ ! -z "${CONFIRM}" ] && unset CONFIRM;
-                                    [ ! -z "${PROXY_HOST}" ] && unset PROXY_HOST;
-                                    [ ! -z "${PROXY_HOSTNAME}" ] && unset PROXY_HOSTNAME;
-                                    [ ! -z "${PROXY_PORT}" ] && unset PROXY_PORT;
-                                    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                                    [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+                                    [ ! -z "${DEFAULT_PORT}" ] && unset -v DEFAULT_PORT;
+                                    [ ! -z "${ANSWER}" ] && unset -v ANSWER;
+                                    [ ! -z "${PROXY_USER}" ] && unset -v PROXY_USER;
+                                    [ ! -z "${PROXY_PASSWORD}" ] && unset -v PROXY_PASSWORD;
+                                    [ ! -z "${CONFIRM}" ] && unset -v CONFIRM;
+                                    [ ! -z "${PROXY_HOST}" ] && unset -v PROXY_HOST;
+                                    [ ! -z "${PROXY_HOSTNAME}" ] && unset -v PROXY_HOSTNAME;
+                                    [ ! -z "${PROXY_PORT}" ] && unset -v PROXY_PORT;
+                                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                                     return ${RETURN_CODE};
                                     ;;
@@ -913,16 +913,16 @@ function setProxy
                                         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                                         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                                        [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-                                        [ ! -z "${DEFAULT_PORT}" ] && unset DEFAULT_PORT;
-                                        [ ! -z "${ANSWER}" ] && unset ANSWER;
-                                        [ ! -z "${PROXY_USER}" ] && unset PROXY_USER;
-                                        [ ! -z "${PROXY_PASSWORD}" ] && unset PROXY_PASSWORD;
-                                        [ ! -z "${CONFIRM}" ] && unset CONFIRM;
-                                        [ ! -z "${PROXY_HOST}" ] && unset PROXY_HOST;
-                                        [ ! -z "${PROXY_HOSTNAME}" ] && unset PROXY_HOSTNAME;
-                                        [ ! -z "${PROXY_PORT}" ] && unset PROXY_PORT;
-                                        [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                                        [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+                                        [ ! -z "${DEFAULT_PORT}" ] && unset -v DEFAULT_PORT;
+                                        [ ! -z "${ANSWER}" ] && unset -v ANSWER;
+                                        [ ! -z "${PROXY_USER}" ] && unset -v PROXY_USER;
+                                        [ ! -z "${PROXY_PASSWORD}" ] && unset -v PROXY_PASSWORD;
+                                        [ ! -z "${CONFIRM}" ] && unset -v CONFIRM;
+                                        [ ! -z "${PROXY_HOST}" ] && unset -v PROXY_HOST;
+                                        [ ! -z "${PROXY_HOSTNAME}" ] && unset -v PROXY_HOSTNAME;
+                                        [ ! -z "${PROXY_PORT}" ] && unset -v PROXY_PORT;
+                                        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                                         return ${RETURN_CODE};
                                         ;;
@@ -981,16 +981,16 @@ function setProxy
                                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                                                    [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-                                                    [ ! -z "${DEFAULT_PORT}" ] && unset DEFAULT_PORT;
-                                                    [ ! -z "${ANSWER}" ] && unset ANSWER;
-                                                    [ ! -z "${PROXY_USER}" ] && unset PROXY_USER;
-                                                    [ ! -z "${PROXY_PASSWORD}" ] && unset PROXY_PASSWORD;
-                                                    [ ! -z "${CONFIRM}" ] && unset CONFIRM;
-                                                    [ ! -z "${PROXY_HOST}" ] && unset PROXY_HOST;
-                                                    [ ! -z "${PROXY_HOSTNAME}" ] && unset PROXY_HOSTNAME;
-                                                    [ ! -z "${PROXY_PORT}" ] && unset PROXY_PORT;
-                                                    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                                                    [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+                                                    [ ! -z "${DEFAULT_PORT}" ] && unset -v DEFAULT_PORT;
+                                                    [ ! -z "${ANSWER}" ] && unset -v ANSWER;
+                                                    [ ! -z "${PROXY_USER}" ] && unset -v PROXY_USER;
+                                                    [ ! -z "${PROXY_PASSWORD}" ] && unset -v PROXY_PASSWORD;
+                                                    [ ! -z "${CONFIRM}" ] && unset -v CONFIRM;
+                                                    [ ! -z "${PROXY_HOST}" ] && unset -v PROXY_HOST;
+                                                    [ ! -z "${PROXY_HOSTNAME}" ] && unset -v PROXY_HOSTNAME;
+                                                    [ ! -z "${PROXY_PORT}" ] && unset -v PROXY_PORT;
+                                                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                                                     return ${RETURN_CODE};
                                                     ;;
@@ -1014,9 +1014,9 @@ function setProxy
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY_URL -> ${PROXY_URL}";
 
-                                                    unset http_proxy; typeset -x http_proxy="${PROXY_URL}";
-                                                    unset https_proxy; typeset -x https_proxy="${PROXY_URL}";
-                                                    unset ftp_proxy; typeset -x ftp_proxy="${PROXY_URL}";
+                                                    unset -v http_proxy; typeset -x http_proxy="${PROXY_URL}";
+                                                    unset -v https_proxy; typeset -x https_proxy="${PROXY_URL}";
+                                                    unset -v ftp_proxy; typeset -x ftp_proxy="${PROXY_URL}";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "http_proxy -> ${http_proxy}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "https_proxy -> ${http_proxy}";
@@ -1033,8 +1033,8 @@ function setProxy
                                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                                                     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                                                    [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-                                                    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                                                    [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+                                                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                                                     return ${RETURN_CODE};
                                                     ;;
@@ -1048,10 +1048,10 @@ function setProxy
                 done
                 ;;
             2)
-                ## unset proxy
-                [ ! -z "${http_proxy}" ] && unset http_proxy;
-                [ ! -z "${https_proxy}" ] && unset https_proxy;
-                [ ! -z "${ftp_proxy}" ] && unset ftp_proxy;
+                ## unset -v proxy
+                [ ! -z "${http_proxy}" ] && unset -v http_proxy;
+                [ ! -z "${https_proxy}" ] && unset -v https_proxy;
+                [ ! -z "${ftp_proxy}" ] && unset -v ftp_proxy;
                 ;;
 		esac
     done
@@ -1067,8 +1067,8 @@ function setProxy
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${RESOURCE_FILE}" ] && unset RESOURCE_FILE;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${RESOURCE_FILE}" ] && unset -v RESOURCE_FILE;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
 }

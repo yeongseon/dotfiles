@@ -138,7 +138,7 @@ function selectProfile
 
                 typeset BREAK_OUT="${_TRUE}" && break;
                 ;;
-            [Nn][Mm][Oo][Nn])
+            [Nn][Mm][Oo][Nn]*)
                 ## load nmon differently because.. well, its standalone
                 ## and doesnt really require as much as the rest
                 typeset ROOT_DIRECTORY="/ftp/ftpnm01/nmondata";
@@ -164,9 +164,9 @@ function selectProfile
 
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
-                    unset PROVIDED_ENVIRONMENT;
-                    unset SELECTED_PLATFORM;
-                    unset RET_CODE;
+                    unset -v PROVIDED_ENVIRONMENT;
+                    unset -v SELECTED_PLATFORM;
+                    unset -v RET_CODE;
                     typeset -i A=1;
                     typeset -i B=1;
 
@@ -199,7 +199,7 @@ function selectProfile
 
                             setArray PRCS_ROOT_DIRS "${PROCESS_NAME}";
 
-                            [ ! -z "${PROCESS_NAME}" ] && unset PROCESS_NAME;
+                            [ ! -z "${PROCESS_NAME}" ] && unset -v PROCESS_NAME;
                         done
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_ROOT_DIRS -> ${PRCS_ROOT_DIRS[*]}";
@@ -393,27 +393,27 @@ function selectProfile
                         case "${PROVIDED_SCHEMA}" in
                             [Xx]|[Qq]|[Cc])
                                 ## x/q/c allows user to just cancel out. not a big deal.
-                                [ ! -z "${ENVIRONMENT}" ] && unset ENVIRONMENT;
-                                [ ! -z "${SELECTED_PLATFORM}" ] && unset SELECTED_PLATFORM;
-                                [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset PROVIDED_ENVIRONMENT;
-                                [ ! -z "${BREAK_OUT}" ] && unset BREAK_OUT;
-                                [ ! -z "${ROOT_DIRECTORY}" ] && unset ROOT_DIRECTORY;
-                                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                                [ ! -z "${PRCS_ROOT_DIRS}" ] && unset PRCS_ROOT_DIRS;
-                                [ ! -z "${A}" ] && unset A;
-                                [ ! -z "${B}" ] && unset B;
-                                [ ! -z "${PRCS_ROOT_DIR}" ] && unset PRCS_ROOT_DIR;
-                                [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset SELECTED_PROCESS_ENVIRONMENT;
-                                [ ! -z "${PRODUCT_NAME}" ] && unset PRODUCT_NAME;
-                                [ ! -z "${PRODUCT_VERSION}" ] && unset PRODUCT_VERSION;
-                                [ ! -z "${APP_NAME}" ] && unset APP_NAME;
-                                [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset ENVIRONMENT_SCHEMA;
-                                [ ! -z "${ENVIRONMENTS}" ] && unset ENVIRONMENTS;
-                                [ ! -z "${PRCS_NAME}" ] && unset PRCS_NAME;
-                                [ ! -z "${PRCS_BASENAME}" ] && unset PRCS_BASENAME;
-                                [ ! -z "${SCHEMA_NAME}" ] && unset SCHEMA_NAME;
-                                [ ! -z "${SELECTED_SCHEMA}" ] && unset SELECTED_SCHEMA;
-                                [ ! -z "${PROVIDED_SCHEMA}" ] && unset PROVIDED_SCHEMA;
+                                [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                                [ ! -z "${SELECTED_PLATFORM}" ] && unset -v SELECTED_PLATFORM;
+                                [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                                [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                                [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                [ ! -z "${PRCS_ROOT_DIRS}" ] && unset -v PRCS_ROOT_DIRS;
+                                [ ! -z "${A}" ] && unset -v A;
+                                [ ! -z "${B}" ] && unset -v B;
+                                [ ! -z "${PRCS_ROOT_DIR}" ] && unset -v PRCS_ROOT_DIR;
+                                [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset -v SELECTED_PROCESS_ENVIRONMENT;
+                                [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                                [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                                [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                                [ ! -z "${SCHEMA_NAME}" ] && unset -v SCHEMA_NAME;
+                                [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
 
                                 reset; clear; break;
                                 ;;
@@ -435,9 +435,9 @@ function selectProfile
                                 ## ... if not, allow the user to re-select
                                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                                 then
-                                    unset SELECTED_SCHEMA;
-                                    unset PROVIDED_SCHEMA;
-                                    unset RET_CODE;
+                                    unset -v SELECTED_SCHEMA;
+                                    unset -v PROVIDED_SCHEMA;
+                                    unset -v RET_CODE;
                                     typeset A=1;
                                     typeset B=1;
 
@@ -541,9 +541,9 @@ function selectProfile
                                 ## if not, ask the operator to re-select...
                                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                                 then
-                                    unset PROVIDED_SCHEMA;
-                                    unset SELECTED_SCHEMA;
-                                    unset RET_CODE;
+                                    unset -v PROVIDED_SCHEMA;
+                                    unset -v SELECTED_SCHEMA;
+                                    unset -v RET_CODE;
                                     typeset -i A=1;
                                     typeset -i B=1;
 
@@ -620,44 +620,44 @@ function selectProfile
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${A}" ] && unset A;
-    [ ! -z "${B}" ] && unset B;
-    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset HOST_SYSTEM_NAME;
-    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-    [ ! -z "${HOST_IP_ADDRESS}" ] && unset HOST_IP_ADDRESS;
-    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset HOST_KERNEL_VERSION;
-    [ ! -z "${HOST_CPU_COUNT}" ] && unset HOST_CPU_COUNT;
-    [ ! -z "${HOST_CPU_INFO}" ] && unset HOST_CPU_INFO;
-    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset HOST_MEMORY_SIZE;
-    [ ! -z "${USER_DISK_USAGE}" ] && unset USER_DISK_USAGE;
-    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset SYSTEM_PROCESS_COUNT;
-    [ ! -z "${USER_PROCESS_COUNT}" ] && unset USER_PROCESS_COUNT;
-    [ ! -z "${ENVIRONMENT}" ] && unset ENVIRONMENT;
-    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset SELECTED_ENVIRONMENT;
-    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset PROVIDED_ENVIRONMENT;
-    [ ! -z "${BREAK_OUT}" ] && unset BREAK_OUT;
-    [ ! -z "${ROOT_DIRECTORY}" ] && unset ROOT_DIRECTORY;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${PROCESS_NAME}" ] && unset PROCESS_NAME;
-    [ ! -z "${PRCS_ROOT_DIRS[*]}" ] && unset PRCS_ROOT_DIRS;
-    [ ! -z "${PRCS_ROOT_DIR}" ] && unset PRCS_ROOT_DIR;
-    [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset SELECTED_PROCESS_ENVIRONMENT;
-    [ ! -z "${PRODUCT_NAME}" ] && unset PRODUCT_NAME;
-    [ ! -z "${PRODUCT_VERSION}" ] && unset PRODUCT_VERSION;
-    [ ! -z "${APP_NAME}" ] && unset APP_NAME;
-    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset ENVIRONMENT_SCHEMA;
-    [ ! -z "${SELECTED_SCHEMA}" ] && unset SELECTED_SCHEMA;
-    [ ! -z "${ENVIRONMENTS[*]}" ] && unset ENVIRONMENTS;
-    [ ! -z "${PRCS_NAME}" ] && unset PRCS_NAME;
-    [ ! -z "${PRCS_BASENAME}" ] && unset PRCS_BASENAME;
-    [ ! -z "${SCHEMA_NAME}" ] && unset SCHEMA_NAME;
-    [ ! -z "${PROVIDED_SCHEMA}" ] && unset PROVIDED_SCHEMA;
-    [ ! -z "${ENV_NAME}" ] && unset ENV_NAME;
-    [ ! -z "${AVAILABLE_ENVIRONMENTS[*]}" ] && unset AVAILABLE_ENVIRONMENTS;
-    [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset GL_ROOT_DIRECTORY;
-    [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset PORTAL_ROOT_DIRECTORY;
-    [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset FINANCE_ROOT_DIRECTORY;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${A}" ] && unset -v A;
+    [ ! -z "${B}" ] && unset -v B;
+    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+    [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${PROCESS_NAME}" ] && unset -v PROCESS_NAME;
+    [ ! -z "${PRCS_ROOT_DIRS[*]}" ] && unset -v PRCS_ROOT_DIRS;
+    [ ! -z "${PRCS_ROOT_DIR}" ] && unset -v PRCS_ROOT_DIR;
+    [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset -v SELECTED_PROCESS_ENVIRONMENT;
+    [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+    [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+    [ ! -z "${ENVIRONMENTS[*]}" ] && unset -v ENVIRONMENTS;
+    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+    [ ! -z "${SCHEMA_NAME}" ] && unset -v SCHEMA_NAME;
+    [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+    [ ! -z "${ENV_NAME}" ] && unset -v ENV_NAME;
+    [ ! -z "${AVAILABLE_ENVIRONMENTS[*]}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+    [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+    [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+    [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -710,7 +710,7 @@ function setPromptCommand
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -755,11 +755,11 @@ function logoutUser
 
                 /usr/bin/env git add "${COMMITTABLE_ENTRY}";
 
-                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
+                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
             done
 
-            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
-            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
+            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
+            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
         fi
 
         setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
@@ -774,15 +774,15 @@ function logoutUser
 
                 /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
 
-                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
+                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
             done
 
-            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
-            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
+            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
         fi
 
-        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
-        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
+        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
     fi
 
     if [ -d "${HOME}/.dotfiles" ]
@@ -801,11 +801,11 @@ function logoutUser
 
                 /usr/bin/env git add "${COMMITTABLE_ENTRY}";
 
-                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
+                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
             done
 
-            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
-            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
+            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
+            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
         fi
 
         setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
@@ -820,15 +820,15 @@ function logoutUser
 
                 /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
 
-                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
+                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
             done
 
-            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
-            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
+            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
         fi
 
-        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
-        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
+        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
+        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
     fi
 
     [ -f "${HOME}/.mysql_history" ] && /usr/bin/env rm -f "${HOME}/.mysql_history";
@@ -852,11 +852,11 @@ function logoutUser
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset COMMITTABLE_ENTRIES;
-    [ ! -z "${COMMITTABLE_ENTRY}" ] && unset COMMITTABLE_ENTRY;
-    [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset REMOVEABLE_ENTRIES;
-    [ ! -z "${REMOVEABLE_ENTRY}" ] && unset REMOVEABLE_ENTRY;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
+    [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
+    [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
+    [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

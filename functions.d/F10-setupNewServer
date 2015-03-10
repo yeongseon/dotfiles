@@ -33,15 +33,15 @@ function setupNewServer
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${HOST_NAME}" ] && unset HOST_NAME;
-        [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-        [ ! -z "${AUTH_DATA}" ] && unset AUTH_DATA;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-        [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-        [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${SETUP_NEW_SYSTEM}" ] && unset SETUP_NEW_SYSTEM;
+        [ ! -z "${HOST_NAME}" ] && unset -v HOST_NAME;
+        [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+        [ ! -z "${AUTH_DATA}" ] && unset -v AUTH_DATA;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+        [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+        [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${SETUP_NEW_SYSTEM}" ] && unset -v SETUP_NEW_SYSTEM;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -96,11 +96,11 @@ function setupNewServer
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${ADD_HOST_NAME} does not appear to be available.";
             writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-            [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-            [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+            [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+            [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             (( ERROR_COUNT += 1 ));
 
@@ -126,11 +126,11 @@ function setupNewServer
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${ADD_HOST_NAME} does not appear to have SSH host keys available.";
             writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-            [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-            [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+            [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+            [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             (( ERROR_COUNT += 1 ));
 
@@ -157,11 +157,11 @@ function setupNewServer
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to modify password for account ${USER_NAME} on target host ${TARGET_HOST}";
             writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-            [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-            [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+            [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+            [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             (( ERROR_COUNT += 1 ));
 
@@ -204,25 +204,25 @@ function setupNewServer
             fi
         fi
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-        [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-        [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+        [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+        [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
     done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${HOST_NAME}" ] && unset HOST_NAME;
-    [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-    [ ! -z "${AUTH_DATA}" ] && unset AUTH_DATA;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${ADD_HOST_NAME}" ] && unset ADD_HOST_NAME;
-    [ ! -z "${ADD_USER_NAME}" ] && unset ADD_USER_NAME;
-    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${SETUP_NEW_SYSTEM}" ] && unset SETUP_NEW_SYSTEM;
+    [ ! -z "${HOST_NAME}" ] && unset -v HOST_NAME;
+    [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+    [ ! -z "${AUTH_DATA}" ] && unset -v AUTH_DATA;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
+    [ ! -z "${ADD_USER_NAME}" ] && unset -v ADD_USER_NAME;
+    [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${SETUP_NEW_SYSTEM}" ] && unset -v SETUP_NEW_SYSTEM;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

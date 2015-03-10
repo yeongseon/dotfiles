@@ -25,19 +25,19 @@ function addUserAccount
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Add a new user account to the current system";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "No specific usage notes are required, however, the script must be run elevated.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -59,19 +59,19 @@ function addUserAccount
 
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -291,20 +291,20 @@ function addUserAccount
         /usr/bin/env chage "$(date +"%Y-%m-%d")" "${USERNAME}";
     done
 
-    [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-    [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-    [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-    [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-    [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-    [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-    [ ! -z "${USERNAME}" ] && unset USERNAME;
-    [ ! -z "${USER_UID}" ] && unset USER_UID;
-    [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-    [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-    [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-    [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-    [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+    [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+    [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+    [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+    [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+    [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+    [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+    [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+    [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+    [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+    [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -349,19 +349,19 @@ function suspendUserAccount
         writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
                 -> The user name to modify.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -383,19 +383,19 @@ function suspendUserAccount
 
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -460,7 +460,7 @@ function suspendUserAccount
 
             (( ELAPSED = THREAD_TIMEOUT ));
 
-            [ ! -z "${PID}" ] && unset PID;
+            [ ! -z "${PID}" ] && unset -v PID;
         done
     fi
 
@@ -474,12 +474,12 @@ function suspendUserAccount
     ## change password
     modifyAccountPassword "$(hostname)" "${USER_NAME}";
 
-    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-    [ ! -z "${USER_TTY}" ] && unset USER_TTY;
-    [ ! -z "${PID_LIST[*]}" ] && unset PID_LIST;
-    [ ! -z "${PID}" ] && unset PID;
-    [ ! -z "${ELAPSED}" ] && unset ELAPSED;
-    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
+    [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+    [ ! -z "${USER_TTY}" ] && unset -v USER_TTY;
+    [ ! -z "${PID_LIST[*]}" ] && unset -v PID_LIST;
+    [ ! -z "${PID}" ] && unset -v PID;
+    [ ! -z "${ELAPSED}" ] && unset -v ELAPSED;
+    [ ! -z "${INTERVAL}" ] && unset -v INTERVAL;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -523,19 +523,19 @@ function deleteUserAccount
         writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
                 -> The user name to modify.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -557,19 +557,19 @@ function deleteUserAccount
 
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "You must be root to utilize this command. Please either utilize sudo or switch to root before executing.";
 
-        [ ! -z "${ETC_PASSWORD}" ] && unset ETC_PASSWORD;
-        [ ! -z "${ETC_SHADOW}" ] && unset ETC_SHADOW;
-        [ ! -z "${ETC_GROUP}" ] && unset ETC_GROUP;
-        [ ! -z "${HOME_DIR}" ] && unset HOME_DIR;
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${DEFAULT_SHELL}" ] && unset DEFAULT_SHELL;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${USER_UID}" ] && unset USER_UID;
-        [ ! -z "${USER_GUID}" ] && unset USER_GUID;
-        [ ! -z "${FULL_NAME}" ] && unset FULL_NAME;
-        [ ! -z "${PROVIDED_HOME}" ] && unset PROVIDED_HOME;
-        [ ! -z "${PROVIDED_SHELL}" ] && unset PROVIDED_SHELL;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
+        [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
+        [ ! -z "${ETC_SHADOW}" ] && unset -v ETC_SHADOW;
+        [ ! -z "${ETC_GROUP}" ] && unset -v ETC_GROUP;
+        [ ! -z "${HOME_DIR}" ] && unset -v HOME_DIR;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${DEFAULT_SHELL}" ] && unset -v DEFAULT_SHELL;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+        [ ! -z "${USER_GUID}" ] && unset -v USER_GUID;
+        [ ! -z "${FULL_NAME}" ] && unset -v FULL_NAME;
+        [ ! -z "${PROVIDED_HOME}" ] && unset -v PROVIDED_HOME;
+        [ ! -z "${PROVIDED_SHELL}" ] && unset -v PROVIDED_SHELL;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -636,7 +636,7 @@ function deleteUserAccount
 
             (( ELAPSED = THREAD_TIMEOUT ));
 
-            [ ! -z "${PID}" ] && unset PID;
+            [ ! -z "${PID}" ] && unset -v PID;
         done
     fi
 
@@ -669,15 +669,15 @@ function deleteUserAccount
         rm -rf "${FILE}";
     done
 
-    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-    [ ! -z "${USER_UID}" ] && unset USER_UID;
-    [ ! -z "${USER_TTY}" ] && unset USER_TTY;
-    [ ! -z "${PID_LIST[*]}" ] && unset PID_LIST;
-    [ ! -z "${PID}" ] && unset PID;
-    [ ! -z "${FILE}" ] && unset FILE;
-    [ ! -z "${USER_FILES[*]}" ] && unset USER_FILES;
-    [ ! -z "${ELAPSED}" ] && unset ELAPSED;
-    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
+    [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+    [ ! -z "${USER_UID}" ] && unset -v USER_UID;
+    [ ! -z "${USER_TTY}" ] && unset -v USER_TTY;
+    [ ! -z "${PID_LIST[*]}" ] && unset -v PID_LIST;
+    [ ! -z "${PID}" ] && unset -v PID;
+    [ ! -z "${FILE}" ] && unset -v FILE;
+    [ ! -z "${USER_FILES[*]}" ] && unset -v USER_FILES;
+    [ ! -z "${ELAPSED}" ] && unset -v ELAPSED;
+    [ ! -z "${INTERVAL}" ] && unset -v INTERVAL;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";

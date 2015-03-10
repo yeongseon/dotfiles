@@ -34,10 +34,10 @@ function controlWebserver
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${CONTROL_OPTION}" ] && unset CONTROL_OPTION;
-        [ ! -z "${CONTROL_TARGET}" ] && unset CONTROL_TARGET;
-        [ ! -z "${CONTROL_USER}" ] && unset CONTROL_USER;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${CONTROL_OPTION}" ] && unset -v CONTROL_OPTION;
+        [ ! -z "${CONTROL_TARGET}" ] && unset -v CONTROL_TARGET;
+        [ ! -z "${CONTROL_USER}" ] && unset -v CONTROL_USER;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -88,10 +88,10 @@ function controlWebserver
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${CONTROL_OPTION}" ] && unset CONTROL_OPTION;
-            [ ! -z "${CONTROL_TARGET}" ] && unset CONTROL_TARGET;
-            [ ! -z "${CONTROL_USER}" ] && unset CONTROL_USER;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${CONTROL_OPTION}" ] && unset -v CONTROL_OPTION;
+            [ ! -z "${CONTROL_TARGET}" ] && unset -v CONTROL_TARGET;
+            [ ! -z "${CONTROL_USER}" ] && unset -v CONTROL_USER;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -112,10 +112,10 @@ function controlWebserver
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${CONTROL_OPTION}" ] && unset CONTROL_OPTION;
-    [ ! -z "${CONTROL_TARGET}" ] && unset CONTROL_TARGET;
-    [ ! -z "${CONTROL_USER}" ] && unset CONTROL_USER;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${CONTROL_OPTION}" ] && unset -v CONTROL_OPTION;
+    [ ! -z "${CONTROL_TARGET}" ] && unset -v CONTROL_TARGET;
+    [ ! -z "${CONTROL_USER}" ] && unset -v CONTROL_USER;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -169,11 +169,11 @@ function controlApplicationServer
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${CONTROL_SERVER}" ] && unset CONTROL_SERVER;
-        [ ! -z "${CONTROL_OPTION}" ] && unset CONTROL_OPTION;
-        [ ! -z "${CONTROL_TARGET}" ] && unset CONTROL_TARGET;
-        [ ! -z "${CONTROL_USER}" ] && unset CONTROL_USER;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${CONTROL_SERVER}" ] && unset -v CONTROL_SERVER;
+        [ ! -z "${CONTROL_OPTION}" ] && unset -v CONTROL_OPTION;
+        [ ! -z "${CONTROL_TARGET}" ] && unset -v CONTROL_TARGET;
+        [ ! -z "${CONTROL_USER}" ] && unset -v CONTROL_USER;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -263,11 +263,11 @@ function controlApplicationServer
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${CONTROL_SERVER}" ] && unset CONTROL_SERVER;
-    [ ! -z "${CONTROL_OPTION}" ] && unset CONTROL_OPTION;
-    [ ! -z "${CONTROL_TARGET}" ] && unset CONTROL_TARGET;
-    [ ! -z "${CONTROL_USER}" ] && unset CONTROL_USER;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${CONTROL_SERVER}" ] && unset -v CONTROL_SERVER;
+    [ ! -z "${CONTROL_OPTION}" ] && unset -v CONTROL_OPTION;
+    [ ! -z "${CONTROL_TARGET}" ] && unset -v CONTROL_TARGET;
+    [ ! -z "${CONTROL_USER}" ] && unset -v CONTROL_USER;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

@@ -28,8 +28,8 @@ do
 
     typeset INPUT=$(echo $(basename "${FUNCTION}") | awk '{print substr($0, 2, 2)}');
 
-    case $([ ${INPUT} -ge 0 ] || [ ${INPUT} -lt 0 ] && echo 1 || echo 0) in
-        1)
+    case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+        0)
             case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
                 [Kk][Ss][Hh])
                     if [ ! -z "$(/usr/bin/env ksh -n "${FUNCTION}")" ]

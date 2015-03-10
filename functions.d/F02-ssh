@@ -46,22 +46,22 @@ function buildSshConfig
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${TARGET_HOST_NAME}" ] && unset TARGET_HOST_NAME;
-        [ ! -z "${TARGET_USER_NAME}" ] && unset TARGET_USER_NAME;
-        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-        [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-        [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-        [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-        [ ! -z "${REAL_HOST_NAMES[*]}" ] && unset REAL_HOST_NAMES;
-        [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${SSH_CONFIG_TEMPLATE}" ] && unset SSH_CONFIG_TEMPLATE;
-        [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-        [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-        [ ! -z "${SSH_CONFIG_FILE}" ] && unset SSH_CONFIG_FILE;
-        [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${TARGET_HOST_NAME}" ] && unset -v TARGET_HOST_NAME;
+        [ ! -z "${TARGET_USER_NAME}" ] && unset -v TARGET_USER_NAME;
+        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+        [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+        [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+        [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+        [ ! -z "${REAL_HOST_NAMES[*]}" ] && unset -v REAL_HOST_NAMES;
+        [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${SSH_CONFIG_TEMPLATE}" ] && unset -v SSH_CONFIG_TEMPLATE;
+        [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+        [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+        [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -158,20 +158,20 @@ function buildSshConfig
         /usr/bin/env printf "    HostName                    = %s\n" "${MGMT_FULL_HOST_NAME}" >> "${TEMPFILE}";
         [ ! -z "${ADD_USER_NAME}" ] && /usr/bin/env printf "    User                        = %s\n\n" "${ADD_USER_NAME}" >> "${TEMPFILE}" || /usr/bin/env printf "\n" >> "${TEMPFILE}";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${TARGET_HOST_NAME}" ] && unset TARGET_HOST_NAME;
-        [ ! -z "${TARGET_USER_NAME}" ] && unset TARGET_USER_NAME;
-        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-        [ ! -z "${SYSTEM_HOST_NAME}" ] && unset SYSTEM_HOST_NAME;
-        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-        [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-        [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-        [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-        [ ! -z "${OPER_FULL_HOST_NAME}" ] && unset OPER_FULL_HOST_NAME;
-        [ ! -z "${OPER_SHORT_HOST_NAME}" ] && unset OPER_SHORT_HOST_NAME;
-        [ ! -z "${OPER_IP_ADDRESS}" ] && unset OPER_IP_ADDRESS;
-        [ ! -z "${OPER_TERT_HOST_NAME}" ] && unset OPER_TERT_HOST_NAME;
-        [ ! -z "${ADD_HOST_NAMES[*]}" ] && unset ADD_HOST_NAMES;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${TARGET_HOST_NAME}" ] && unset -v TARGET_HOST_NAME;
+        [ ! -z "${TARGET_USER_NAME}" ] && unset -v TARGET_USER_NAME;
+        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+        [ ! -z "${SYSTEM_HOST_NAME}" ] && unset -v SYSTEM_HOST_NAME;
+        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+        [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+        [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+        [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+        [ ! -z "${OPER_FULL_HOST_NAME}" ] && unset -v OPER_FULL_HOST_NAME;
+        [ ! -z "${OPER_SHORT_HOST_NAME}" ] && unset -v OPER_SHORT_HOST_NAME;
+        [ ! -z "${OPER_IP_ADDRESS}" ] && unset -v OPER_IP_ADDRESS;
+        [ ! -z "${OPER_TERT_HOST_NAME}" ] && unset -v OPER_TERT_HOST_NAME;
+        [ ! -z "${ADD_HOST_NAMES[*]}" ] && unset -v ADD_HOST_NAMES;
     done
 
     ## combine and finalize
@@ -187,26 +187,26 @@ function buildSshConfig
 
     [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
 
-    [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-    [ ! -z "${SSH_CONFIG_TEMPLATE}" ] && unset SSH_CONFIG_TEMPLATE;
-    [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-    [ ! -z "${SSH_CONFIG_FILE}" ] && unset SSH_CONFIG_FILE;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${TARGET_HOST_NAME}" ] && unset TARGET_HOST_NAME;
-    [ ! -z "${TARGET_USER_NAME}" ] && unset TARGET_USER_NAME;
-    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-    [ ! -z "${SYSTEM_HOST_NAME}" ] && unset SYSTEM_HOST_NAME;
-    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-    [ ! -z "${OPER_FULL_HOST_NAME}" ] && unset OPER_FULL_HOST_NAME;
-    [ ! -z "${OPER_SHORT_HOST_NAME}" ] && unset OPER_SHORT_HOST_NAME;
-    [ ! -z "${OPER_IP_ADDRESS}" ] && unset OPER_IP_ADDRESS;
-    [ ! -z "${OPER_TERT_HOST_NAME}" ] && unset OPER_TERT_HOST_NAME;
-    [ ! -z "${ADD_HOST_NAMES[*]}" ] && unset ADD_HOST_NAMES;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+    [ ! -z "${SSH_CONFIG_TEMPLATE}" ] && unset -v SSH_CONFIG_TEMPLATE;
+    [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+    [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+    [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${TARGET_HOST_NAME}" ] && unset -v TARGET_HOST_NAME;
+    [ ! -z "${TARGET_USER_NAME}" ] && unset -v TARGET_USER_NAME;
+    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+    [ ! -z "${SYSTEM_HOST_NAME}" ] && unset -v SYSTEM_HOST_NAME;
+    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+    [ ! -z "${OPER_FULL_HOST_NAME}" ] && unset -v OPER_FULL_HOST_NAME;
+    [ ! -z "${OPER_SHORT_HOST_NAME}" ] && unset -v OPER_SHORT_HOST_NAME;
+    [ ! -z "${OPER_IP_ADDRESS}" ] && unset -v OPER_IP_ADDRESS;
+    [ ! -z "${OPER_TERT_HOST_NAME}" ] && unset -v OPER_TERT_HOST_NAME;
+    [ ! -z "${ADD_HOST_NAMES[*]}" ] && unset -v ADD_HOST_NAMES;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -259,12 +259,12 @@ function changeSshPassphrase
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -296,12 +296,12 @@ function changeSshPassphrase
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -326,12 +326,12 @@ function changeSshPassphrase
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -356,12 +356,12 @@ function changeSshPassphrase
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -389,12 +389,12 @@ function changeSshPassphrase
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -434,12 +434,12 @@ function changeSshPassphrase
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -467,12 +467,12 @@ function changeSshPassphrase
 
         [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+        [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+        [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -519,12 +519,12 @@ function changeSshPassphrase
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${TEMPFILE}" ] && unset TEMPFILE;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${NEW_PASSPHRASE}" ] && unset NEW_PASSPHRASE;
-    [ ! -z "${CURRENT_PASSPHRASE}" ] && unset CURRENT_PASSPHRASE;
-    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
+    [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${NEW_PASSPHRASE}" ] && unset -v NEW_PASSPHRASE;
+    [ ! -z "${CURRENT_PASSPHRASE}" ] && unset -v CURRENT_PASSPHRASE;
+    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -583,39 +583,39 @@ function getSshKeys
         [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
         [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-        [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-        [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-        [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-        [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-        [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-        [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-        [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-        [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-        [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-        [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-        [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-        [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-        [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-        [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-        [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-        [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-        [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-        [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-        [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-        [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-        [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-        [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-        [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-        [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+        [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+        [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+        [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+        [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+        [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+        [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+        [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+        [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+        [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+        [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+        [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+        [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+        [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+        [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+        [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+        [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+        [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+        [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+        [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+        [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+        [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+        [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+        [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+        [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -653,39 +653,39 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-                [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-                [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-                [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-                [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-                [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-                [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-                [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+                [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+                [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+                [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+                [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+                [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -726,15 +726,15 @@ function getSshKeys
 
             case ${#} in
                 3)
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
+                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
 
                     typeset KNOWN_HOSTS_FILE="${3}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     ;;
                 4)
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
+                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
 
                     typeset KNOWN_HOSTS_FILE="${3}";
                     typeset REPLACE_INVALID_KEYS="${4}";
@@ -766,39 +766,39 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-                [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-                [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-                [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-                [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-                [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-                [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-                [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+                [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+                [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+                [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+                [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+                [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -839,39 +839,39 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-                [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-                [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-                [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-                [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-                [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-                [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-                [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+                [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+                [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+                [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+                [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+                [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+                [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+                [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+                [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+                [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+                [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+                [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+                [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -917,13 +917,13 @@ function getSshKeys
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
                     writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
 
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                     (( ERROR_COUNT += 1 ));
 
@@ -944,14 +944,14 @@ function getSshKeys
 
                     typeset -x IFS="${CURR_IFS}";
 
-                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                     (( ERROR_COUNT += 1 ));
 
@@ -1013,10 +1013,10 @@ function getSshKeys
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
                                             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
-                                            [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                            [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                            [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                            [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
+                                            [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                            [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                            [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                            [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
 
                                             (( ERROR_COUNT += 1 ));
 
@@ -1026,12 +1026,12 @@ function getSshKeys
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
                                         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
-                                        [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                        [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                        [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                        [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                                        [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                        [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                        [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                        [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
 
                                         continue;
                                     fi
@@ -1053,10 +1053,10 @@ function getSshKeys
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
                                             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
-                                            [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                            [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                            [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                            [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
+                                            [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                            [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                            [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                            [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
 
                                             (( ERROR_COUNT += 1 ));
 
@@ -1066,12 +1066,12 @@ function getSshKeys
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
                                         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
-                                        [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                        [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                        [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                        [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                                        [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                        [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                        [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                        [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
 
                                         continue;
                                     fi
@@ -1093,10 +1093,10 @@ function getSshKeys
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
                                             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
-                                            [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                            [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                            [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                            [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
+                                            [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                            [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                            [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                            [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
 
                                             (( ERROR_COUNT += 1 ));
 
@@ -1106,12 +1106,12 @@ function getSshKeys
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
                                         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${TARGET_HOST} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
-                                        [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                        [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                        [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                        [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                                        [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                        [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                        [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                        [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                        [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                                        [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
 
                                         continue;
                                     fi
@@ -1129,12 +1129,12 @@ function getSshKeys
                                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
                                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
-                                [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                                [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
 
                                 (( ERROR_COUNT += 1 ));
 
@@ -1154,24 +1154,24 @@ function getSshKeys
                                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
                                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${TARGET_HOST} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
-                                [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                                [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                                [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                                [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                                [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                                [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                                [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                                [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                                [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
 
                                 (( ERROR_COUNT += 1 ));
                             fi
 
                             /usr/bin/env cat /dev/null > "${TEMP_WRITE_FILE}";
 
-                            [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                            [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                            [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                            [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                            [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                            [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                            [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                            [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                            [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                            [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                            [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                            [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
                             ;;
                         *)
                             ## remove ALL keys associated with the entry and start new
@@ -1212,19 +1212,19 @@ function getSshKeys
                                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "Failed to remove extra ${KEYTYPE} keys from the ${KNOWN_HOSTS} for entry ${ENTRY} file. Please remove manually.";
                                     writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "Failed to remove extra ${KEYTYPE} keys from the ${KNOWN_HOSTS} for entry ${ENTRY} file. Please remove manually.";
 
-                                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset MGMT_SHORT_HOST_NAME;
-                                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset MGMT_TERT_HOST_NAME;
-                                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset MGMT_IP_ADDRESS;
-                                    [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                                    [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                                    [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                                    [ ! -z "${COUNTER}" ] && unset COUNTER;
-                                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
+                                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
+                                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+                                    [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                                    [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                                    [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                                    [ ! -z "${COUNTER}" ] && unset -v COUNTER;
+                                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                                     (( ERROR_COUNT += 1 ));
 
@@ -1234,25 +1234,25 @@ function getSshKeys
                             ;;
                     esac
 
-                    [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                    [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                    [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                    [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
+                    [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                    [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                    [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                    [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
                 done
 
                 [ ! -z "${KEY_WRITTEN}" ] && [ "${KEY_WRITTEN}" = "${_TRUE}" ] && /usr/bin/env printf "\n"  >> "${TEMP_KNOWN_HOSTS}";
 
-                [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
+                [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
             done
 
             ## relocate the file
@@ -1295,39 +1295,39 @@ function getSshKeys
                     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-                    [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-                    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                    [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                    [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-                    [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-                    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-                    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-                    [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-                    [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-                    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-                    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                    [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                    [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                    [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                    [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                    [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                    [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-                    [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-                    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-                    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-                    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                    [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+                    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                    [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+                    [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+                    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+                    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+                    [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+                    [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+                    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+                    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                    [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                    [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                    [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                    [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                    [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                    [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+                    [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+                    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+                    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1385,39 +1385,39 @@ function getSshKeys
                     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-                    [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-                    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-                    [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                    [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-                    [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-                    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-                    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-                    [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-                    [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-                    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-                    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-                    [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-                    [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-                    [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-                    [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-                    [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-                    [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-                    [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-                    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-                    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-                    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-                    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                    [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+                    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                    [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+                    [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+                    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+                    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+                    [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+                    [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+                    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+                    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                    [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+                    [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+                    [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+                    [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+                    [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+                    [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+                    [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+                    [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+                    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+                    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+                    [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+                    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+                    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+                    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1455,39 +1455,39 @@ function getSshKeys
             [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
             [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-            [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-            [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-            [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-            [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-            [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-            [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-            [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-            [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-            [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-            [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-            [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-            [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-            [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-            [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-            [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-            [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-            [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-            [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-            [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-            [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-            [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-            [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-            [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-            [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-            [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-            [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-            [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-            [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-            [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+            [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+            [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+            [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+            [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+            [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+            [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+            [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+            [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+            [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+            [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+            [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+            [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+            [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+            [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+            [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+            [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+            [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+            [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+            [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+            [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+            [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+            [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+            [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+            [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+            [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+            [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+            [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+            [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1508,39 +1508,39 @@ function getSshKeys
     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
-    [ ! -z "${REQUEST_TYPE}" ] && unset REQUEST_TYPE;
-    [ ! -z "${FILE_NAME}" ] && unset FILE_NAME;
-    [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-    [ ! -z "${TEMP_DELETE}" ] && unset TEMP_DELETE;
-    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset TEMP_KNOWN_HOSTS;
-    [ ! -z "${TEMP_WRITE_FILE}" ] && unset TEMP_WRITE_FILE;
-    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset ARCHIVE_DIRECTORY;
-    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset ARCHIVE_HOSTS_FILE;
-    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset KNOWN_HOSTS_FILE;
-    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset REPLACE_INVALID_KEYS;
-    [ ! -z "${HOSTLIST[*]}" ] && unset HOSTLIST;
-    [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset KNOWN_HOSTS_CKSUM;
-    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset TEMP_KNOWN_CKSUM;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset HOST_DOMAIN_NAME;
-    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset MGMT_FULL_HOST_NAME;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${SSH_HOST_ENTRY}" ] && unset SSH_HOST_ENTRY;
-    [ ! -z "${HOST_RSA_KEY}" ] && unset HOST_RSA_KEY;
-    [ ! -z "${HOST_DSA_KEY}" ] && unset HOST_DSA_KEY;
-    [ ! -z "${HOST_ECDSA_KEY}" ] && unset HOST_ECDSA_KEY;
-    [ ! -z "${KEYTYPE}" ] && unset KEYTYPE;
-    [ ! -z "${KEY_COUNT}" ] && unset KEY_COUNT;
-    [ ! -z "${CURRENT_KEY}" ] && unset CURRENT_KEY;
-    [ ! -z "${REPLACED_KEY}" ] && unset REPLACED_KEY;
-    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset TEMP_WRITE_CKSUM;
-    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset TEMP_HOSTS_CKSUM;
-    [ ! -z "${KEY_WRITTEN}" ] && unset KEY_WRITTEN;
-    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset POST_TEMP_HOSTS_CKSUM;
-    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset POST_KNOWN_HOSTS_CKSUM;
-    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset ARCHIVE_HOSTS_CKSUM;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
+    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${TEMP_DELETE}" ] && unset -v TEMP_DELETE;
+    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && unset -v TEMP_KNOWN_HOSTS;
+    [ ! -z "${TEMP_WRITE_FILE}" ] && unset -v TEMP_WRITE_FILE;
+    [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
+    [ ! -z "${ARCHIVE_HOSTS_FILE}" ] && unset -v ARCHIVE_HOSTS_FILE;
+    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
+    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
+    [ ! -z "${HOSTLIST[*]}" ] && unset -v HOSTLIST;
+    [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+    [ ! -z "${KNOWN_HOSTS_CKSUM}" ] && unset -v KNOWN_HOSTS_CKSUM;
+    [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
+    [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
+    [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
+    [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
+    [ ! -z "${KEYTYPE}" ] && unset -v KEYTYPE;
+    [ ! -z "${KEY_COUNT}" ] && unset -v KEY_COUNT;
+    [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
+    [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
+    [ ! -z "${TEMP_WRITE_CKSUM}" ] && unset -v TEMP_WRITE_CKSUM;
+    [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
+    [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
+    [ ! -z "${POST_TEMP_HOSTS_CKSUM}" ] && unset -v POST_TEMP_HOSTS_CKSUM;
+    [ ! -z "${POST_KNOWN_HOSTS_CKSUM}" ] && unset -v POST_KNOWN_HOSTS_CKSUM;
+    [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1589,10 +1589,10 @@ function ssh
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${EXEC_COMMAND}" ] && unset EXEC_COMMAND;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${EXEC_COMMAND}" ] && unset -v EXEC_COMMAND;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1637,9 +1637,9 @@ function ssh
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1671,30 +1671,30 @@ function ssh
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             (( ERROR_COUNT += 1 ));
 
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         fi
@@ -1706,10 +1706,10 @@ function ssh
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${EXEC_COMMAND}" ] && unset EXEC_COMMAND;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${USERNAME}" ] && unset USERNAME;
+    [ ! -z "${EXEC_COMMAND}" ] && unset -v EXEC_COMMAND;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1762,12 +1762,12 @@ function scp
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TRANSFER_TYPE}" ] && unset TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1811,12 +1811,12 @@ function scp
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
         writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-        [ ! -z "${TRANSFER_TYPE}" ] && unset TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1848,12 +1848,12 @@ function scp
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain SSH host keys for target.";
         writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-        [ ! -z "${TRANSFER_TYPE}" ] && unset TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1891,12 +1891,12 @@ function scp
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    [ ! -z "${TRANSFER_TYPE}" ] && unset TRANSFER_TYPE;
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${USERNAME}" ] && unset USERNAME;
-                    [ ! -z "${SOURCE_COPY}" ] && unset SOURCE_COPY;
-                    [ ! -z "${TARGET_COPY}" ] && unset TARGET_COPY;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                    [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+                    [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+                    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1922,12 +1922,12 @@ function scp
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${TRANSFER_TYPE}" ] && unset TRANSFER_TYPE;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${USERNAME}" ] && unset USERNAME;
-    [ ! -z "${SOURCE_COPY}" ] && unset SOURCE_COPY;
-    [ ! -z "${TARGET_COPY}" ] && unset TARGET_COPY;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

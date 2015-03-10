@@ -91,13 +91,13 @@ function writeLogEntry
 
     printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
 
-    [ ! -z "${LOG_DATE}" ] && unset LOG_DATE;
-    [ ! -z "${LOG_LEVEL}" ] && unset LOG_LEVEL;
-    [ ! -z "${LOG_METHOD}" ] && unset LOG_METHOD;
-    [ ! -z "${LOG_SOURCE}" ] && unset LOG_SOURCE;
-    [ ! -z "${LOG_LINE}" ] && unset LOG_LINE;
-    [ ! -z "${LOG_MESSAGE}" ] && unset LOG_MESSAGE;
-    [ ! -z "${LOG_FILE}" ] && unset LOG_FILE;
+    [ ! -z "${LOG_DATE}" ] && unset -v LOG_DATE;
+    [ ! -z "${LOG_LEVEL}" ] && unset -v LOG_LEVEL;
+    [ ! -z "${LOG_METHOD}" ] && unset -v LOG_METHOD;
+    [ ! -z "${LOG_SOURCE}" ] && unset -v LOG_SOURCE;
+    [ ! -z "${LOG_LINE}" ] && unset -v LOG_LINE;
+    [ ! -z "${LOG_MESSAGE}" ] && unset -v LOG_MESSAGE;
+    [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

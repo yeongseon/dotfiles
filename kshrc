@@ -34,8 +34,8 @@ do
 
     typeset INPUT=$(echo $(basename "${PROFILE}") | awk '{print substr($0, 2, 2)}');
 
-    case $([ ${INPUT} -ge 0 ] || [ ${INPUT} -lt 0 ] && echo 1 || echo 0) in
-        1)
+    case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+        0)
             case "${ENABLE_VERBOSE}" in
                 "${_TRUE}")
                     . ${PROFILE};

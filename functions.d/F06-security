@@ -35,9 +35,9 @@ function returnRandomCharacters
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-        [ ! -z "${INCLUDE_SPECIAL}" ] && unset INCLUDE_SPECIAL;
-        [ ! -z "${RETURNED_CHARACTERS}" ] && unset RETURNED_CHARACTERS;
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${INCLUDE_SPECIAL}" ] && unset -v INCLUDE_SPECIAL;
+        [ ! -z "${RETURNED_CHARACTERS}" ] && unset -v RETURNED_CHARACTERS;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -77,9 +77,9 @@ function returnRandomCharacters
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${STRING_LENGTH}" ] && unset STRING_LENGTH;
-    [ ! -z "${INCLUDE_SPECIAL}" ] && unset INCLUDE_SPECIAL;
-    [ ! -z "${RETURNED_CHARACTERS}" ] && unset RETURNED_CHARACTERS;
+    [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+    [ ! -z "${INCLUDE_SPECIAL}" ] && unset -v INCLUDE_SPECIAL;
+    [ ! -z "${RETURNED_CHARACTERS}" ] && unset -v RETURNED_CHARACTERS;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -128,11 +128,11 @@ function stringCrypt
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ -z "${RET_CODE}" ] && unset RET_CODE;
-        [ -z "${METHOD}" ] && unset METHOD;
-        [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-        [ -z "${DECRYPTED}" ] && unset DECRYPTED;
-        [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ -z "${METHOD}" ] && unset -v METHOD;
+        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+        [ -z "${DECRYPTED}" ] && unset -v DECRYPTED;
+        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -159,11 +159,11 @@ function stringCrypt
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ -z "${RET_CODE}" ] && unset RET_CODE;
-                [ -z "${METHOD}" ] && unset METHOD;
-                [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-                [ -z "${DECRYPTED}" ] && unset DECRYPTED;
-                [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+                [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ -z "${METHOD}" ] && unset -v METHOD;
+                [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+                [ -z "${DECRYPTED}" ] && unset -v DECRYPTED;
+                [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -202,11 +202,11 @@ function stringCrypt
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ -z "${RET_CODE}" ] && unset RET_CODE;
-        [ -z "${METHOD}" ] && unset METHOD;
-        [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-        [ -z "${DECRYPTED}" ] && unset DECRYPTED;
-        [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ -z "${METHOD}" ] && unset -v METHOD;
+        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+        [ -z "${DECRYPTED}" ] && unset -v DECRYPTED;
+        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -240,11 +240,11 @@ function stringCrypt
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ -z "${RET_CODE}" ] && unset RET_CODE;
-            [ -z "${METHOD}" ] && unset METHOD;
-            [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-            [ -z "${DECRYPTED}" ] && unset DECRYPTED;
-            [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+            [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ -z "${METHOD}" ] && unset -v METHOD;
+            [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+            [ -z "${DECRYPTED}" ] && unset -v DECRYPTED;
+            [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -266,11 +266,11 @@ function stringCrypt
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ -z "${RET_CODE}" ] && unset RET_CODE;
-    [ -z "${METHOD}" ] && unset METHOD;
-    [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-    [ -z "${DECRYPTED}" ] && unset DECRYPTED;
-    [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+    [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ -z "${METHOD}" ] && unset -v METHOD;
+    [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+    [ -z "${DECRYPTED}" ] && unset -v DECRYPTED;
+    [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -319,11 +319,11 @@ function fileCrypt
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ -z "${RET_CODE}" ] && unset RET_CODE;
-        [ -z "${METHOD}" ] && unset METHOD;
-        [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-        [ -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ -z "${METHOD}" ] && unset -v METHOD;
+        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+        [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -350,11 +350,11 @@ function fileCrypt
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ -z "${RET_CODE}" ] && unset RET_CODE;
-                [ -z "${METHOD}" ] && unset METHOD;
-                [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-                [ -z "${FILE_NAME}" ] && unset FILE_NAME;
-                [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+                [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ -z "${METHOD}" ] && unset -v METHOD;
+                [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+                [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -393,11 +393,11 @@ function fileCrypt
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ -z "${RET_CODE}" ] && unset RET_CODE;
-        [ -z "${METHOD}" ] && unset METHOD;
-        [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-        [ -z "${FILE_NAME}" ] && unset FILE_NAME;
-        [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ -z "${METHOD}" ] && unset -v METHOD;
+        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+        [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -431,11 +431,11 @@ function fileCrypt
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ -z "${RET_CODE}" ] && unset RET_CODE;
-            [ -z "${METHOD}" ] && unset METHOD;
-            [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-            [ -z "${FILE_NAME}" ] && unset FILE_NAME;
-            [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+            [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ -z "${METHOD}" ] && unset -v METHOD;
+            [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+            [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+            [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
             [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -457,11 +457,11 @@ function fileCrypt
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ -z "${RET_CODE}" ] && unset RET_CODE;
-    [ -z "${METHOD}" ] && unset METHOD;
-    [ -z "${RECIPIENTS}" ] && unset RECIPIENTS;
-    [ -z "${FILE_NAME}" ] && unset FILE_NAME;
-    [ -z "${AUTHENTICATION}" ] && unset AUTHENTICATION;
+    [ -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ -z "${METHOD}" ] && unset -v METHOD;
+    [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
+    [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+    [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -602,11 +602,11 @@ function generateEntropyFile
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                [ ! -z "${ENTROPY_FILE_NAME}" ] && unset ENTROPY_FILE_NAME;
-                [ ! -z "${ENTROPY_BACKUP_FILE}" ] && unset ENTROPY_BACKUP_FILE;
-                [ ! -z "${RANDOM_DATA}" ] && unset RANDOM_DATA;
-                [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-                [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+                [ ! -z "${ENTROPY_FILE_NAME}" ] && unset -v ENTROPY_FILE_NAME;
+                [ ! -z "${ENTROPY_BACKUP_FILE}" ] && unset -v ENTROPY_BACKUP_FILE;
+                [ ! -z "${RANDOM_DATA}" ] && unset -v RANDOM_DATA;
+                [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -633,11 +633,11 @@ function generateEntropyFile
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${ENTROPY_FILE_NAME}" ] && unset ENTROPY_FILE_NAME;
-    [ ! -z "${ENTROPY_BACKUP_FILE}" ] && unset ENTROPY_BACKUP_FILE;
-    [ ! -z "${RANDOM_DATA}" ] && unset RANDOM_DATA;
-    [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-    [ ! -z "${METHOD_NAME}" ] && unset METHOD_NAME;
+    [ ! -z "${ENTROPY_FILE_NAME}" ] && unset -v ENTROPY_FILE_NAME;
+    [ ! -z "${ENTROPY_BACKUP_FILE}" ] && unset -v ENTROPY_BACKUP_FILE;
+    [ ! -z "${RANDOM_DATA}" ] && unset -v RANDOM_DATA;
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -686,25 +686,25 @@ function modifyAccountPassword
         [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
         [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${ERROR_COUNT}" ] && unset ERROR_COUNT;
-        [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-        [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-        [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-        [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-        [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-        [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-        [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-        [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-        [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-        [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-        [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-        [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-        [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-        [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-        [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-        [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+        [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+        [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+        [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+        [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+        [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+        [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+        [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+        [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+        [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+        [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+        [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+        [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+        [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+        [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+        [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -746,30 +746,30 @@ function modifyAccountPassword
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available";
 
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                 (( ERROR_COUNT += 1 ));
 
                 [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
                 [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-                [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-                [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-                [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-                [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-                [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-                [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-                [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-                [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-                [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-                [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-                [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-                [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-                [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+                [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+                [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+                [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+                [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+                [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+                [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+                [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+                [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+                [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+                [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+                [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+                [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+                [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
                 continue;
             fi
@@ -791,30 +791,30 @@ function modifyAccountPassword
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
 
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
                 (( ERROR_COUNT += 1 ));
 
                 [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
                 [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-                [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-                [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-                [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-                [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-                [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-                [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-                [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-                [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-                [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-                [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-                [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-                [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-                [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-                [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+                [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+                [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+                [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+                [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+                [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+                [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+                [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+                [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+                [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+                [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+                [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+                [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+                [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+                [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
                 continue;
             fi
@@ -829,30 +829,30 @@ function modifyAccountPassword
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No password entry was located for the provided host and user.";
             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "No password entry was located for the provided host and user.";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
             (( ERROR_COUNT += 1 ));
 
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         fi
@@ -907,22 +907,22 @@ function modifyAccountPassword
                     [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
                     [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-                    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-                    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-                    [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-                    [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-                    [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-                    [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-                    [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-                    [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-                    [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-                    [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-                    [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-                    [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-                    [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-                    [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-                    [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-                    [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                    [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+                    [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+                    [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+                    [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+                    [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+                    [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+                    [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+                    [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+                    [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+                    [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+                    [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+                    [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+                    [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+                    [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
                     continue;
                 fi
@@ -992,22 +992,22 @@ function modifyAccountPassword
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         elif [ -z "${RETURN_DATA}" ]
@@ -1020,22 +1020,22 @@ function modifyAccountPassword
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         elif [ $(grep -ci "success" <<< "${RETURN_DATA}") -eq 0 ]
@@ -1048,22 +1048,22 @@ function modifyAccountPassword
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         fi
@@ -1093,22 +1093,22 @@ function modifyAccountPassword
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         elif [ $(grep -c "success" <<< "${RETURNED_DATA}") -ne 0 ]
@@ -1121,22 +1121,22 @@ function modifyAccountPassword
             [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
             [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-            [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-            [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-            [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-            [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-            [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-            [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-            [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-            [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-            [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-            [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+            [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+            [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+            [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+            [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+            [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+            [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+            [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+            [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+            [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+            [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+            [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+            [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+            [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
             continue;
         fi
@@ -1156,24 +1156,24 @@ function modifyAccountPassword
     [ ! -z "${CURRENT_PASSWORD_FILE}" ] && [ -f "${CURRENT_PASSWORD_FILE}" ] && rm -rf "${CURRENT_PASSWORD_FILE}";
     [ ! -z "${NEW_PASSWORD_FILE}" ] && [ -f "${NEW_PASSWORD_FILE}" ] && rm -rf "${NEW_PASSWORD_FILE}";
 
-    [ ! -z "${HOSTLIST}" ] && unset HOSTLIST;
-    [ ! -z "${USER_NAME}" ] && unset USER_NAME;
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
-    [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset PASSWORD_CREDENTIALS;
-    [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset PASSWORD_REPO_ENTRY;
-    [ ! -z "${CREDENTIAL_ENTRY}" ] && unset CREDENTIAL_ENTRY;
-    [ ! -z "${CURRENT_PASSWORD}" ] && unset CURRENT_PASSWORD;
-    [ ! -z "${NEW_PASSWORD}" ] && unset NEW_PASSWORD;
-    [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset CURRENT_PASSWORD_FILE;
-    [ ! -z "${NEW_PASSWORD_FILE}" ] && unset NEW_PASSWORD_FILE;
-    [ ! -z "${RETURN_DATA}" ] && unset RETURN_DATA;
-    [ ! -z "${ENCR_TYPE}" ] && unset ENCR_TYPE;
-    [ ! -z "${NEW_PASSWD_FILE}" ] && unset NEW_PASSWD_FILE;
-    [ ! -z "${PASSWD_FILE}" ] && unset PASSWD_FILE;
-    [ ! -z "${RETURNED_PASSWORD}" ] && unset RETURNED_PASSWORD;
-    [ ! -z "${APPLY_PASSWORD}" ] && unset APPLY_PASSWORD;
-    [ ! -z "${RETURNED_DATA}" ] && unset RETURNED_DATA;
+    [ ! -z "${HOSTLIST}" ] && unset -v HOSTLIST;
+    [ ! -z "${USER_NAME}" ] && unset -v USER_NAME;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${PASSWORD_CREDENTIALS}" ] && unset -v PASSWORD_CREDENTIALS;
+    [ ! -z "${PASSWORD_REPO_ENTRY}" ] && unset -v PASSWORD_REPO_ENTRY;
+    [ ! -z "${CREDENTIAL_ENTRY}" ] && unset -v CREDENTIAL_ENTRY;
+    [ ! -z "${CURRENT_PASSWORD}" ] && unset -v CURRENT_PASSWORD;
+    [ ! -z "${NEW_PASSWORD}" ] && unset -v NEW_PASSWORD;
+    [ ! -z "${CURRENT_PASSWORD_FILE}" ] && unset -v CURRENT_PASSWORD_FILE;
+    [ ! -z "${NEW_PASSWORD_FILE}" ] && unset -v NEW_PASSWORD_FILE;
+    [ ! -z "${RETURN_DATA}" ] && unset -v RETURN_DATA;
+    [ ! -z "${ENCR_TYPE}" ] && unset -v ENCR_TYPE;
+    [ ! -z "${NEW_PASSWD_FILE}" ] && unset -v NEW_PASSWD_FILE;
+    [ ! -z "${PASSWD_FILE}" ] && unset -v PASSWD_FILE;
+    [ ! -z "${RETURNED_PASSWORD}" ] && unset -v RETURNED_PASSWORD;
+    [ ! -z "${APPLY_PASSWORD}" ] && unset -v APPLY_PASSWORD;
+    [ ! -z "${RETURNED_DATA}" ] && unset -v RETURNED_DATA;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1186,3 +1186,114 @@ function modifyAccountPassword
     return ${RETURN_CODE};
 }
 
+#=====  FUNCTION  ===============================================================
+#          NAME:  chmod
+#   DESCRIPTION:  Cleans up the archived log directory
+#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#       RETURNS:  0 regardless of result.
+#==============================================================================
+function chmod
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    if [ ${#} -gt 2 ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Change the permissions on a target file";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ permissions ] [ file ]
+                 -> The permissions to apply
+                 -> The file to apply permissions to";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
+        [ ! -z "${INCLUDE_SPECIAL}" ] && unset -v INCLUDE_SPECIAL;
+        [ ! -z "${RETURNED_CHARACTERS}" ] && unset -v RETURNED_CHARACTERS;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset -i ERROR_COUNT=0;
+    typeset -i OCTAL_PERMISSIONS="${1}";
+    setArray TARGET_FILES "${2}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OCTAL_PERMISSIONS -> ${OCTAL_PERMISSIONS}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_FILES -> ${TARGET_FILES[*]}";
+
+    typeset -i USER_PERMISSIONS="$(echo "${OCTAL_PERMISSIONS}" | awk '{print substr($0, 1, 1)}')";
+    typeset -i GROUP_PERMISSIONS="$(echo "${OCTAL_PERMISSIONS}" | awk '{print substr($0, 2, 1)}')";
+    typeset -i WORLD_PERMISSIONS="$(echo "${OCTAL_PERMISSIONS}" | awk '{print substr($0, 3, 1)}')";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_PERMISSIONS -> ${USER_PERMISSIONS}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "GROUP_PERMISSIONS -> ${GROUP_PERMISSIONS}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "WORLD_PERMISSIONS -> ${WORLD_PERMISSIONS}";
+
+    for TARGET_FILE in ${TARGET_FILES[*]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_FILE -> ${TARGET_FILE}";
+
+        /usr/bin/env setfacl -s u::${USER_PERMISSIONS},g::${GROUP_PERMISSIONS},${WORLD_PERMISSIONS} ${TARGET_FILE} 2>/dev/null;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to modify file security for ${TARGET_FILE}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to modify file security for ${TARGET_FILE}";
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        [ ! -z "${TARGET_FILE}" ] && unset -v TARGET_FILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    done
+
+    [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${TARGET_FILE}" ] && unset -v TARGET_FILE;
+    [ ! -z "${OCTAL_PERMISSIONS}" ] && unset -v OCTAL_PERMISSIONS;
+    [ ! -z "${TARGET_FILES[*]}" ] && unset -v TARGET_FILES;
+    [ ! -z "${USER_PERMISSIONS}" ] && unset -v USER_PERMISSIONS;
+    [ ! -z "${GROUP_PERMISSIONS}" ] && unset -v GROUP_PERMISSIONS;
+    [ ! -z "${WORLD_PERMISSIONS}" ] && unset -v WORLD_PERMISSIONS;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}

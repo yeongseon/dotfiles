@@ -35,11 +35,11 @@ function createBackup
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -86,11 +86,11 @@ function createBackup
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to set up ${TARGET_HOST} for user ${USERNAME}. Server does not appear to be available.";
         writeLogEntry "STDERR" "Failed to configure new host.";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -122,11 +122,11 @@ function createBackup
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to obtain SSH host keys for provided host.";
         writeLogEntry "STDERR" "Failed to configure new host.";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -154,11 +154,11 @@ function createBackup
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "rsync operation has failed.";
         writeLogEntry "STDERR" "Failed to configure new host.";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -181,11 +181,11 @@ function createBackup
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${USERNAME}" ] && unset USERNAME;
-    [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-    [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+    [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -230,11 +230,11 @@ function restoreBackup
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -285,11 +285,11 @@ function restoreBackup
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -324,11 +324,11 @@ function restoreBackup
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -359,11 +359,11 @@ function restoreBackup
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset USERNAME;
-        [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-        [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-        [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+        [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -381,11 +381,11 @@ function restoreBackup
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${TARGET_HOST}" ] && unset TARGET_HOST;
-    [ ! -z "${USERNAME}" ] && unset USERNAME;
-    [ ! -z "${SOURCE_FS}" ] && unset SOURCE_FS;
-    [ ! -z "${DEST_FS}" ] && unset DEST_FS;
-    [ ! -z "${RET_CODE}" ] && unset RET_CODE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${SOURCE_FS}" ] && unset -v SOURCE_FS;
+    [ ! -z "${DEST_FS}" ] && unset -v DEST_FS;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

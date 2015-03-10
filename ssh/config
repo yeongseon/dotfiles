@@ -61,6 +61,6 @@ Host *
     IdentityFile                = ~/.ssh/id_rsa
     IdentityFile                = ~/.ssh/id_dsa
     IdentityFile                = ~/.ssh/id_ecdsa
-    ControlMaster               = auto
-    ControlPath                 = ~/.ssh/master-%r@%h:%p
+#    ControlMaster               = auto
+#    ControlPath                 = ~/.ssh/master-%r@%h:%p
 
