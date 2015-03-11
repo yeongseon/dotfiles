@@ -16,7 +16,7 @@ function selectProfile
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${@}";
 
     ## this variable is (currently) set by psconfig.sh when
     ## its loaded into the environment. accepts an "N" or "Y":
@@ -24,8 +24,10 @@ function selectProfile
     ## to load another environment, we set to "N" here so
     ## psconfig doesn't say its already loaded
     typeset IS_PS_PLT="N";
+    typeset PROFILE_CONFIGURATION="${HOME}/.etc/resources/selectProfile.conf";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "IS_PS_PLT -> ${IS_PS_PLT}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE_CONFIGURATION -> ${PROFILE_CONFIGURATION}";
 
     ## system information
     typeset HOST_SYSTEM_NAME="$(/usr/bin/env echo "${HOSTNAME}" | /usr/bin/env tr '[A-Z]' '[a-z]')";
@@ -53,7 +55,7 @@ function selectProfile
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
 
     ## user information
-    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms "${HOME}/" | /usr/bin/env awk '{print $1}');
+    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ | /usr/bin/env awk '{print $1}');
     typeset -i SYSTEM_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env wc -l | awk '{print $1}');
     typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env grep "${LOGNAME}" | /usr/bin/env wc -l);
 
@@ -68,595 +70,890 @@ function selectProfile
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "A -> ${A}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "B -> ${B}";
 
+    reset; clear;
+
+    printf "\n";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "%40s\n" "Welcome to FTP";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "%s\n" "+---------------------- System Information -------------------------+";
+    printf "%-14s : %-10s\n" "+ Hostname" "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}";
+    printf "%-14s : %-10s\n" "+ IP Address" "${HOST_IP_ADDRESS}";
+    printf "%-14s : %-10s\n" "+ Kernel version" "$(uname -r)";
+    printf "%-14s : %-10s\n" "+ CPU" "${HOST_CPU_COUNT} / ${HOST_CPU_INFO}";
+    printf "%-14s : %-10s\n" "+ Memory" "${HOST_MEMORY_SIZE}";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "\n";
+    printf "%s\n" "+----------------------- User Information --------------------------+";
+    printf "%-14s : %-10s\n" "+ Username" "${LOGNAME}";
+    printf "%-14s : %-10s %sMB %s\n" "+ Disk Usage" "You're currently using" "${USER_DISK_USAGE}" "in ${HOME}";
+    printf "%-14s : %s of which %s are yours\n" "+ Processes" "${SYSTEM_PROCESS_COUNT}" "${USER_PROCESS_COUNT}";
+    printf "+-------------------------------------------------------------------+";
+    printf "\n";
+
     ## source in the config file
-    [ -f "${HOME}/.etc/selectProfile.conf" ] && . "${HOME}/.etc/selectProfile.conf";
+    if [ -f "${PROFILE_CONFIGURATION}" ]
+    then
+        . "${PROFILE_CONFIGURATION}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AVAILABLE_ENVIRONMENTS -> ${AVAILABLE_ENVIRONMENTS[*]}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "GL_ROOT_DIRECTORY -> ${GL_ROOT_DIRECTORY}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PORTAL_ROOT_DIRECTORY -> ${PORTAL_ROOT_DIRECTORY}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FINANCE_ROOT_DIRECTORY -> ${FINANCE_ROOT_DIRECTORY}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AVAILABLE_ENVIRONMENTS -> ${AVAILABLE_ENVIRONMENTS[*]}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "GL_ROOT_DIRECTORY -> ${GL_ROOT_DIRECTORY}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PORTAL_ROOT_DIRECTORY -> ${PORTAL_ROOT_DIRECTORY}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FINANCE_ROOT_DIRECTORY -> ${FINANCE_ROOT_DIRECTORY}";
 
-    while true
-    do
-        [ ! -z "${BREAK_OUT}" ] && [ "${BREAK_OUT}" = "${_TRUE}" ] && break;
-
-        reset; clear;
-
-        printf "\n";
-        printf "%s\n" "+-------------------------------------------------------------------+";
-        printf "%40s\n" "Welcome to FTP";
-        printf "%s\n" "+-------------------------------------------------------------------+";
-        printf "%s\n" "+---------------------- System Information -------------------------+";
-        printf "%-14s : %-10s\n" "+ Hostname" "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}";
-        printf "%-14s : %-10s\n" "+ IP Address" "${HOST_IP_ADDRESS}";
-        printf "%-14s : %-10s\n" "+ Kernel version" "$(uname -r)";
-        printf "%-14s : %-10s\n" "+ CPU" "${HOST_CPU_COUNT} / ${HOST_CPU_INFO}";
-        printf "%-14s : %-10s\n" "+ Memory" "${HOST_MEMORY_SIZE}";
-        printf "%s\n" "+-------------------------------------------------------------------+";
-        printf "\n";
-        printf "%s\n" "+----------------------- User Information --------------------------+";
-        printf "%-14s : %-10s\n" "+ Username" "${LOGNAME}";
-        printf "%-14s : %-10s %sMB %s\n" "+ Disk Usage" "You're currently using" "${USER_DISK_USAGE}" "in ${HOME}";
-        printf "%-14s : %s of which %s are yours\n" "+ Processes" "${SYSTEM_PROCESS_COUNT}" "${USER_PROCESS_COUNT}";
-        printf "+-------------------------------------------------------------------+";
-        printf "\n";
-
-        printf "%s\n\n" "Please select an environment to load:";
-
-        for ENVIRONMENT in ${AVAILABLE_ENVIRONMENTS[*]}
+        while true
         do
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENT -> ${ENVIRONMENT}";
+            [ ! -z "${BREAK_OUT}" ] && [ "${BREAK_OUT}" = "${_TRUE}" ] && break;
 
-            printf "%d) %s\n" ${A} "$(echo "${ENVIRONMENT}" | sed -e "s/\^/ /g")";
+            printf "%s\n\n" "Please select an environment to load:";
 
-            (( A += 1 ));
-        done
+            for ENVIRONMENT in ${AVAILABLE_ENVIRONMENTS[*]}
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENT -> ${ENVIRONMENT}";
 
-        printf "\n";
-        printf "%s\n\n" "Enter selection:";
+                printf "%d) %s\n" ${A} "$(echo "${ENVIRONMENT}" | cut -d "|" -f 1 | sed -e "s/\^/ /g")";
 
-        read SELECTED_ENVIRONMENT;
+                (( A += 1 ));
+            done
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_ENVIRONMENT -> ${SELECTED_ENVIRONMENT}";
+            printf "\n";
+            printf "%s\n\n" "Enter selection:";
 
-        case "$(/usr/bin/env echo "${SELECTED_ENVIRONMENT}" | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
-            0)
-                typeset PROVIDED_ENVIRONMENT="${AVAILABLE_ENVIRONMENTS[(( SELECTED_ENVIRONMENT -+ 1 ))]}";
-                ;;
-            *)
-                typeset PROVIDED_ENVIRONMENT="${SELECTED_ENVIRONMENT}";
-                ;;
-        esac
+            read SELECTED_ENVIRONMENT;
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_ENVIRONMENT -> ${PROVIDED_ENVIRONMENT}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_ENVIRONMENT -> ${SELECTED_ENVIRONMENT}";
 
-        ## determine which environment was selected
-        ## and load the appropriate environment
-        case "${PROVIDED_ENVIRONMENT}" in
-            [Xx]|[Qq]|[Cc])
-                printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
+            case "$(/usr/bin/env echo ${SELECTED_ENVIRONMENT} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+                0)
+                    typeset PROVIDED_ENVIRONMENT="${AVAILABLE_ENVIRONMENTS[(( SELECTED_ENVIRONMENT -+ 1 ))]}";
+                    ;;
+                *)
+                    typeset PROVIDED_ENVIRONMENT="${SELECTED_ENVIRONMENT}";
+                    ;;
+            esac
 
-                typeset BREAK_OUT="${_TRUE}" && break;
-                ;;
-            [Nn][Mm][Oo][Nn]*)
-                ## load nmon differently because.. well, its standalone
-                ## and doesnt really require as much as the rest
-                typeset ROOT_DIRECTORY="/ftp/ftpnm01/nmondata";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_ENVIRONMENT -> ${PROVIDED_ENVIRONMENT}";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIRECTORY -> ${ROOT_DIRECTORY}";
+            ## determine which environment was selected
+            ## and load the appropriate environment
+            case "${PROVIDED_ENVIRONMENT}" in
+                [Xx]|[Qq]|[Cc])
+                    printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
 
-                printf "%s\n\n" "Configuring ${ENVIRONMENT} environment ...";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                . "${ROOT_DIRECTORY}/scripts/nmonenv.sh";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                cd "${NMON_HOME}";
+                    [ ! -z "${A}" ] && unset -v A;
+                    [ ! -z "${B}" ] && unset -v B;
+                    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                    [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                    [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                    [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                    [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                    [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                    [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                    [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                    [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                    [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                    [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                    [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                    [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                    [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                    [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                    [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                    [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                    [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                typeset BREAK_OUT="${_TRUE}" && break;
-                ;;
-            *)
-                ## check to see if the selected platform is actually available
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_ENVIRONMENT -> ${PROVIDED_ENVIRONMENT}";
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                contains "${PROVIDED_ENVIRONMENT}" "${AVAILABLE_ENVIRONMENTS[*]}";
-                typeset RET_CODE=${?};
+                    return ${RETURN_CODE};
+                    ;;
+                [Nn][Mm][Oo][Nn]*)
+                    ## load nmon differently because.. well, its standalone
+                    ## and doesnt really require as much as the rest
+                    typeset ROOT_DIRECTORY="/ftp/ftpnm01/nmondata";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIRECTORY -> ${ROOT_DIRECTORY}";
 
-                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-                then
-                    unset -v PROVIDED_ENVIRONMENT;
-                    unset -v SELECTED_PLATFORM;
-                    unset -v RET_CODE;
-                    typeset -i A=1;
-                    typeset -i B=1;
+                    printf "%s\n\n" "Configuring $(echo "${PROVIDED_ENVIRONMENT}" | cut -d "|" -f 1) environment ...";
 
-                    printf "%s\n" "An invalid environment was selected. Please try again.";
+                    . ${ROOT_DIRECTORY}/scripts/nmonenv.sh;
 
-                    sleep 10; reset; clear; continue;
-                fi
+                    cd ${NMON_HOME};
 
-                ## configure the root directory. this varies across platform type and OS type
-                ## aix is *not* the same as linux. make sure its what we need it to be.
-                ## if any new directories are to be added (e.g. /pshome/tom), it needs to be added
-                ## to ${HOME}/.etc/E41-selectProfile to ensure it shows up here
-                case "${PROVIDED_ENVIRONMENT}" in
-                    [Gg][Ll])
-                        typeset ROOT_DIRECTORY="${GL_ROOT_DIRECTORY}";
-                        ;;
-                    [Pp][Oo][Rr][Tt][Aa][Ll])
-                        typeset ROOT_DIRECTORY="${PORTAL_ROOT_DIRECTORY}";
-                        ;;
-                    [Ff][Ii][Nn][Aa][Nn][Cc][Ee])
-                        typeset ROOT_DIRECTORY="${FINANCE_ROOT_DIRECTORY}";
-                        ;;
-                    [Pp][Rr][Oo][Cc][Ee][Ss][Ss]^[Ss][Ee][Rr][Vv][Ee][Rr])
-                        ## get the list of available process servers and their locations
-                        for PROCESS_NAME in $(ps -ef | grep prcs | grep -v grep | awk '{print $18}' | uniq | sort | awk -F "/" '{print $1 "/" $2 "/" $3}' | uniq)
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_ROOT_DIRS -> ${PRCS_ROOT_DIRS[*]}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            [ -z "${PROCESS_NAME}" ] && continue;
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                            setArray PRCS_ROOT_DIRS "${PROCESS_NAME}";
+                    [ ! -z "${A}" ] && unset -v A;
+                    [ ! -z "${B}" ] && unset -v B;
+                    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                    [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                    [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                    [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                    [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                    [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                    [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                    [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                    [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                    [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                    [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                    [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                    [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                    [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                    [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                    [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                    [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                    [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                    [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                    [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                            [ ! -z "${PROCESS_NAME}" ] && unset -v PROCESS_NAME;
-                        done
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_ROOT_DIRS -> ${PRCS_ROOT_DIRS[*]}";
+                    return ${RETURN_CODE};
+                    ;;
+                *)
+                    ## check to see if the selected platform is actually available
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROVIDED_ENVIRONMENT -> ${PROVIDED_ENVIRONMENT}";
+
+                    contains "${PROVIDED_ENVIRONMENT}" "${AVAILABLE_ENVIRONMENTS[*]}";
+                    typeset RET_CODE=${?};
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+                    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                    then
+                        [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                        [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                        [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                        [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                        [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                        [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                        [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                        [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                        [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                        [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                        [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                        [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                        [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                        [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                        [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                        [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                        [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                        [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
 
                         typeset -i A=1;
                         typeset -i B=1;
 
-                        for PRCS_ROOT_DIR in ${PRCS_ROOT_DIRS[*]}
-                        do
-                            [ -z "${PRCS_ROOT_DIR}" ] && continue;
+                        printf "%s\n" "An invalid environment was selected. Please try again.";
 
-                            [ -f "${PRCS_ROOT_DIR}/psconfig.sh" ] && printf "%d) %s\n" ${A} "$(echo "${PRCS_ROOT_DIR}" | cut -d "/" -f 3)";
+                        sleep 10; reset; clear; continue;
+                    fi
 
-                            (( A += 1 ));
-                        done
+                    typeset ROOT_DIRECTORY="$(echo "${PROVIDED_ENVIRONMENT}" | cut -d "|" -f 2 | sed -e 's/^ *//g;s/ *$//g')";
 
-                        printf "\n";
-                        printf "%s\n\n" "Enter selection:";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIRECTORY -> ${ROOT_DIRECTORY}";
 
-                        read SELECTED_PROCESS_ENVIRONMENT;
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_PROCESS_ENVIRONMENT -> ${SELECTED_PROCESS_ENVIRONMENT}";
-
-                        case "${SELECTED_PROCESS_ENVIRONMENT}" in
-                            [Xx]|[Qq]|[Cc])
-                                printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
-
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                            *)
-                                case "$(/usr/bin/env echo "${SELECTED_PROCESS_ENVIRONMENT}" | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
-                                    0)
-                                        typeset ROOT_DIRECTORY="${PRCS_ROOT_DIRS[(( SELECTED_PROCESS_ENVIRONMENT -+ 1 ))]}";
-                                        ;;
-                                    *)
-                                        typeset ROOT_DIRECTORY="${SELECTED_PROCESS_ENVIRONMENT}";
-                                        ;;
-                                esac
-                                ;;
-                        esac
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIRECTORY -> ${ROOT_DIRECTORY}";
-                        ;;
-                esac
-
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIRECTORY -> ${ROOT_DIRECTORY}";
-
-                ## if the root directory specified doesnt exist
-                ## just drop out to a shell.
-                if [ -z "${ROOT_DIRECTORY}" ]
-                then
-                    printf "%s\n\n" "Unable to determine base directory. Exiting to shell.";
-
-                    typeset BREAK_OUT="${_TRUE}" && break;
-                fi
-
-                ## lets see what we have here...
-                if [ -f "${ROOT_DIRECTORY}/psconfig.sh" ]
-                then
-                    ## we have a psconfig in the root directory
-                    ## load it and continue
-                    . "${ROOT_DIRECTORY}/psconfig.sh";
-
-                    if [ -z "${PS_CFG_HOME}" ]
+                    ## if the root directory specified doesnt exist
+                    ## just drop out to a shell.
+                    if [ -z "${ROOT_DIRECTORY}" ]
                     then
                         printf "%s\n\n" "Unable to determine base directory. Exiting to shell.";
 
-                        typeset BREAK_OUT="${_TRUE}" && break;
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                        [ ! -z "${A}" ] && unset -v A;
+                        [ ! -z "${B}" ] && unset -v B;
+                        [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                        [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                        [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                        [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                        [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                        [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                        [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                        [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                        [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                        [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                        [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                        [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                        [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                        [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                        [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                        [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                        [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                        [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                        [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                        [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                        [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                        [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                        [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                        [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                        [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                        [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                        [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                        [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                        [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                        [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                        [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                        [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                        [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                        [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                        [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                        [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                        [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+                        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                        return ${RETURN_CODE};
                     fi
 
-                    ## get the product name/version for display
-                    typeset PRODUCT_NAME="$(grep "licensegroupname" "${PS_CFG_HOME}/peopletools.properties" | cut -d "=" -f 2)";
-                    typeset PRODUCT_VERSION="$(grep "productversion" "${PS_CFG_HOME}/peopletools.properties" | cut -d "=" -f 2)";
+                    A=1;
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_NAME -> ${PRODUCT_NAME}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_VERSION -> ${PRODUCT_VERSION}";
+                    printf "%s\n\n" "Please select an environment to load:";
 
-                    ## print some info about the selected platform
-                    printf "%s\n\n" "Configuring ${PROVIDED_ENVIRONMENT} environment ...";
-                    printf "Product name: %s, Version: %s\n" "${PRODUCT_NAME}" "${PRODUCT_VERSION}";
-                    printf "\n%s \n" "The following application servers are available on this system:"
-                    printf "\n"
-                    printf "%s\n\n" "+-------------------------------------------------------------------+";
-
-                    ## and list out the schemas that are available
-                    ## in the platform
-                    for APP_NAME in ${PS_CFG_HOME}/appserv/*
+                    for APPLICATION_ENVIRONMENT in ${ROOT_DIRECTORY}/*
                     do
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APP_NAME -> ${APP_NAME}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_ENVIRONMENT -> ${APPLICATION_ENVIRONMENT}";
 
-                        ## if its not a directory, skip it
-                        ## if its the "search" directory, skip it
-                        ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
-                        [ ! -d "${APP_NAME}" ] && continue;
-                        [ "$(basename "${APP_NAME}")" == "Search" ] && continue;
-                        [ "$(basename "${APP_NAME}")" == "prcs" ] && continue;
+                        ## if its not a directory skip it
+                        [ ! -d "${APPLICATION_ENVIRONMENT}" ] && continue;
 
-                        ## just get the directory name. we dont need the full path here
-                        typeset ENVIRONMENT_SCHEMA="$(basename "${APP_NAME}")";
+                        ## if it doesnt have a psconfig skip it
+                        [ ! -f "${APPLICATION_ENVIRONMENT}/psconfig.sh" ] && continue;
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENT_SCHEMA -> ${ENVIRONMENT_SCHEMA}";
-
-                        ## add to an array for later use...
-                        setArray ENVIRONMENTS "${ENVIRONMENT_SCHEMA}:${APP_NAME}";
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENTS -> ${ENVIRONMENTS[*]}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_ENVIRONMENT -> ${APPLICATION_ENVIRONMENT}";
 
                         ## print the name and base directory
-                        printf "%s - Base: %s\n" "${ENVIRONMENT_SCHEMA}" "\${PS_CFG_HOME}/appserv/${ENVIRONMENT_SCHEMA}";
+                        typeset APPLICATION_NAME="$(/usr/bin/env basename "${APPLICATION_ENVIRONMENT}")";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_NAME -> ${APPLICATION_NAME}";
+
+                        setArray APPLICATION_ENVIRONMENTS "${APPLICATION_NAME}";
+
+                        printf "${A}: %s - Base: %s\n" "${APPLICATION_NAME}" "\${ROOT_DIRECTORY}/${APPLICATION_NAME}";
+
+                        (( A += 1 ));
                     done
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENTS -> ${ENVIRONMENTS[*]}";
+                    printf "\n";
+                    printf "%s\n\n" "Enter selection:";
 
-                    printf "\n+-------------------------------------------------------------------+\n\n";
+                    read SELECTED_APPLICATION;
 
-                    if [ ! -z "$(/usr/bin/env ls -ltr "${PS_CFG_HOME}/appserv/prcs" | grep ^d)" ]
-                    then
-                        printf "\n"
-                        printf "%s \n" "The following process servers are available on this system:"
-                        printf "%s\n\n" "+-------------------------------------------------------------------+";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_APPLICATION -> ${SELECTED_APPLICATION}";
 
-                        ## and list out the process servers that are available
-                        ## in the platform
-                        for PRCS_NAME in ${PS_CFG_HOME}/appserv/prcs/*
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_NAME -> ${PRCS_NAME}";
+                    case "$(/usr/bin/env echo ${SELECTED_APPLICATION} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+                        0)
+                            typeset PROVIDED_APPLICATION="${APPLICATION_ENVIRONMENTS[(( SELECTED_APPLICATION -+ 1 ))]}";
+                            ;;
+                        *)
+                            typeset PROVIDED_APPLICATION="${SELECTED_APPLICATION}";
+                            ;;
+                    esac
 
-                            ## if its not a directory, skip it
-                            ## if its the "search" directory, skip it
-                            ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
-                            [ ! -d "${PRCS_NAME}" ] && continue;
-                            [ "$(basename "${PRCS_NAME}")" == "Search" ] && continue;
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_APPLICATION -> ${PROVIDED_APPLICATION}";
 
-                            ## just get the directory name. we dont need the full path here
-                            typeset PRCS_BASENAME="$(basename "${PRCS_NAME}")";
+                    ## determine which environment was selected
+                    ## and load the appropriate environment
+                    case "${PROVIDED_APPLICATION}" in
+                        [Xx]|[Qq]|[Cc])
+                            printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_BASENAME -> ${PRCS_BASENAME}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            setArray ENVIRONMENTS "${PRCS_BASENAME}:${PRCS_NAME}";
+                            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                            ## print the name and base directory
-                            printf "%s - Base: %s\n" "${PRCS_BASENAME}" "\${PS_CFG_HOME}/appserv/prcs/${PRCS_BASENAME}";
-                        done
-                    fi
+                            [ ! -z "${A}" ] && unset -v A;
+                            [ ! -z "${B}" ] && unset -v B;
+                            [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                            [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                            [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                            [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                            [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                            [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                            [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                            [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                            [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                            [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                            [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                            [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                            [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                            [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                            [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                            [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                            [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                            [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                            [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                            [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                            [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                            [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                            [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                            [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                            [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                            [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                            [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                            [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                            [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                            [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                            [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                            [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                            [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                            [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                            [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                            [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                            [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                            [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                    ## allow the operator to select a schema to switch into if desired
-                    while true
-                    do
-                        [ ! -z "${BREAK_OUT}" ] && [ "${BREAK_OUT}" = "${_TRUE}" ] && break;
+                            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                        printf "%s\n\n" "Please select a target environment if desired:";
+                            return ${RETURN_CODE};
+                            ;;
+                        *)
+                            ## source the psconfig
+                            . ${ROOT_DIRECTORY}/${PROVIDED_APPLICATION}/psconfig.sh;
 
-                        ## print out what we've already obtained...
-                        for SCHEMA_NAME in ${ENVIRONMENTS[*]}
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SCHEMA_NAME -> ${SCHEMA_NAME}";
+                            if [ -z "${PS_HOME}" ]
+                            then
+                                printf "%s\n\n" "Unable to determine base directory. Exiting to shell.";
 
-                            printf "%d) Environment: %s\n" ${B} "$(echo "${SCHEMA_NAME}" | cut -d ":" -f 1)";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                            (( B += 1 ));
-                        done
+                                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                        printf "\n"
-                        printf "%s\n\n" "Enter selection:";
-
-                        read SELECTED_SCHEMA;
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_SCHEMA -> ${SELECTED_SCHEMA}";
-
-                        case "${SELECTED_SCHEMA}" in
-                            [Xx]|[Qq]|[Cc])
-                                printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
-
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                            *)
-                                case "$(/usr/bin/env echo "${SELECTED_SCHEMA}" | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
-                                    0)
-                                        typeset PROVIDED_SCHEMA="${ENVIRONMENTS[(( SELECTED_SCHEMA -+ 1 ))]}";
-                                        ;;
-                                    *)
-                                        typeset PROVIDED_SCHEMA="${SELECTED_SCHEMA}";
-                                        ;;
-                                esac
-                                ;;
-                        esac
-
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_SCHEMA -> ${PROVIDED_SCHEMA}";
-
-                        ## ... and action the selection
-                        case "${PROVIDED_SCHEMA}" in
-                            [Xx]|[Qq]|[Cc])
-                                ## x/q/c allows user to just cancel out. not a big deal.
-                                [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
-                                [ ! -z "${SELECTED_PLATFORM}" ] && unset -v SELECTED_PLATFORM;
-                                [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
-                                [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
-                                [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
-                                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-                                [ ! -z "${PRCS_ROOT_DIRS}" ] && unset -v PRCS_ROOT_DIRS;
                                 [ ! -z "${A}" ] && unset -v A;
                                 [ ! -z "${B}" ] && unset -v B;
-                                [ ! -z "${PRCS_ROOT_DIR}" ] && unset -v PRCS_ROOT_DIR;
-                                [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset -v SELECTED_PROCESS_ENVIRONMENT;
-                                [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
-                                [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
                                 [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                                [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                                [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                                [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                                [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
                                 [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
                                 [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
-                                [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                                [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                                [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                                [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                                [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                                [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                                [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
                                 [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
-                                [ ! -z "${SCHEMA_NAME}" ] && unset -v SCHEMA_NAME;
-                                [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                                [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                                [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
                                 [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                                [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                                [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                                [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                                [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                                [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                                [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                                [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                                [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                                [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                                [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                                [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                                [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                                [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                                reset; clear; break;
-                                ;;
-                            *)
-                                ## if no schema is selected, just exit to shell.
-                                if [ -z "${PROVIDED_SCHEMA}" ]
-                                then
-                                    printf "%s\n\n" "No schema selected. Exiting to shell...";
+                                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                                    typeset BREAK_OUT="${_TRUE}" && break;
-                                fi
+                                return ${RETURN_CODE};
+                            fi
 
-                                ## make sure the selection exists in our array...
-                                contains "${PROVIDED_SCHEMA}" "${ENVIRONMENTS[*]}";
-                                typeset RET_CODE=${?};
+                            ## get the product name/version for display
+                            typeset PRODUCT_NAME="$(cat ${PS_HOME}/peopletools.properties | grep "licensegroupname" | cut -d "=" -f 2)";
+                            typeset PRODUCT_VERSION="$(cat ${PS_HOME}/peopletools.properties | grep "productversion" | cut -d "=" -f 2)";
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_NAME -> ${PRODUCT_NAME}";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_VERSION -> ${PRODUCT_VERSION}";
 
-                                ## ... if not, allow the user to re-select
-                                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-                                then
-                                    unset -v SELECTED_SCHEMA;
-                                    unset -v PROVIDED_SCHEMA;
-                                    unset -v RET_CODE;
-                                    typeset A=1;
-                                    typeset B=1;
+                            ## print some info about the selected platform
+                            printf "%s\n\n" "Configuring $(echo "${PROVIDED_ENVIRONMENT}" | cut -d "|" -f 1) / ${PROVIDED_APPLICATION} environment ...";
+                            printf "Product name: %s, Version: %s\n" "${PRODUCT_NAME}" "${PRODUCT_VERSION}";
+                            printf "\n%s \n" "The following application servers are available on this system:"
+                            printf "\n"
+                            printf "%s\n\n" "+-------------------------------------------------------------------+";
 
-                                    printf "%s\n" "An invalid schema was selected. Please try again.";
+                            ## and list out the schemas that are available
+                            ## in the platform
+                            typeset -i A=1;
 
-                                    sleep 10; reset; clear; continue;
-                                fi
+                            for APP_NAME in ${PS_HOME}/CFG_HOME/appserv/*
+                            do
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APP_NAME -> ${APP_NAME}";
 
-                                ## source in the WAS config
-                                [ -f "${PS_CFG_HOME}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh" ] && . "${PS_CFG_HOME}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh";
+                                ## if its not a directory, skip it
+                                ## if its the "search" directory, skip it
+                                ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
+                                [ ! -d ${APP_NAME} ] && continue;
+                                [ "$(basename ${APP_NAME})" == "webmon" ] && continue;
+                                [ "$(basename ${APP_NAME})" == "Search" ] && continue;
+                                [ "$(basename ${APP_NAME})" == "ren" ] && continue;
+                                [ "$(basename ${APP_NAME})" == "prcs" ] && continue;
+                                [ "$(basename ${APP_NAME})" == "classes" ] && continue;
 
-                                ## there's nothing special we need to do at this point.
-                                ## we just cd into that schema and call it a day.
-                                cd "$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2)";
+                                ## just get the directory name. we dont need the full path here
+                                typeset ENVIRONMENT_SCHEMA="$(basename "${APP_NAME}")";
 
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                        esac
-                    done
-                else
-                    ## no psconfig exists in the base directory. loop
-                    ## through and find out what's available and go from there
-                    while true
-                    do
-                        [ ! -z "${BREAK_OUT}" ] && [ "${BREAK_OUT}" = "${_TRUE}" ] && break;
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENT_SCHEMA -> ${ENVIRONMENT_SCHEMA}";
 
-                        printf "%s\n\n" "Please select a target schema:";
+                                ## add to an array for later use...
+                                setArray ENVIRONMENTS "${ENVIRONMENT_SCHEMA}:${APP_NAME}";
 
-                        ## run through the available schemas
-                        for ENV_NAME in ${ROOT_DIRECTORY}/*
-                        do
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENV_NAME -> ${ENV_NAME}";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENTS -> ${ENVIRONMENTS[*]}";
 
-                            ## if its not a directory, skip it
-                            ## if its the "search" directory, skip it
-                            ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
-                            [ ! -d "${ENV_NAME}" ] && continue;
-                            [ "$(basename "${ENV_NAME}")" == "Search" ] && continue;
-                            [ "$(basename "${ENV_NAME}")" == "prcs" ] && continue;
+                                ## print the name and base directory
+                                printf "%d: %s - Base: %s\n" ${A} "Application Server: ${ENVIRONMENT_SCHEMA}" "\${PS_HOME}/CFG_HOME/appserv/${ENVIRONMENT_SCHEMA}";
 
-                            ## just get the directory name. we dont need the full path here
-                            typeset ENVIRONMENT_SCHEMA="$(basename "${ENV_NAME}")";
-
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENT_SCHEMA -> ${ENVIRONMENT_SCHEMA}";
-
-                            ## add to an array for later use...
-                            setArray ENVIRONMENTS "${ENVIRONMENT_SCHEMA}:${ENV_NAME}";
+                                (( A += 1 ));
+                            done
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENTS -> ${ENVIRONMENTS[*]}";
 
-                            ## print the name and base directory
-                            printf "%d) %s - Base: %s\n" ${B} "${ENVIRONMENT_SCHEMA}" "\${ROOT_DIRECTORY}/${ENVIRONMENT_SCHEMA}";
+                            printf "\n+-------------------------------------------------------------------+\n\n";
 
-                            (( B += 1 ));
-                        done
+                            if [ ! -z "$(/usr/bin/env ls -ltr ${PS_HOME}/CFG_HOME/appserv/prcs | grep ^d)" ]
+                            then
+                                printf "\n"
+                                printf "%s \n" "The following process servers are available on this system:"
+                                printf "%s\n\n" "+-------------------------------------------------------------------+";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENVIRONMENTS -> ${ENVIRONMENTS[*]}";
+                                ## and list out the process servers that are available
+                                ## in the platform
+                                for PRCS_NAME in ${PS_HOME}/CFG_HOME/appserv/prcs/*
+                                do
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_NAME -> ${PRCS_NAME}";
 
-                        printf "%s\n" "Enter selection:";
+                                    ## if its not a directory, skip it
+                                    ## if its the "search" directory, skip it
+                                    ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
+                                    [ ! -d ${PRCS_NAME} ] && continue;
+                                    [ "$(basename ${PRCS_NAME})" == "Search" ] && continue;
 
-                        read SELECTED_SCHEMA;
+                                    ## just get the directory name. we dont need the full path here
+                                    typeset PRCS_BASENAME="$(basename "${PRCS_NAME}")";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_SCHEMA -> ${SELECTED_SCHEMA}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_BASENAME -> ${PRCS_BASENAME}";
 
-                        case "${SELECTED_SCHEMA}" in
-                            [Xx]|[Qq]|[Cc])
-                                printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
+                                    setArray ENVIRONMENTS "${PRCS_BASENAME}:${PRCS_NAME}";
 
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                            *)
-                                case "$(/usr/bin/env echo "${SELECTED_SCHEMA}" | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
-                                    0)
-                                        typeset PROVIDED_SCHEMA="${ENVIRONMENTS[(( SELECTED_SCHEMA -+ 1 ))]}";
-                                        ;;
-                                    *)
-                                        typeset PROVIDED_SCHEMA="${SELECTED_SCHEMA}";
-                                        ;;
-                                esac
-                                ;;
-                        esac
+                                    ## print the name and base directory
+                                    printf "%d: %s - Base: %s\n" ${A} "Process Server: ${PRCS_BASENAME}" "\${PS_HOME}/CFG_HOME/appserv/prcs/${PRCS_BASENAME}";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_SCHEMA -> ${PROVIDED_SCHEMA}";
+                                    (( A +=1 ));
+                                done
+                            fi
 
-                        ## action the desired selection
-                        case "${PROVIDED_SCHEMA}" in
-                            [Xx]|[Qq]|[Cc])
-                                ## x/q/c allows user to just cancel out.
-                                ## this means that NO environment is loaded AT ALL.
-                                printf "%s\n\n" "No environment load option was selected. Exiting to shell.";
+                            typeset -i A=1;
 
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                            *)
-                                ## make sure the selection exists in our array
-                                contains "${PROVIDED_SCHEMA}" "${ENVIRONMENTS[*]}";
-                                typeset RET_CODE=${?};
+                            ## allow the operator to select a schema to switch into if desired
+                            printf "\n\n%s\n\n" "Please select a target environment if desired:";
+                            printf "\n"
+                            printf "%s\n\n" "Enter selection:";
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                            read SELECTED_SCHEMA;
 
-                                ## if not, ask the operator to re-select...
-                                if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-                                then
-                                    unset -v PROVIDED_SCHEMA;
-                                    unset -v SELECTED_SCHEMA;
-                                    unset -v RET_CODE;
-                                    typeset -i A=1;
-                                    typeset -i B=1;
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_SCHEMA -> ${SELECTED_SCHEMA}";
 
-                                    printf "%s\n" "An invalid schema was selected. Please try again.";
+                            case "$(/usr/bin/env echo ${SELECTED_SCHEMA} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+                                0)
+                                    typeset PROVIDED_SCHEMA="${AVAILABLE_ENVIRONMENTS[(( SELECTED_SCHEMA -+ 1 ))]}";
+                                    ;;
+                                *)
+                                    typeset PROVIDED_SCHEMA="${SELECTED_SCHEMA}";
+                                    ;;
+                            esac
 
-                                    sleep 10; reset; clear; continue;
-                                fi
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROVIDED_SCHEMA -> ${PROVIDED_SCHEMA}";
 
-                                ## ... otherwise, load the necessary information
-                                [ -f "${ROOT_DIRECTORY}/$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2)" ] && . "${ROOT_DIRECTORY}/$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2)";
-                                [ -f "/db2/i$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2 | tr '[A-Z]' '[a-z]')/sqllib/db2profile" ] && . "/db2/i$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2 | tr '[A-Z]' '[a-z]')/sqllib/db2profile";
+                            ## ... and action the selection
+                            case "${PROVIDED_SCHEMA}" in
+                                [Xx]|[Qq]|[Cc])
+                                    ## x/q/c allows user to just cancel out. not a big deal.
+                                    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                                    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                                    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                    [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                                    [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                                    [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                                    [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                                    [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                                    [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                    [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                                    [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                                    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                                    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                    [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
 
-                                ## list out the available schemas and such
-                                typeset PRODUCT_NAME="$(grep "licensegroupname" "${PS_CFG_HOME}/peopletools.properties" | cut -d "=" -f 2)";
-                                typeset PRODUCT_VERSION="$(grep "productversion" "${PS_CFG_HOME}/peopletools.properties" | cut -d "=" -f 2)";
+                                    reset; clear; break;
+                                    ;;
+                                *)
+                                    ## if no schema is selected, just exit to shell.
+                                    if [ -z "${PROVIDED_SCHEMA}" ]
+                                    then
+                                        printf "%s\n\n" "No schema selected. Exiting to shell...";
 
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_NAME -> ${PRODUCT_NAME}";
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRODUCT_VERSION -> ${PRODUCT_VERSION}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                                printf "Configuring %s environment, server %s ...\n\n" "${PROVIDED_ENVIRONMENT}" "$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 1)";
-                                printf "Product name: %s, Version: %s\n" "${PRODUCT_NAME}" "${PRODUCT_VERSION}";
+                                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                                if [ ! -z "$(/usr/bin/env ls -ltr "${PS_CFG_HOME}/appserv/prcs" | grep ^d)" ]
-                                then
-                                    printf "\n%s \n" "The following process servers are available on this system:"
-                                    printf "\n";
-                                    printf "%s\n\n" "+-------------------------------------------------------------------+";
+                                        [ ! -z "${A}" ] && unset -v A;
+                                        [ ! -z "${B}" ] && unset -v B;
+                                        [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                        [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                                        [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                                        [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                                        [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                                        [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                                        [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                                        [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                                        [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                                        [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                                        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                                        [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                                        [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                                        [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                                        [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                                        [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                                        [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                        [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                        [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                        [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                                        [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                                        [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                                        [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                                        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                        [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                        [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                                        [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                                        [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                        [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                                        [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                                        [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                                        [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                                        [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                                        [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                                        [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                                        [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                                        [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                                        [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                                        [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                                        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                                    ## and list out the process servers that are available
-                                    ## in the platform
-                                    for PRCS_NAME in ${PS_CFG_HOME}/appserv/prcs/*
-                                    do
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_NAME -> ${PRCS_NAME}";
+                                        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                                        ## if its not a directory, skip it
-                                        ## if its the "search" directory, skip it
-                                        ## if its the "prcs" directory, skip it (tho we *will* need this, have to work it out)
-                                        [ ! -d "${PRCS_NAME}" ] && continue;
-                                        [ "$(basename "${PRCS_NAME}")" == "Search" ] && continue;
+                                        return ${RETURN_CODE};
+                                    fi
 
-                                        ## just get the directory name. we dont need the full path here
-                                        typeset PRCS_BASENAME="$(basename "${PRCS_NAME}")";
+                                    ## make sure the selection exists in our array...
+                                    contains "${PROVIDED_SCHEMA}" "${ENVIRONMENTS[*]}";
+                                    typeset RET_CODE=${?};
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PRCS_BASENAME -> ${PRCS_BASENAME}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-                                        ## print the name and base directory
-                                        printf "%s - Base: %s\n" "${PRCS_BASENAME}" "\${PS_CFG_HOME}/appserv/${PRCS_BASENAME}";
-                                    done
-                                fi
+                                    ## ... if not, allow the user to re-select
+                                    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+                                    then
+                                        [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                                        [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                                        [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                                        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                        [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                        [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                                        [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                                        [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                                        [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                                        [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                                        [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                        [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                        [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                        [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                                        [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                                        [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                        [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                                        [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                        [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
 
-                                ## source in the WAS config
-                                [ -f "${ROOT_DIRECTORY}/${PROVIDED_SCHEMA}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh" ] && . "${ROOT_DIRECTORY}/${PROVIDED_SCHEMA}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh";
+                                        typeset -i A=1;
+                                        typeset -i B=1;
 
-                                ## there's nothing special we need to do at this point.
-                                ## we just cd into that schema and call it a day.
-                                cd "$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2)";
+                                        printf "%s\n" "An invalid schema was selected. Please try again.";
 
-                                typeset BREAK_OUT="${_TRUE}" && break;
-                                ;;
-                        esac
-                    done
-                fi
+                                        sleep 10; reset; clear; continue;
+                                    fi
 
-                typeset BREAK_OUT="${_TRUE}" && break;
-                ;;
-        esac
-    done
+                                    ## source in the WAS config
+                                    [ -f "${PS_HOME}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh" ] && . "${PS_CFG_HOME}/webserv/${PROVIDED_SCHEMA}/bin/setupCmdLine.sh";
+
+                                    ## there's nothing special we need to do at this point.
+                                    ## we just cd into that schema and call it a day.
+                                    cd "$(echo "${PROVIDED_SCHEMA}" | cut -d ":" -f 2)";
+
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+                                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+                                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                                    [ ! -z "${A}" ] && unset -v A;
+                                    [ ! -z "${B}" ] && unset -v B;
+                                    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+                                    [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+                                    [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+                                    [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+                                    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+                                    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+                                    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+                                    [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+                                    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+                                    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+                                    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+                                    [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+                                    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+                                    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+                                    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+                                    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+                                    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+                                    [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+                                    [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+                                    [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+                                    [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+                                    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+                                    [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+                                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                                    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+                                    [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+                                    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+                                    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+                                    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+                                    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+                                    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+                                    [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+                                    [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+                                    [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+                                    [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+                                    [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+                                    [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+                                    [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+                                    [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+                                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+                                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                                    return ${RETURN_CODE};
+                                    ;;
+                            esac
+                            ;;
+                    esac
+                    ;;
+            esac
+        done
+    else
+        printf "%s" "No configuration entries were located - no profile loaded.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${A}" ] && unset -v A;
+        [ ! -z "${B}" ] && unset -v B;
+        [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+        [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+        [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+        [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+        [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+        [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+        [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+        [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+        [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+        [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+        [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+        [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+        [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+        [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+        [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+        [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+        [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
+        [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
+        [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
+        [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+        [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+        [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
+        [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+        [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+        [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+        [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+        [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+        [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+        [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+        [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
+        [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
+        [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
+        [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+        [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+        [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+        [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+        [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${A}" ] && unset -v A;
     [ ! -z "${B}" ] && unset -v B;
-    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
+    [ ! -z "${APPLICATION_ENVIRONMENT}" ] && unset -v APPLICATION_ENVIRONMENT;
+    [ ! -z "${APPLICATION_ENVIRONMENTS}" ] && unset -v APPLICATION_ENVIRONMENTS;
+    [ ! -z "${APPLICATION_NAME}" ] && unset -v APPLICATION_NAME;
+    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
+    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
+    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
+    [ ! -z "${ENVIRONMENTS}" ] && unset -v ENVIRONMENTS;
+    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
     [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
     [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
-    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
-    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
     [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
-    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
-    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
-    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
-    [ ! -z "${ENVIRONMENT}" ] && unset -v ENVIRONMENT;
-    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
-    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
-    [ ! -z "${BREAK_OUT}" ] && unset -v BREAK_OUT;
-    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
-    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-    [ ! -z "${PROCESS_NAME}" ] && unset -v PROCESS_NAME;
-    [ ! -z "${PRCS_ROOT_DIRS[*]}" ] && unset -v PRCS_ROOT_DIRS;
-    [ ! -z "${PRCS_ROOT_DIR}" ] && unset -v PRCS_ROOT_DIR;
-    [ ! -z "${SELECTED_PROCESS_ENVIRONMENT}" ] && unset -v SELECTED_PROCESS_ENVIRONMENT;
+    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
+    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
     [ ! -z "${PRODUCT_NAME}" ] && unset -v PRODUCT_NAME;
     [ ! -z "${PRODUCT_VERSION}" ] && unset -v PRODUCT_VERSION;
-    [ ! -z "${APP_NAME}" ] && unset -v APP_NAME;
-    [ ! -z "${ENVIRONMENT_SCHEMA}" ] && unset -v ENVIRONMENT_SCHEMA;
-    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
-    [ ! -z "${ENVIRONMENTS[*]}" ] && unset -v ENVIRONMENTS;
-    [ ! -z "${PRCS_NAME}" ] && unset -v PRCS_NAME;
-    [ ! -z "${PRCS_BASENAME}" ] && unset -v PRCS_BASENAME;
-    [ ! -z "${SCHEMA_NAME}" ] && unset -v SCHEMA_NAME;
+    [ ! -z "${PROFILE_CONFIGURATION}" ] && unset -v PROFILE_CONFIGURATION;
+    [ ! -z "${PROVIDED_APPLICATION}" ] && unset -v PROVIDED_APPLICATION;
+    [ ! -z "${PROVIDED_ENVIRONMENT}" ] && unset -v PROVIDED_ENVIRONMENT;
     [ ! -z "${PROVIDED_SCHEMA}" ] && unset -v PROVIDED_SCHEMA;
-    [ ! -z "${ENV_NAME}" ] && unset -v ENV_NAME;
-    [ ! -z "${AVAILABLE_ENVIRONMENTS[*]}" ] && unset -v AVAILABLE_ENVIRONMENTS;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${ROOT_DIRECTORY}" ] && unset -v ROOT_DIRECTORY;
+    [ ! -z "${SELECTED_APPLICATION}" ] && unset -v SELECTED_APPLICATION;
+    [ ! -z "${SELECTED_ENVIRONMENT}" ] && unset -v SELECTED_ENVIRONMENT;
+    [ ! -z "${SELECTED_SCHEMA}" ] && unset -v SELECTED_SCHEMA;
+    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+    [ ! -z "${NMON_ROOT_DIRECTORY}" ] && unset -v NMON_ROOT_DIRECTORY;
     [ ! -z "${GL_ROOT_DIRECTORY}" ] && unset -v GL_ROOT_DIRECTORY;
     [ ! -z "${PORTAL_ROOT_DIRECTORY}" ] && unset -v PORTAL_ROOT_DIRECTORY;
     [ ! -z "${FINANCE_ROOT_DIRECTORY}" ] && unset -v FINANCE_ROOT_DIRECTORY;
+    [ ! -z "${GLOBAL_ROOT_DIRECTORY}" ] && unset -v GLOBAL_ROOT_DIRECTORY;
+    [ ! -z "${FRANCE_ROOT_DIRECTORY}" ] && unset -v FRANCE_ROOT_DIRECTORY;
+    [ ! -z "${LATAM_ROOT_DIRECTORY}" ] && unset -v LATAM_ROOT_DIRECTORY;
+    [ ! -z "${AVAILABLE_ENVIRONMENTS}" ] && unset -v AVAILABLE_ENVIRONMENTS;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -694,11 +991,11 @@ function setPromptCommand
     case "${REAL_USER}" in
         "")
             /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s\e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf "( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
             ;;
         *)
             /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s\e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
             ;;
     esac
 
@@ -706,8 +1003,8 @@ function setPromptCommand
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
@@ -785,71 +1082,23 @@ function logoutUser
         [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
     fi
 
-    if [ -d "${HOME}/.dotfiles" ]
-    then
-        cd "${HOME}/.dotfiles";
-
-        setArray COMMITTABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep modified | /usr/bin/env cut -d ":" -f 2);
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
-
-        if [ ! -z "${COMMITTABLE_ENTRIES[*]}" ]
-        then
-            for COMMITTABLE_ENTRY in ${COMMITTABLE_ENTRIES[*]}
-            do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
-
-                /usr/bin/env git add "${COMMITTABLE_ENTRY}";
-
-                [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
-            done
-
-            [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
-            [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
-        fi
-
-        setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REMOVEABLE_ENTRIES -> ${REMOVEABLE_ENTRIES[*]}";
-
-        if [ ! -z "${REMOVEABLE_ENTRIES[*]}" ]
-        then
-            for REMOVEABLE_ENTRY in ${REMOVEABLE_ENTRIES[*]}
-            do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
-
-                /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
-
-                [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
-            done
-
-            [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
-            [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
-        fi
-
-        [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
-        [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
-    fi
-
-    [ -f "${HOME}/.mysql_history" ] && /usr/bin/env rm -f "${HOME}/.mysql_history";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-sh" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-sh";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-csh" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-csh";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-fsh" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-fish";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-sh-gpg" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-sh-gpg";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-csh-gpg" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-csh-gpg";
-    [ -f "${HOME}/.keychain/${HOSTNAME}-fish-gpg" ] && /usr/bin/env rm -f "${HOME}/.keychain/${HOSTNAME}-fish-gpg";
+    [ -f ${HOME}/.mysql_history ] && /usr/bin/env rm -f ${HOME}/.mysql_history
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fsh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
 
     ## clear terminal scrollback
     /usr/bin/env printf "\033c";
-
-    [ -f "/etc/bash.bash_logout" ] && . /etc/bash.bash_logout;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;

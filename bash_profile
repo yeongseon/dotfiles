@@ -16,10 +16,10 @@
 #
 #==============================================================================
 
+[[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
+
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-
-[ -z "${PS1}" ] && return;
 
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
@@ -38,10 +38,10 @@ do
         0)
             case "${ENABLE_VERBOSE}" in
                 "${_TRUE}")
-                    . ${PROFILE};
+                    source ${PROFILE};
                     ;;
                 *)
-                    . ${PROFILE} >| /dev/null 2>&1;
+                    source ${PROFILE} >| /dev/null 2>&1;
                     ;;
             esac
             ;;
@@ -50,6 +50,9 @@ do
     [ ! -z "${INPUT}" ] && unset INPUT;
     [ ! -z "${PROFILE}" ] && unset PROFILE;
 done
+
+[ ! -z "${INPUT}" ] && unset INPUT;
+[ ! -z "${PROFILE}" ] && unset PROFILE;
 
 case "${ENABLE_VERBOSE}" in
     "${_TRUE}")
@@ -61,9 +64,6 @@ case "${ENABLE_VERBOSE}" in
         [ -f ${HOME}/.functions ] && source ${HOME}/.functions >| /dev/null 2>&1;
         ;;
 esac
-
-[ ! -z "${INPUT}" ] && unset INPUT;
-[ ! -z "${PROFILE}" ] && unset PROFILE;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;

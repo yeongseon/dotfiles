@@ -9,7 +9,7 @@
 #          BUGS:  ---
 #         NOTES:  ---
 #        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
-#       COMPANY:  ---
+#       COMPANY:  CaspersBox Web Services
 #       VERSION:  1.0
 #       CREATED:  ---
 #      REVISION:  ---
@@ -17,20 +17,39 @@
 
 set _CNAME "getAuthValue";
 set _METHOD_NAME "getAuthValue";
+set _DEFAULT_ENCRYPTION "GPG";
+set _AUTH_VALUE "none";
+set _PASSWD_LENGTH "64";
+set _RANDOM_GENERATOR "/dev/urandom";
+set _DEFAULT_AUTH [ split "file:env(HOME)/.etc/password.asc" ":" ];
 
-proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_VARIABLE "" } { _ID_FILE "" } } {
+proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENCRYPTED 0 } { _ENCRYPTION_PRG "" } } {
     global env;
     global tcl_platform;
+    global _AUTH_VALUE;
+    global _PASSWD_LENGTH;
+    global _RANDOM_GENERATOR;
+    global _DEFAULT_AUTH;
 
-    set _ENCRYPTED "GPG"
-    set _AUTH_VALUE "none";
-    set _PASSWD_LENGTH "64";
-    set _RANDOM_GENERATOR "/dev/urandom";
-    set _AUTH_VARIABLE [ split "file:$env(HOME)/.etc/password.asc" ":" ];
-
-    if { [info exists env(PASSWD_FILE)] } {
+    if { [ string length $_AUTH_FILE ] != 0 } {
+        set _AUTH_VARIABLE [ split $_AUTH_FILE ":" ];
+    } elseif { [ info exists env(PASSWD_FILE) ] } {
         set _AUTH_VARIABLE [ split $env(PASSWD_FILE) ":" ];
-        set _ENCRYPTED $env(ENCR_TYPE);
+    } else {
+        puts "default"
+        set _AUTH_VARIABLE [ split $_DEFAULT_AUTH ":" ];
+    }
+
+    if { [ expr { $_ENCRYPTED ne 0 } == 0 ] } {
+        if { [ info exists env(ENCR_TYPE) ] } {
+            set _ENCRYPTION_TYPE $env(ENCR_TYPE);
+        } elseif { [ string length $_ENCRYPTION_PRG ] != 0 } {
+            set _ENCRYPTION_TYPE $_ENCRYPTION_PRG;
+        } else {
+            set _ENCRYPTION_TYPE $_DEFAULT_ENCRYPTION;
+        }
+    } else {
+        set _ENCRYPTION_TYPE "";
     }
 
     switch [ lindex $_AUTH_VARIABLE 0 ] {
@@ -47,10 +66,11 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_VARIABLE "" } { _ID_FILE "" } } 
         }
         file {
             if { [ file exists [ lindex $_AUTH_VARIABLE 1 ] ] == 1 } {
-                if { [ string length $_ENCRYPTED ] != 0 } {
-                    if { [ string match -nocase $_ENCRYPTED "gpg" ] } {
+                if { [ string length $_ENCRYPTION_TYPE ] != 0 } {
+                    puts "encrypted file"
+                    if { [ string match -nocase $_ENCRYPTION_TYPE "gpg" ] } {
                         set _DECRYPTED [ split [ exec /usr/bin/env gpg --decrypt [ lindex $_AUTH_VARIABLE 1 ] 2>/dev/null ] "\n" ]
-                    } elseif { [ string match -nocase $_ENCRYPTED "openssl" ] } {
+                    } elseif { [ string match -nocase $_ENCRYPTION_TYPE "openssl" ] } {
                         set _DECRYPTED [ split [ exec /usr/bin/env gpg --decrypt [ lindex $_AUTH_VARIABLE 1 ] 2>/dev/null ] "\n" ]
                     }
 

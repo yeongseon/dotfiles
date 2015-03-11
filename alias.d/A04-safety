@@ -22,13 +22,23 @@
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## safety
-alias rm='/usr/bin/env rm -iv --preserve-root'
-alias chown='/usr/bin/env chown -v --preserve-root';
-alias chmod='/usr/bin/env chmod -v --preserve-root';
-alias chgrp='/usr/bin/env chgrp -v --preserve-root';
-alias mv='/usr/bin/env mv -iv';
-alias cp='/usr/bin/env cp -iv';
-alias ln='/usr/bin/env ln -iv';
+case "$(uname)" in
+    [Aa][Ii][Xx])
+        alias rm='/usr/bin/env rm -i'
+        alias mv='/usr/bin/env mv -i';
+        alias cp='/usr/bin/env cp -i';
+        alias ln='/usr/bin/env ln -i';
+        ;;
+    *)
+        alias rm='/usr/bin/env rm -i --preserve-root'
+        alias chown='/usr/bin/env chown --preserve-root';
+        alias chmod='/usr/bin/env chmod --preserve-root';
+        alias chgrp='/usr/bin/env chgrp --preserve-root';
+        alias mv='/usr/bin/env mv -i';
+        alias cp='/usr/bin/env cp -i';
+        alias ln='/usr/bin/env ln -i';
+        ;;
+esac
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

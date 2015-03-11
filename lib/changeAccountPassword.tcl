@@ -23,7 +23,7 @@ set _LINE_TERMINATOR "\r\n";
 
 set timeout 10;
 
-proc changeAccountPassword { _REQUEST_TYPE _IS_ENFORCED _USER_NAME _CURRENT_PASSWD { _NEW_PASSWD "" } } {
+proc changeAccountPassword { _REQUEST_TYPE _USER_NAME _CURRENT_PASSWD { _NEW_PASSWD "" } } {
     global env;
     global tcl_platform;
     global _RANDOM_GENERATOR;

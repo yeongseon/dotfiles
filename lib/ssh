@@ -15,8 +15,8 @@
 #       CREATED:  ---
 #      REVISION:  ---
 #==============================================================================
-if { [ info exists env(ENABLE_LOG_USER) ] } {
-    if { [ string match -nocase $env(ENABLE_LOG_USER) "true" ] == 1 } {
+if { [ info exists env(ENABLE_VERBOSE) ] } {
+    if { [ string match -nocase $env(ENABLE_VERBOSE) "true" ] == 1 } {
         log_user 1;
     } else {
         log_user 0;
@@ -25,13 +25,12 @@ if { [ info exists env(ENABLE_LOG_USER) ] } {
     log_user 0;
 }
 
-if { [ info exists env(DEBUG_TCL) ] } {
-    if { [ string match -nocase $env(DEBUG_TCL) "true" ] == 1 } {
+if { [ info exists env(ENABLE_TRACE) ] } {
+    if { [ string match -nocase $env(ENABLE_TRACE) "true" ] == 1 } {
         exp_internal 1;
     }
 }
-log_user 1
-exp_internal 1
+
 log_file -a $env(HOME)/.log/ssh.log;
 
 ## set up some class info
@@ -126,6 +125,11 @@ switch [ info exists _USER_LOGINID ] {
     }
 }
 
+if { [info exists env(NEW_PASSWD_FILE)] } {
+    set _ENCRYPTED $env(ENCR_TYPE);
+    set _CHANGE_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $env(NEW_PASSWD_FILE) ];
+}
+
 set i 0;
 
 expect {
@@ -143,15 +147,10 @@ expect {
     }
     "*Changing password for *$_USER_LOGINID*" {
         ## set up password change here
-        if { [info exists env(NEW_PASSWORD_FILE)] } {
-            set _ENCRYPTED $env(ENCR_TYPE);
-            set _CHANGE_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $env(NEW_PASSWORD_FILE) ];
-        }
-
-        if { [ string compare $_EXEC_CMD "passwd" ] == 0 } {
-            set _RETURN_VALUE [ changeAccountPassword "account" "false" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+        if { [info exists $_CHANGE_DATA] } {
+            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
         } else {
-            set _RETURN_VALUE [ changeAccountPassword "account" "true" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
         }
 
         switch $_RETURN_VALUE {
@@ -161,6 +160,27 @@ expect {
                 exit 0;
             }
             default {
+                puts "$_RETURN_VALUE"
+                puts "Password successfully changed for user $_USER_LOGINID to $_RETURN_VALUE on host $_TARGET_SYSTEM";
+            }
+        }
+    }
+    "*Changing password for user *$_USER_LOGINID*" {
+        ## set up password change here
+        if { [info exists $_CHANGE_DATA] } {
+            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+        } else {
+            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
+        }
+
+        switch $_RETURN_VALUE {
+            1 - 2 - 3 {
+                puts stderr "Unable to change password for provided user account $_USER_LOGINID on host $_TARGET_SYSTEM";
+
+                exit 0;
+            }
+            default {
+                puts "$_RETURN_VALUE"
                 puts "Password successfully changed for user $_USER_LOGINID to $_RETURN_VALUE on host $_TARGET_SYSTEM";
             }
         }
@@ -179,11 +199,15 @@ expect {
     }
     $_LINE_TERMINATOR {
         expect {
-            "*Changing password for $_USER_LOGINID*" {
+            "*Changing password for *$_USER_LOGINID*" {
                 ## set up password change here
                 exp_send "$_USER_PASSWD\r";
 
-                set _RETURN_VALUE [ changeAccountPassword "account" "true" "$_USER_LOGINID" "$_USER_PASSWD" ];
+                if { [info exists $_CHANGE_DATA] } {
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                } else {
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
+                }
 
                 switch $_RETURN_VALUE {
                     1 - 2 - 3 {
@@ -192,6 +216,29 @@ expect {
                         exit 0;
                     }
                     default {
+                        puts "$_RETURN_VALUE"
+                        puts "Password successfully changed for user $_USER_LOGINID to $_RETURN_VALUE on host $_TARGET_SYSTEM";
+                    }
+                }
+            }
+            "*Changing password for user *$_USER_LOGINID*" {
+                ## set up password change here
+                exp_send "$_USER_PASSWD\r";
+
+                if { [info exists $_CHANGE_DATA] } {
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                } else {
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
+                }
+
+                switch $_RETURN_VALUE {
+                    1 - 2 - 3 {
+                        puts stderr "Unable to change password for provided user account $_USER_LOGINID on host $_TARGET_SYSTEM";
+
+                        exit 0;
+                    }
+                    default {
+                        puts "$_RETURN_VALUE"
                         puts "Password successfully changed for user $_USER_LOGINID to $_RETURN_VALUE on host $_TARGET_SYSTEM";
                     }
                 }
@@ -214,7 +261,11 @@ expect {
                     interact;
                 } else {
                     if { [ string compare $_EXEC_CMD "passwd" ] == 0 } {
-                        set _RETURN_VALUE [ changeAccountPassword "account" "false" "$_USER_LOGINID" "$_USER_PASSWD" ];
+                        if { [info exists $_CHANGE_DATA] } {
+                            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                        } else {
+                            set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
+                        }
 
                         switch $_RETURN_VALUE {
                             1 - 2 - 3 {
@@ -223,6 +274,7 @@ expect {
                                 exit 0;
                             }
                             default {
+                                puts "$_RETURN_VALUE"
                                 puts "Password successfully changed for user $_USER_LOGINID to $_RETURN_VALUE on host $_TARGET_SYSTEM";
                             }
                         }

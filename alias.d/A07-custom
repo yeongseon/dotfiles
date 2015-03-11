@@ -49,7 +49,7 @@ alias ff='/usr/bin/env find . -type f';
 alias fd='/usr/bin/env find . -type d';
 alias clearScroll='/usr/bin/env printf "\033c"';
 alias threadAnalyzer="java -jar ${HOME}/.lib/jca457.jar";
-alias heapAnalyzer="java -jar ${HOME}/.lib/ha454.jar";
+alias heapAnalyzer="java -jar ${HOME}/.lib/ha456.jar";
 
 ## script tracing
 alias debug="[ ! -z \"${ENABLE_DEBUG}\" ] && [ \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
@@ -68,12 +68,12 @@ alias ekeychain="/usr/bin/env expect -f ${HOME}/.lib/keychain";
 
 case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
-        alias reload='. ~/.kshrc';
+        alias reload='. ${HOME}/.kshrc';
         alias shell='selectProfile';
         alias listFunctions="typeset -f | grep function | awk '{print \$NF}'";
         ;;
     [Bb][Aa][Ss][Hh])
-        alias reload='. ~/.bash_profile';
+        alias reload='. ${HOME}/.bash_profile';
         alias shell='selectProfile';
         alias listFunctions="compgen -A function";
         ;;

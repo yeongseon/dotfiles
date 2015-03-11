@@ -23,9 +23,10 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 
 ## sudo aliases
 alias wasadm='/usr/bin/env sudo su - wasadm';
-alias pstls='/usr/bin/env sudo su - pstls';
-alias ftpadm='/usr/bin/env sudo su - ftpadm';
-alias dsadm='/usr/bin/env sudo su - dsadm';
+alias appadm='/usr/bin/env sudo su - appadm';
+alias ihsadm='/usr/bin/env sudo su - ihsadm';
+alias webadm='/usr/bin/env sudo su - webadm';
+alias dnsadm='/usr/bin/env sudo su - dnsadm';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
