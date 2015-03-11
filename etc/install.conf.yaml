@@ -32,7 +32,6 @@
     ~/.alias.d: alias.d/
     ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
-    ~/.ssh/config: etc/config
     ~/.curlrc: curlrc
     ~/.subversion: subversion/
     ~/.colordiffrc: colordiffrc
