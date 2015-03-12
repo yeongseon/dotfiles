@@ -15,7 +15,7 @@ function writeLogEntry
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     set +o noclobber;
-    typeset METHOD_NAME="${0}#{FUNCNAME[0]}";
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     if [ ${#} -eq 0 ]

@@ -48,20 +48,20 @@ alias pssh='/usr/bin/env pssh -p 10 -o ${HOME}/.log -e ${HOME}/.log -t ${THREAD_
 alias recode='/usr/bin/env recode -qt';
 
 case $(uname) in
-    SunOS)
-        alias ls='/usr/ucb/ls';
-        alias ps='/usr/ucb/ps -auxww';
-        alias whoami='/usr/ucb/whoami';
-        alias grep='/usr/xpg4/bin/grep -v grep';
-        alias egrep='/usr/xpg4/bin/egrep -v grep';
-        alias fgrep='/usr/xpg4/bin/fgrep -v grep';
+    [Ss][Uu][Nn][Oo][Ss]|[Ss][Oo]][Ll][Aa][Rr][Ii][Ss])
+        unalias ls; alias ls='/usr/ucb/ls';
+        unalias ps; alias ps='/usr/ucb/ps -auxww';
+        unalias whoami; alias whoami='/usr/ucb/whoami';
+        unalias grep; alias grep='/usr/xpg4/bin/grep -v grep';
+        unalias egrep; alias egrep='/usr/xpg4/bin/egrep -v grep';
+        unalias fgrep; alias fgrep='/usr/xpg4/bin/fgrep -v grep';
         ;;
-    *CYGWIN*)
-        alias sqlplus='/cygdrive/c/ORACLE/ORA92/bin/sqlplus.exe';
+    [Cc][Yy][Gg]][Ww][Ii][Nn]*)
+        unalias sqlplus; alias sqlplus='/cygdrive/c/ORACLE/ORA92/bin/sqlplus.exe';
 
         case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
             [Ss][Hh]|[Bb][Aa][Ss][Hh])
-                alias print='echo -ne';
+                unalias print; alias print='echo -ne';
                 ;;
         esac
         ;;

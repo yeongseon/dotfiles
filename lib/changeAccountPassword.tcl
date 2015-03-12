@@ -9,7 +9,7 @@
 #          BUGS:  ---
 #         NOTES:  ---
 #        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
-#       COMPANY:  ---
+#       COMPANY:  CaspersBox Web Services
 #       VERSION:  1.0
 #       CREATED:  ---
 #      REVISION:  ---
@@ -63,9 +63,6 @@ proc changeAccountPassword { _REQUEST_TYPE _USER_NAME _CURRENT_PASSWD { _NEW_PAS
             }
         }
         account {
-            ## send current
-            exp_send "$_CURRENT_PASSWD\r";
-
             expect {
                 "*(current) UNIX password:*" {
                     exp_send "$_CURRENT_PASSWD\r";

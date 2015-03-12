@@ -23,7 +23,7 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 
 [ -f /usr/local/bin/ansible/hacking/env-setup ] && . /usr/local/bin/ansible/hacking/env-setup;
 
-export ANSIBLE_HOSTS                    ; ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
+[ -f /usr/local/bin/ansible/hacking/env-setup ] && typeset -x ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

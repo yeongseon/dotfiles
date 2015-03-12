@@ -28,9 +28,9 @@ alias psmem10='/usr/bin/env ps auxf | /usr/bin/env sort -nr -k 4 | /usr/bin/env 
 alias pscpu='/usr/bin/env ps auxf | /usr/bin/env sort -nr -k 3';
 alias pscpu10='/usr/bin/env ps auxf | /usr/bin/env sort -nr -k 3 | /usr/bin/env head -10';
 alias gpumeminfo='grep -i --color memory /var/log/Xorg.0.log';
-alias hogc='ps -e -o %cpu,pid,ppid,user,cmd | sort -nr | head';
-alias hogm='ps -e -o %mem,pid,ppid,user,cmd | sort -nr | head';
-alias cpuCount='grep -c ^processor /proc/cpuinfo';
+alias hogc='/usr/bin/env ps -e -o %cpu,pid,ppid,user,cmd | sort -nr | head';
+alias hogm='/usr/bin/env ps -e -o %mem,pid,ppid,user,cmd | sort -nr | head';
+alias cpuCount='/usr/bin/env grep -c ^processor /proc/cpuinfo';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

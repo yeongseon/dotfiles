@@ -125,7 +125,7 @@ switch [ info exists _USER_LOGINID ] {
     }
 }
 
-if { [info exists env(NEW_PASSWD_FILE)] } {
+if { [ info exists env(NEW_PASSWD_FILE) ] } {
     set _ENCRYPTED $env(ENCR_TYPE);
     set _CHANGE_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $env(NEW_PASSWD_FILE) ];
 }
@@ -147,7 +147,7 @@ expect {
     }
     "*Changing password for *$_USER_LOGINID*" {
         ## set up password change here
-        if { [info exists $_CHANGE_DATA] } {
+        if { [ info exists _CHANGE_DATA ] } {
             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
         } else {
             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
@@ -167,7 +167,7 @@ expect {
     }
     "*Changing password for user *$_USER_LOGINID*" {
         ## set up password change here
-        if { [info exists $_CHANGE_DATA] } {
+        if { [ info exists _CHANGE_DATA ] } {
             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
         } else {
             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
@@ -201,9 +201,7 @@ expect {
         expect {
             "*Changing password for *$_USER_LOGINID*" {
                 ## set up password change here
-                exp_send "$_USER_PASSWD\r";
-
-                if { [info exists $_CHANGE_DATA] } {
+                if { [ info exists _CHANGE_DATA ] } {
                     set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                 } else {
                     set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
@@ -223,9 +221,7 @@ expect {
             }
             "*Changing password for user *$_USER_LOGINID*" {
                 ## set up password change here
-                exp_send "$_USER_PASSWD\r";
-
-                if { [info exists $_CHANGE_DATA] } {
+                if { [ info exists _CHANGE_DATA ] } {
                     set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                 } else {
                     set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
@@ -261,7 +257,7 @@ expect {
                     interact;
                 } else {
                     if { [ string compare $_EXEC_CMD "passwd" ] == 0 } {
-                        if { [info exists $_CHANGE_DATA] } {
+                        if { [ info exists _CHANGE_DATA ] } {
                             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                         } else {
                             set _RETURN_VALUE [ changeAccountPassword "account" "$_USER_LOGINID" "$_USER_PASSWD" "" ];
