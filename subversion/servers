@@ -14,11 +14,11 @@
 # username = harry
 
 [global]
-http-proxy-exceptions = *.hsbc
-http-proxy-host = chibcarray.us.hsbc
-http-proxy-port = 8080
-http-proxy-username = 35033355
-http-proxy-password = UJ18dcnkduthvvtj
+http-proxy-exceptions =
+http-proxy-host =
+http-proxy-port =
+http-proxy-username =
+http-proxy-password =
 http-compression = yes
 http-timeout = 30
 # ssl-authority-files = /path/to/CAcert.pem;/path/to/CAcert2.pem
