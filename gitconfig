@@ -14,7 +14,7 @@
     ui = true
 
 [http]
-    proxy = http://35033355:UJ18dcnkduthvvtj@chibcarray.us.hsbc:8080/
+    proxy =
 
 [https]
     proxy =
