@@ -34,7 +34,7 @@ ulimit -q 819200 2>/dev/null;
 ulimit -r 0 2>/dev/null;
 ulimit -s 10240 2>/dev/null;
 ulimit -t unlimited 2>/dev/null;
-ulimit -u 50 2>/dev/null;
+ulimit -u 4096 2>/dev/null;
 ulimit -v unlimited 2>/dev/null;
 ulimit -x unlimited 2>/dev/null;
 
