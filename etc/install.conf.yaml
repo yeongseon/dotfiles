@@ -5,6 +5,7 @@
     - [mkdir -p ~/.log/archive, Making log directories]
     - [mkdir -p ~/.ssh/, Making SSH directory]
     - [mkdir -p ~/.gnupg/, Making GPG directory]
+    - [mkdir -p ~/.config/git, Making git config directory]
 - link:
     ~/.dotfiles: ''
     ~/.inputrc: inputrc
@@ -36,3 +37,5 @@
     ~/.subversion: subversion/
     ~/.colordiffrc: colordiffrc
     ~/.pythonrc: pythonrc
+    ~/.config/git/gitignore: config/git/gitignore
+

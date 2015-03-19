@@ -6,6 +6,7 @@
 [core]
     editor = vi
     pager = less
+    excludesfile = ~/.config/git/gitignore
 
 [help]
     autocorrect = 1
