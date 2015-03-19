@@ -980,9 +980,9 @@ function modifyAccountPassword
         ## change password
         case $(/usr/bin/env expect -v 2>/dev/null) in
             "")
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> \${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"printf \"%s\n\" \"${CURRENT_PASSWORD}\" \"${NEW_PASSWORD}\" \"${NEW_PASSWORD}\" | passwd\"\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> \${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"\"printf \"\"%s\n\"\" ${CURRENT_PASSWORD} ${NEW_PASSWORD} ${NEW_PASSWORD} | passwd\"";
 
-                typeset RETURN_DATA="$(${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"printf \"%s\n\" \"${CURRENT_PASSWORD}\" \"${NEW_PASSWORD}\" \"${NEW_PASSWORD}\" | passwd"\"";
+                typeset RETURN_DATA="$(${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"printf \"%s\n\" \"${CURRENT_PASSWORD}\" \"${NEW_PASSWORD}\" \"${NEW_PASSWORD}\" | passwd\"")";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_DATA -> ${RETURN_DATA}";
                 ;;
@@ -1345,6 +1345,209 @@ function chmod
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  ===============================================================
+#          NAME:  passwordRepository
+#   DESCRIPTION:  Cleans up the archived log directory
+#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#       RETURNS:  0 regardless of result.
+#==============================================================================
+function passwordRepository
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    if [ ${#} -eq 0 ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Store a password in a secured file";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
+            -> Option: one of 'encrypt' or 'decrypt'
+                -> If option is 'encrypt':
+                    -> entry: The name of the entry to add
+                    -> username: The username to apply to the entry
+                    -> password: The password to apply to the entry
+                    -> store: Store the entry in the repository (optional)
+                -> If option is 'decrypt':
+                    -> entry: The name of the entry to obtain
+                    -> username: The username applied to the entry";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${PASSWORD_UTILITY_CONFIG}" ] && unset -v PASSWORD_UTILITY_CONFIG;
+        [ ! -z "${UTILITY_CLASSPATH_HOME}" ] && unset -v UTILITY_CLASSPATH_HOME;
+        [ ! -z "${PASSWORD_UTILITY_JAR}" ] && unset -v PASSWORD_UTILITY_JAR;
+        [ ! -z "${PASSWORD_UTILITY_CLASS}" ] && unset -v PASSWORD_UTILITY_CLASS;
+        [ ! -z "${UTILITY_CLASSPATH}" ] && unset -v UTILITY_CLASSPATH;
+        [ ! -z "${SELECTED_OPTION}" ] && unset -v SELECTED_OPTION;
+        [ ! -z "${ENTRY_NAME}" ] && unset -v ENTRY_NAME;
+        [ ! -z "${ENTRY_USERNAME}" ] && unset -v ENTRY_USERNAME;
+        [ ! -z "${ENTRY_PASSWORD}" ] && unset -v ENTRY_PASSWORD;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset PASSWORD_UTILITY_CONFIG="${HOME}/.etc/SecurityService/config/PasswordRepository.config";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PASSWORD_UTILITY_CONFIG -> PASSWORD_UTILITY_CONFIG";
+
+    if [ ! -f "${PASSWORD_UTILITY_CONFIG}" ]
+    then
+        typeset -i RETURN_CODE=1;
+
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "The utility configuration file does not exist. Cannot continue.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "The utility configuration file does not exist. Cannot continue.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${PASSWORD_UTILITY_CONFIG}" ] && unset -v PASSWORD_UTILITY_CONFIG;
+        [ ! -z "${UTILITY_CLASSPATH_HOME}" ] && unset -v UTILITY_CLASSPATH_HOME;
+        [ ! -z "${PASSWORD_UTILITY_JAR}" ] && unset -v PASSWORD_UTILITY_JAR;
+        [ ! -z "${PASSWORD_UTILITY_CLASS}" ] && unset -v PASSWORD_UTILITY_CLASS;
+        [ ! -z "${UTILITY_CLASSPATH}" ] && unset -v UTILITY_CLASSPATH;
+        [ ! -z "${SELECTED_OPTION}" ] && unset -v SELECTED_OPTION;
+        [ ! -z "${ENTRY_NAME}" ] && unset -v ENTRY_NAME;
+        [ ! -z "${ENTRY_USERNAME}" ] && unset -v ENTRY_USERNAME;
+        [ ! -z "${ENTRY_PASSWORD}" ] && unset -v ENTRY_PASSWORD;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## source the config
+    . "${PASSWORD_UTILITY_CONFIG}" ;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "UTILITY_CLASSPATH_HOME -> ${UTILITY_CLASSPATH_HOME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PASSWORD_UTILITY_JAR -> ${PASSWORD_UTILITY_JAR}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PASSWORD_UTILITY_CLASS -> ${PASSWORD_UTILITY_CLASS}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "UTILITY_CLASSPATH -> ${UTILITY_CLASSPATH}";
+
+    typeset SELECTED_OPTION="${1}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_OPTION -> ${SELECTED_OPTION}";
+
+    case "${SELECTED_OPTION}" in
+        [Ee][Nn][Cc][Rr][Yy][Pp][Tt]|[Dd][Ee][Cc][Rr][Yy][Pp][Tt])
+            typeset ENTRY_NAME="--entry ${2}";
+            typeset ENTRY_USERNAME="--username ${3}";
+            [ ${#} -ge 4 ] && typeset ENTRY_PASSWORD="--password ${4}";
+            [ ${#} -eq 5 ] && typeset STORE_ENTRY="--store";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENTRY_NAME -> ${ENTRY_NAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENTRY_USERNAME -> ${ENTRY_USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENTRY_PASSWORD -> ${ENTRY_PASSWORD}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "STORE_ENTRY -> ${STORE_ENTRY}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN_COMMAND -> /usr/bin/env java -cp \".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}\" \"${PASSWORD_UTILITY_CLASS}\" \"--${SELECTED_OPTION}\" \"${ENTRY_NAME}\" \"${ENTRY_USERNAME}\" \"${ENTRY_PASSWORD}\" \"${STORE_ENTRY}\"";
+
+            /usr/bin/env java -cp ".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}" ${PASSWORD_UTILITY_CLASS} --${SELECTED_OPTION} ${ENTRY_NAME} ${ENTRY_USERNAME} ${ENTRY_PASSWORD} ${STORE_ENTRY};
+            typeset -i RET_CODE=${?};
+            ;;
+        *)
+            RETURN_CODE=3;
+
+            writeLogEntry "STDERR" "${METHOD_NAME} - Store a password in a secured file";
+            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
+                -> Option: one of 'encrypt' or 'decrypt'
+                    -> If option is 'encrypt':
+                        -> entry: The name of the entry to add
+                        -> username: The username to apply to the entry
+                        -> password: The password to apply to the entry
+                        -> store: Store the entry in the repository (optional)
+                    -> If option is 'decrypt':
+                        -> entry: The name of the entry to obtain
+                        -> username: The username applied to the entry";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+            [ ! -z "${PASSWORD_UTILITY_CONFIG}" ] && unset -v PASSWORD_UTILITY_CONFIG;
+            [ ! -z "${UTILITY_CLASSPATH_HOME}" ] && unset -v UTILITY_CLASSPATH_HOME;
+            [ ! -z "${PASSWORD_UTILITY_JAR}" ] && unset -v PASSWORD_UTILITY_JAR;
+            [ ! -z "${PASSWORD_UTILITY_CLASS}" ] && unset -v PASSWORD_UTILITY_CLASS;
+            [ ! -z "${UTILITY_CLASSPATH}" ] && unset -v UTILITY_CLASSPATH;
+            [ ! -z "${SELECTED_OPTION}" ] && unset -v SELECTED_OPTION;
+            [ ! -z "${ENTRY_NAME}" ] && unset -v ENTRY_NAME;
+            [ ! -z "${ENTRY_USERNAME}" ] && unset -v ENTRY_USERNAME;
+            [ ! -z "${ENTRY_PASSWORD}" ] && unset -v ENTRY_PASSWORD;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+            return ${RETURN_CODE};
+            ;;
+    esac
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    typeset -i RETURN_CODE=${RET_CODE};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${PASSWORD_UTILITY_CONFIG}" ] && unset -v PASSWORD_UTILITY_CONFIG;
+    [ ! -z "${UTILITY_CLASSPATH_HOME}" ] && unset -v UTILITY_CLASSPATH_HOME;
+    [ ! -z "${PASSWORD_UTILITY_JAR}" ] && unset -v PASSWORD_UTILITY_JAR;
+    [ ! -z "${PASSWORD_UTILITY_CLASS}" ] && unset -v PASSWORD_UTILITY_CLASS;
+    [ ! -z "${UTILITY_CLASSPATH}" ] && unset -v UTILITY_CLASSPATH;
+    [ ! -z "${SELECTED_OPTION}" ] && unset -v SELECTED_OPTION;
+    [ ! -z "${ENTRY_NAME}" ] && unset -v ENTRY_NAME;
+    [ ! -z "${ENTRY_USERNAME}" ] && unset -v ENTRY_USERNAME;
+    [ ! -z "${ENTRY_PASSWORD}" ] && unset -v ENTRY_PASSWORD;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
 }

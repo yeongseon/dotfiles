@@ -1082,6 +1082,10 @@ function logoutUser
         [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
     fi
 
+    ## turn off ssh-agent and keychain
+    [ ! -z "$(/usr/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /usr/bin/env ssh-add -D;
+    if [ ! -z "$(/usr/bin/env ps -ef | grep keychain | grep -v grep)" ] && /usr/bin/env keychain -k all;
+
     [ -f ${HOME}/.mysql_history ] && /usr/bin/env rm -f ${HOME}/.mysql_history
     [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
     [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
@@ -1089,6 +1093,7 @@ function logoutUser
     [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
     [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
     [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
     ## clear terminal scrollback
     /usr/bin/env printf "\033c";

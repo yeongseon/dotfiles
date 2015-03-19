@@ -37,7 +37,6 @@ alias listd='for inode in *; do [ -d ${inode} ] && echo "${inode}"; done';
 alias stamp='/usr/bin/env date "+%Y%m%d%a%H%M"';
 alias da='/usr/bin/env date "+%Y-%m-%d %A    %T %Z"';
 alias zero='/usr/bin/env cat /dev/null >|';
-alias passwordRepo="/usr/bin/env java -cp \"${CLASSPATH}${PATHSEP}${HOME}/.lib/passwordRepository-1.3.jar\" com.hsbc.gbm.ptarch.security.utils.PasswordRepository";
 alias netbackup="${NB_HOME}/bp";
 alias removeKey='/usr/bin/env ssh-keygen -R';
 alias win2unix="/usr/bin/env sed 's/$/\r/'";

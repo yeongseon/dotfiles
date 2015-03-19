@@ -452,3 +452,7 @@ ssh/id_dsa
 ssh/id_ecdsa
 ssh/id_cws-khuntly
 
+## password repo files
+etc/password.properties
+etc/salt.properties
+
