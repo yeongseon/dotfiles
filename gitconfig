@@ -1,7 +1,7 @@
 [user]
     name = Kevin Huntly
     email = kmhuntly@gmail.com
-    signingkey = DD3D01AB
+    signingkey = 0xF8DFD3F2DD3D01AB
 
 [core]
     editor = vi

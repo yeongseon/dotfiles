@@ -1,0 +1,30 @@
+Host caspersb-vbox1
+    HostName                    = 192.168.10.7
+
+Host caspersb-ddns1
+    HostName                    = 192.168.10.100
+
+Host caspersb-daws1
+    HostName                    = 192.168.10.102
+
+Host caspersb-damq1
+    HostName                    = 192.168.10.104
+
+Host caspersb-dsql1
+    HostName                    = 192.168.10.106
+
+Host caspersb-dads1
+    HostName                    = 192.168.10.108
+
+Host caspersb-repo1
+    HostName                    = 192.168.10.110
+
+Host caspersb-bld1
+    HostName                    = 192.168.10.111
+
+Host github.com
+    HostName                    = github.com
+    User                        = git
+    IdentitiesOnly              = yes
+    IdentityFile                = ~/.ssh/id_cws-khuntly
+

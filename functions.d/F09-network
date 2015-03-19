@@ -177,20 +177,29 @@ function validateServerAvailability
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "VALIDATE_HOSTNAME -> ${VALIDATE_HOSTNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "VALIDATE_PORT -> ${VALIDATE_PORT}";
 
-    case $(/usr/bin/env host "${VALIDATE_HOSTNAME}" >/dev/null 2>&1; echo ${?};) in
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env host \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1;";
+
+    case $(/usr/bin/env host "${VALIDATE_HOSTNAME}" > /dev/null 2>&1; echo ${?};) in
         0)
             case ${#} in
                 1)
                     case "$(uname)" in
-                        [Ss][Oo][Ll][Aa][Rr][Ii][Ss]) /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1; ;;
-                        *) /usr/bin/env ping -c 1 "${VALIDATE_HOSTNAME}" > /dev/null 2>&1; ;;
+                        [Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
+
+                            /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
+                            ;;
+                        *)
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1";
+
+                            /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
+                            ;;
                     esac
                     ;;
                 2)
-                    case $(/usr/bin/env command nc 2>/dev/null; echo ${?}) in
-                        0) /usr/bin/env nc "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} < /dev/null > /dev/null 2>&1; ;;
-                        *) echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1; ;;
-                    esac
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
+
+                    echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
                     ;;
             esac
             ;;

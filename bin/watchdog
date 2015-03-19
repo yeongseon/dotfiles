@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  watchdog
@@ -19,7 +19,7 @@
 # Make sure backgrounded processes are not auto-niced.  Needed for ksh.
 set +o bgnice;
 
-[ -f "/ftp/ftpnm01/nmondata/.profile/.functions.d/F00-logging" ] && . "/ftp/ftpnm01/nmondata/.profile/.functions.d/F00-logging";
+[ -f "${HOME}/.functions.d/F00-logging" ] && . "${HOME}/.functions.d/F00-logging";
 
 trap 'set -o bgnice; set +v; set +x' INT TERM EXIT;
 
