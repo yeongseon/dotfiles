@@ -1,7 +1,7 @@
 [user]
     name = Kevin Huntly
     email = kmhuntly@gmail.com
-    signingkey = 0xF8DFD3F2DD3D01AB
+    signingkey = 0xCD045E5630467A4D
 
 [core]
     editor = vi
@@ -31,5 +31,5 @@
     up = !git stash && git pull origin master && git stash apply
 
 [commit]
-    gpgsign = true
+#    gpgsign = true
 
