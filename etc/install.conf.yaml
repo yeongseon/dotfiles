@@ -5,6 +5,8 @@
     - [mkdir -p ~/.log/archive, Making log directories]
     - [mkdir -p ~/.ssh/, Making SSH directory]
     - [mkdir -p ~/.gnupg/, Making GPG directory]
+    - [mkdir -p ~/.config/git, Making git config directory]
+    - [mkdir -p ~/.etc, Making etc directory]
 - link:
     ~/.dotfiles: ''
     ~/.inputrc: inputrc
@@ -26,9 +28,16 @@
     ~/.functions.d: functions.d/
     ~/.gnupg/gpg.conf: gnupg/gpg.conf
     ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
-    ~/.ssh/config: ssh/config
+    ~/.ssh/config.d: ssh/config.d
     ~/.lib: lib/
-    ~/.etc: etc/
+    ~/.etc/SecurityService: etc/SecurityService
+    ~/.etc/eSolutionsCore: etc/eSolutionsCore
+    ~/.etc/templates: etc/templates
+    ~/.etc/resources: etc/resources
+    ~/.etc/ansible: etc/ansible
+    ~/.etc/mail.properties: etc/mail.properties
+    ~/.etc/logging.properties: etc/logging.properties
+    ~/.etc/excludes: etc/excludes
     ~/.alias.d: alias.d/
     ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
@@ -36,3 +45,4 @@
     ~/.subversion: subversion/
     ~/.colordiffrc: colordiffrc
     ~/.pythonrc: pythonrc
+    ~/.config/git/gitignore: config/git/gitignore

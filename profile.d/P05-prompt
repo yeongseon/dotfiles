@@ -29,8 +29,8 @@ case "$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')" in
         ;;
 esac
 
-typeset -x HOSTNAME="$(/usr/bin/env uname -n)";
-typeset -x DOMAINNAME=$(/usr/bin/env awk '/^domain/ {print $2}' /etc/resolv.conf 2>/dev/null);
+typeset -x HOSTNAME="$(/usr/bin/env hostname)";
+typeset -x DOMAINNAME=$(/usr/bin/env hostname -f | cut -d "." -f 2-);
 typeset -x PS2="continue -> ";
 typeset -x PS3="Enter selection: ";
 typeset -x PS4="[ Line: ${LINENO} ] [ File: ${0} ] [ Function: ${FUNCNAME[0]:-${SHELL}} ] [ Level: TRACE ] - ";
@@ -41,22 +41,19 @@ case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
 
         case "${REAL_USER}" in
             "")
-                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
-                PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")\007";
+                PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s $([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")';
                 ;;
             *)
-                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-                PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+                /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
+                PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s $([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}.${DOMAINNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
                 ;;
         esac
         ;;
-    [Bb][Aa][Ss][Hh])
-        typeset REAL_USER_PROMPT='history -a; history -n; echo -ne "\033]0;$(printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007"; setPromptCommand;';
-        typeset USER_PROMPT='history -a; history -n; echo -ne "\033]0;$(printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007"; setPromptCommand;';
-
-        [ ! -z "${REAL_USER}" ] && typeset -x PROMPT_COMMAND=${REAL_USER_PROMPT} || typeset -x PROMPT_COMMAND=${USER_PROMPT};
+    [Bb][Aa][Ss][Hh]) typeset -x PROMPT_COMMAND=setPromptCommand;
         ;;
 esac
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+

@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/bin/ksh -x
 #==============================================================================
 #
 #          FILE:  watchdog
@@ -19,7 +19,7 @@
 # Make sure backgrounded processes are not auto-niced.  Needed for ksh.
 set +o bgnice;
 
-[ -f "/ftp/ftpnm01/nmondata/.profile/.functions.d/F00-logging" ] && . "/ftp/ftpnm01/nmondata/.profile/.functions.d/F00-logging";
+[ -f "${HOME}/.functions.d/F00-logging" ] && . "${HOME}/.functions.d/F00-logging";
 
 trap 'set -o bgnice; set +v; set +x' INT TERM EXIT;
 
@@ -59,7 +59,7 @@ function usage
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
-    typeset METHOD_NAME="${CNAME}#usage";
+    typeset METHOD_NAME="${CNAME}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=3;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
@@ -86,7 +86,7 @@ function timeoutHandler
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
-    typeset METHOD_NAME="${CNAME}#timeoutHandler";
+    typeset METHOD_NAME="${CNAME}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";

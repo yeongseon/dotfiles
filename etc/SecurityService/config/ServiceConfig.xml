@@ -28,8 +28,8 @@
     </security-config>
 
     <password-repository>
-        <passwordFile>${user.home}/etc/password.properties</passwordFile>
-        <saltFile>${user.home}/etc/salt.properties</saltFile>
+        <passwordFile>/home/synbuf.local/khuntly/.etc/password.properties</passwordFile>
+        <saltFile>/home/synbuf.local/khuntly/.etc/salt.properties</saltFile>
     </password-repository>
 
     <key-config />

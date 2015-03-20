@@ -1,11 +1,12 @@
 [user]
     name = Kevin Huntly <kmhuntly@gmail.com>
     email = kmhuntly@gmail.com
-    signingkey = 0xF8DFD3F2DD3D01AB
+    signingkey = 0x91DD8DB2B17C2CE1
 
 [core]
     editor = vi
     pager = less
+    excludesfile = ~/.config/git/gitignore
 
 [help]
     autocorrect = 1

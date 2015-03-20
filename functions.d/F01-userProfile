@@ -990,12 +990,12 @@ function setPromptCommand
 
     case "${REAL_USER}" in
         "")
-            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf "( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")\007";
+            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")';
             ;;
         *)
-            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ -d .git ] && /usr/bin/env printf " ( \e[01;34m%s \e[00;33m )" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
+            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}.${DOMAINNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
             ;;
     esac
 
@@ -1082,6 +1082,10 @@ function logoutUser
         [ ! -z "${REMOVEABLE_ENTRIES[*]}" ] && unset -v REMOVEABLE_ENTRIES;
     fi
 
+    ## turn off ssh-agent and keychain
+    [ ! -z "$(/usr/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /usr/bin/env ssh-add -D;
+    if [ ! -z "$(/usr/bin/env ps -ef | grep keychain | grep -v grep)" ] && /usr/bin/env keychain -k all;
+
     [ -f ${HOME}/.mysql_history ] && /usr/bin/env rm -f ${HOME}/.mysql_history
     [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
     [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
@@ -1089,6 +1093,7 @@ function logoutUser
     [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
     [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
     [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
     ## clear terminal scrollback
     /usr/bin/env printf "\033c";
