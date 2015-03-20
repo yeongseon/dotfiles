@@ -39,16 +39,37 @@ set _METHOD_NAME "loadKeychain";
 set _LINE_TERMINATOR "\r\n";
 set timeout 60;
 
-foreach { _KEYFILE } { id_rsa id_dsa id_ecdsa } {
-    set _PASSPHRASE [ exec /usr/java/latest/bin/java -cp ".;$env(CLASSPATH);$env(HOME)/.etc;$env(HOME)/.lib/passwordRepository-1.3.jar" com.hsbc.gbm.ptarch.security.utils.PasswordRepository -showPassword $_KEYFILE 2>/dev/null ];
+set _UTILITY_CLASSPATH_HOME "/opt/cws/repository";
+set _PASSWORD_UTILITY_JAR "$_UTILITY_CLASSPATH_HOME/com/cws/eSolutionsSecurity/1.0-SNAPSHOT/eSolutionsSecurity-1.0-SNAPSHOT.jar";
+set _PASSWORD_UTILITY_CLASS "com.cws.esolutions.security.main.PasswordUtility";
+
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH_HOME/commons-lang/commons-lang/2.6/commons-lang-2.6.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/commons-cli/commons-cli/1.2/commons-cli-1.2.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/org/slf4j/slf4j-log4j12/1.7.5/slf4j-log4j12-1.7.5.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/org/slf4j/slf4j-log4j12/1.7.5/slf4j-log4j12-1.7.5.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/log4j/log4j/1.2.17/log4j-1.2.17.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/commons-io/commons-io/2.4/commons-io-2.4.jar";
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_UTILITY_CLASSPATH_HOME/commons-codec/commons-codec/1.9/commons-codec-1.9.jar";
+
+## add in the security jar
+set _UTILITY_CLASSPATH "$_UTILITY_CLASSPATH:$_PASSWORD_UTILITY_JAR";
+
+foreach { _KEYFILE } { id_rsa id_dsa } {
+    set _PASSPHRASE [ exec -ignorestderr /usr/bin/env bash -c ". $env(HOME)/.functions.d/F06-security; passwordRepository decrypt $_KEYFILE $_KEYFILE | awk '{print \$NF}'" ];
 
     eval spawn /usr/bin/env ssh-add $env(HOME)/.ssh/$_KEYFILE;
 
     expect {
         "Enter passphrase*" {
             exp_send "$_PASSPHRASE\r";
-
             exp_continue;
+        }
+        "Bad passphrase*" {
+            puts stderr "An invalid passphrase was provided for keyfile $_KEYFILE";
+
+            continue;
         }
         $_LINE_TERMINATOR {
             exp_continue;

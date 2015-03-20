@@ -36,7 +36,6 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
     } elseif { [ info exists env(PASSWD_FILE) ] } {
         set _AUTH_VARIABLE [ split $env(PASSWD_FILE) ":" ];
     } else {
-        puts "default"
         set _AUTH_VARIABLE [ split $_DEFAULT_AUTH ":" ];
     }
 
@@ -67,11 +66,13 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
         file {
             if { [ file exists [ lindex $_AUTH_VARIABLE 1 ] ] == 1 } {
                 if { [ string length $_ENCRYPTION_TYPE ] != 0 } {
-                    puts "encrypted file"
-                    if { [ string match -nocase $_ENCRYPTION_TYPE "gpg" ] } {
-                        set _DECRYPTED [ split [ exec /usr/bin/env gpg --decrypt [ lindex $_AUTH_VARIABLE 1 ] 2>/dev/null ] "\n" ]
-                    } elseif { [ string match -nocase $_ENCRYPTION_TYPE "openssl" ] } {
-                        set _DECRYPTED [ split [ exec /usr/bin/env gpg --decrypt [ lindex $_AUTH_VARIABLE 1 ] 2>/dev/null ] "\n" ]
+                    switch $_ENCRYPTION_TYPE {
+                        gpg {
+                            set _DECRYPTED [ split [ exec -ignorestderr /usr/bin/env bash -c ". $env(HOME)/.functions.d/F06-security; fileCrypt decrypt [ lindex $_AUTH_VARIABLE 1 ] 2>/dev/null" ] "\n" ]
+                        }
+                        openssl {
+                            ## need to figure out a way to pass in the auth string for openssl here ...
+                        }
                     }
 
                     foreach _ENTRY $_DECRYPTED {
