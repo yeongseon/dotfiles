@@ -1694,7 +1694,7 @@ function ssh
         fi
 
         ## rock the ssh
-        ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env ssh" -a "-F "${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} ${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+        ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env ssh" -a "-F \"${SSH_CONFIG_FILE}\" -qaCkt -l \"${USERNAME}\" \"${TARGET_HOST}\" \"${EXEC_COMMAND}\"" 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1750,8 +1750,8 @@ function scp
         writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
         writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
                    -> The type of transfer to perform
-                       |-> local: A typeset copy to the remote system
-                       |-> remote: A remote copy to the typeset system
+                       -> local: A typeset copy to the remote system
+                       -> remote: A remote copy to the typeset system
                    -> The target host to perform the SCP against
                    -> The username to perform the SCP against
                    -> The source file/directory
@@ -1879,8 +1879,8 @@ function scp
                     writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
                     writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
                                -> The type of transfer to perform
-                                   |-> local: A typeset copy to the remote system
-                                   |-> remote: A remote copy to the typeset system
+                                   -> local: A typeset copy to the remote system
+                                   -> remote: A remote copy to the typeset system
                                -> The target host to perform the SCP against
                                -> The username to perform the SCP against
                                -> The source file/directory
