@@ -433,7 +433,7 @@ function mktemp
 
     case $(which mktemp > /dev/null 2>&1; echo ${?}) in
         0)
-            /bin/env mktemp --tmpdir=${TEMPORARY_DIRECTORY};
+            /bin/env mktemp;
             ;;
         *)
             typeset FNAME=$(cat /dev/urandom | tr -dc "a-zA-Z0-9-_" | fold -w 9 | head -1);
