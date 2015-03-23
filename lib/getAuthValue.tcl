@@ -26,6 +26,7 @@ set _DEFAULT_AUTH [ split "file:env(HOME)/.etc/password.asc" ":" ];
 proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENCRYPTED 0 } { _ENCRYPTION_PRG "" } } {
     global env;
     global tcl_platform;
+    global _DEFAULT_ENCRYPTION;
     global _AUTH_VALUE;
     global _PASSWD_LENGTH;
     global _RANDOM_GENERATOR;
