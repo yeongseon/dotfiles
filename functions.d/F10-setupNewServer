@@ -190,7 +190,7 @@ function setupNewServer
             fi
 
             ## copy profile
-            /bin/env expect -f ${HOME}/.lib/rsync "${TARGET_HOST}" "${USERNAME}" "local" "${HOME}/" "/home/${USERNAME}/" "${AUTH_DATA}";
+            /usr/bin/env expect -f ${HOME}/.lib/rsync "${TARGET_HOST}" "${USERNAME}" "local" "${HOME}/" "/home/${USERNAME}/" "${AUTH_DATA}";
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

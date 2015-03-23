@@ -47,7 +47,7 @@ function mysql
         return ${RETURN_CODE};
     fi
 
-    nohup /bin/env autossh -fqt -M 20000 -l ${LOGNAME} -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -L 3306:localhost:3306 ${LOGNAME}@${1} > ${LOG_ROOT}/autossh.log 2>&1 &
+    nohup /usr/bin/env autossh -fqt -M 20000 -l ${LOGNAME} -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -L 3306:localhost:3306 ${LOGNAME}@${1} > ${LOG_ROOT}/autossh.log 2>&1 &
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -72,7 +72,7 @@ function mysql
         return ${RETURN_CODE};
     fi
 
-    exec /bin/env mysql;
+    exec /usr/bin/env mysql;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";

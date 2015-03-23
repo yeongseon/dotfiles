@@ -18,10 +18,10 @@ function netinfo
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    typeset INET_ADDR_1="$(/bin/env ifconfig | awk /'inet addr/ {print $2}')";
-    typeset INET_ADDR_2="$(/bin/env ifconfig | awk /'inet addr/ {print $4}')";
-    typeset BROADCAST="$(/bin/env ifconfig | awk /'Bcast/ {print $3}')";
-    typeset HWADDR="$(/bin/env ifconfig | awk /'HWaddr/ {print $4,$5}')";
+    typeset INET_ADDR_1="$(/usr/bin/env ifconfig | awk /'inet addr/ {print $2}')";
+    typeset INET_ADDR_2="$(/usr/bin/env ifconfig | awk /'inet addr/ {print $4}')";
+    typeset BROADCAST="$(/usr/bin/env ifconfig | awk /'Bcast/ {print $3}')";
+    typeset HWADDR="$(/usr/bin/env ifconfig | awk /'HWaddr/ {print $4,$5}')";
     typeset EXTERNAL_ADDR="$(lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g')";
 
     writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "--------------- Network Information ---------------";
@@ -99,7 +99,7 @@ function wake
         return ${RETURN_CODE};
     fi
 
-    /bin/env wakeonlan ${1};
+    /usr/bin/env wakeonlan ${1};
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -177,29 +177,29 @@ function validateServerAvailability
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "VALIDATE_HOSTNAME -> ${VALIDATE_HOSTNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "VALIDATE_PORT -> ${VALIDATE_PORT}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /bin/env host \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1;";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env host \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1;";
 
-    case $(/bin/env host "${VALIDATE_HOSTNAME}" > /dev/null 2>&1; echo ${?};) in
+    case $(/usr/bin/env host "${VALIDATE_HOSTNAME}" > /dev/null 2>&1; echo ${?};) in
         0)
             case ${#} in
                 1)
                     case "$(uname)" in
                         [Ss][Oo][Ll][Aa][Rr][Ii][Ss])
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
 
-                            /bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
+                            /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
                             ;;
                         *)
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1";
+                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1";
 
-                            /bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
+                            /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
                             ;;
                     esac
                     ;;
                 2)
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
 
-                    echo "quit" | /bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+                    echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
                     ;;
             esac
             ;;
@@ -516,7 +516,7 @@ function sendNotification
 
     [ ! -d "${MAILSTORE_DIR}" ] && mkdir "${MAILSTORE_DIR}";
 
-    [ -z "${MAILRC_ACCOUNT_NAME}" ] && typeset MAIL_CMD="/bin/env mailx" || typeset MAIL_CMD="/bin/env mailx -A ${MAILRC_ACCOUNT_NAME}";
+    [ -z "${MAILRC_ACCOUNT_NAME}" ] && typeset MAIL_CMD="/usr/bin/env mailx" || typeset MAIL_CMD="/usr/bin/env mailx -A ${MAILRC_ACCOUNT_NAME}";
     typeset MESSAGE_FILE="$(mktemp)";
     typeset TEMP_FILE="$(mktemp)";
     typeset TEMPLATE_FILE="${MAIL_TEMPLATE_DIR}/${MESSAGE_TEMPLATE}";
@@ -563,7 +563,7 @@ function sendNotification
                 ## ok, move it over now..
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Change validated. Continuing..";
 
-                /bin/env mv "${TEMP_FILE}" "${MESSAGE_FILE}"> /dev/null 2>&1;
+                /usr/bin/env mv "${TEMP_FILE}" "${MESSAGE_FILE}"> /dev/null 2>&1;
 
                 ## and ensure..
                 if [ ! -z "$(grep "$(env "${REPLACEMENT_ITEM}")" "${MESSAGE_FILE}")" ]
@@ -675,10 +675,10 @@ function sendNotification
             then
                 if [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ]
                 then
-                    /bin/env uuencode "${ATTACH_FILE}" $(/bin/env basename "${ATTACH_FILE}") | "${MAIL_CMD}" -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                    /usr/bin/env uuencode "${ATTACH_FILE}" $(/usr/bin/env basename "${ATTACH_FILE}") | "${MAIL_CMD}" -v -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
                         "${TARGET_AUDIENCE}" < "${MESSAGE_FILE}" > "${LOG_ROOT}/${MESSAGE_TEMPLATE}.log" 2>&1;
                 else
-                    /bin/env uuencode "${ATTACH_FILE}" $(/bin/env basename "${ATTACH_FILE}") | "${MAIL_CMD}" -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
+                    /usr/bin/env uuencode "${ATTACH_FILE}" $(/usr/bin/env basename "${ATTACH_FILE}") | "${MAIL_CMD}" -s "${MESSAGE_SUBJECT}" -r "${NOTIFY_FROM_ADDRESS}" \
                         "${TARGET_AUDIENCE}" < "${MESSAGE_FILE}";
                 fi
             else
@@ -778,15 +778,15 @@ function setProxy
     do
         reset; clear;
 
-        /bin/env printf "\n";
-        /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-        /bin/env printf "%40s\n" "Set environment proxy";
-        /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-        /bin/env printf "\n";
-        /bin/env printf "%s\n" "1 - $(/bin/env awk -F "=" '/\<set.proxy.information\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        /bin/env printf "%s\n" "2 - $(/bin/env awk -F "=" '/\<unset.proxy.information\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
-        /bin/env printf "\n";
-        /bin/env printf "%s\n\n" "Enter selection: ";
+        /usr/bin/env printf "\n";
+        /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+        /usr/bin/env printf "%40s\n" "Set environment proxy";
+        /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+        /usr/bin/env printf "\n";
+        /usr/bin/env printf "%s\n" "1 - $(/usr/bin/env awk -F "=" '/\<set.proxy.information\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+        /usr/bin/env printf "%s\n" "2 - $(/usr/bin/env awk -F "=" '/\<unset.proxy.information\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+        /usr/bin/env printf "\n";
+        /usr/bin/env printf "%s\n\n" "Enter selection: ";
 
         read ANSWER;
 
@@ -827,12 +827,12 @@ function setProxy
                 do
                     reset; clear;
 
-                    /bin/env printf "\n";
-                    /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                    /bin/env printf "%40s\n" "Set environment proxy";
-                    /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                    /bin/env printf "\n";
-                    /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<provide.username\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                    /usr/bin/env printf "\n";
+                    /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                    /usr/bin/env printf "%40s\n" "Set environment proxy";
+                    /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                    /usr/bin/env printf "\n";
+                    /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<provide.username\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                     read PROXY_USER;
 
@@ -842,12 +842,12 @@ function setProxy
                         "")
                             reset; clear;
 
-                            /bin/env printf "\n";
-                            /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                            /bin/env printf "%40s\n" "Set environment proxy";
-                            /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                            /bin/env printf "\n";
-                            /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<confirm.empty.username\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                            /usr/bin/env printf "\n";
+                            /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                            /usr/bin/env printf "%40s\n" "Set environment proxy";
+                            /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                            /usr/bin/env printf "\n";
+                            /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<confirm.empty.username\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                             read CONFIRM;
 
@@ -895,12 +895,12 @@ function setProxy
                             do
                                 reset; clear;
 
-                                /bin/env printf "\n";
-                                /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                /bin/env printf "%40s\n" "Set environment proxy";
-                                /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                /bin/env printf "\n";
-                                /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<provide.password\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                /usr/bin/env printf "\n";
+                                /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                /usr/bin/env printf "%40s\n" "Set environment proxy";
+                                /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                /usr/bin/env printf "\n";
+                                /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<provide.password\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                 read PROXY_PASSWORD;
 
@@ -938,12 +938,12 @@ function setProxy
                                     "")
                                         reset; clear;
 
-                                        /bin/env printf "\n";
-                                        /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                        /bin/env printf "%40s\n" "Set environment proxy";
-                                        /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                        /bin/env printf "\n";
-                                        /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<confirm.empty.password\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                        /usr/bin/env printf "\n";
+                                        /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                        /usr/bin/env printf "%40s\n" "Set environment proxy";
+                                        /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                        /usr/bin/env printf "\n";
+                                        /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<confirm.empty.password\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                         read CONFIRM;
 
@@ -963,12 +963,12 @@ function setProxy
                                         do
                                             reset; clear;
 
-                                            /bin/env printf "\n";
-                                            /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                            /bin/env printf "%40s\n" "Set environment proxy";
-                                            /bin/env printf "%s\n" "+-------------------------------------------------------------------+";
-                                            /bin/env printf "\n";
-                                            /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<provide.proxy.host\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                            /usr/bin/env printf "\n";
+                                            /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                            /usr/bin/env printf "%40s\n" "Set environment proxy";
+                                            /usr/bin/env printf "%s\n" "+-------------------------------------------------------------------+";
+                                            /usr/bin/env printf "\n";
+                                            /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<provide.proxy.host\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                             read PROXY_HOST;
 
@@ -1004,13 +1004,13 @@ function setProxy
                                                     return ${RETURN_CODE};
                                                     ;;
                                                 "")
-                                                    /bin/env printf "%s\n\n" "$(/bin/env awk -F "=" '/\<no.host.provided\>/{print $2}' ${RESOURCE_FILE} | /bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
+                                                    /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<no.host.provided\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
                                                     sleep ${MESSAGE_DELAY}; reset; clear; continue;
                                                     ;;
                                                 *)
-                                                    typeset PROXY_HOSTNAME="$(/bin/env cut -d ":" -f 1 <<< "${PROXY_HOST}")";
-                                                    typeset PROXY_PORT="$(/bin/env cut -d ":" -f 2 <<< "${PROXY_HOST}")";
+                                                    typeset PROXY_HOSTNAME="$(/usr/bin/env cut -d ":" -f 1 <<< "${PROXY_HOST}")";
+                                                    typeset PROXY_PORT="$(/usr/bin/env cut -d ":" -f 2 <<< "${PROXY_HOST}")";
 
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY_HOSTNAME -> ${PROXY_HOSTNAME}";
                                                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY_PORT -> ${PROXY_PORT}";

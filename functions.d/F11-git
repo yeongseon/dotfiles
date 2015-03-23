@@ -57,7 +57,7 @@ function git
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/bin/env date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
@@ -73,10 +73,10 @@ function git
             printf "    IdentityFile                = %s\n" "~/.ssh/id_cws-khuntly" >> "${TEMP_SSH_CONFIG}";
 
             ## back up if necessary
-            [ -s "${HOME}/.ssh/config" ] && /bin/env cp -p "${HOME}/.ssh/config" "${TEMP_ARCHIVE_FILE}";
+            [ -s "${HOME}/.ssh/config" ] && /usr/bin/env cp -p "${HOME}/.ssh/config" "${TEMP_ARCHIVE_FILE}";
 
             ## pipe it in
-            /bin/env cat "${TEMP_SSH_CONFIG}" >| "${HOME}/.ssh/config";
+            /usr/bin/env cat "${TEMP_SSH_CONFIG}" >| "${HOME}/.ssh/config";
 
             ## confirm...
             if [ $(grep -c "github.com" "${HOME}/.ssh/config") -eq 0 ]
@@ -92,7 +92,7 @@ function git
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/bin/env date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
                 [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
@@ -111,9 +111,9 @@ function git
             ;;
     esac
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /bin/env git \"${GIT_COMMAND}\" \"${GIT_OPTIONS}\"";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env git \"${GIT_COMMAND}\" \"${GIT_OPTIONS}\"";
 
-    [ -z "${GIT_OPTIONS}" ] && /bin/env git ${GIT_COMMAND} || /bin/env git ${GIT_COMMAND} ${GIT_OPTIONS};
+    [ -z "${GIT_OPTIONS}" ] && /usr/bin/env git ${GIT_COMMAND} || /usr/bin/env git ${GIT_COMMAND} ${GIT_OPTIONS};
     wait;
 
     typeset -i RETURN_CODE=${?};
@@ -124,13 +124,13 @@ function git
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
 
-    [ -s "${TEMP_ARCHIVE_FILE}" ] && /bin/env cp -p "${TEMP_ARCHIVE_FILE}" "${HOME}/.ssh/config";
+    [ -s "${TEMP_ARCHIVE_FILE}" ] && /usr/bin/env cp -p "${TEMP_ARCHIVE_FILE}" "${HOME}/.ssh/config";
 
     [ ! -z "${TEMP_SSH_CONFIG}" ] && [ -f "${TEMP_SSH_CONFIG}" ] && rm -f "${TEMP_SSH_CONFIG}";
     [ ! -z "${TEMP_ARCHIVE_FILE}" ] && [ -f "${TEMP_SSH_CONFIG}" ] && rm -f "${TEMP_ARCHIVE_FILE}";

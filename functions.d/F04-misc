@@ -59,7 +59,7 @@ function setArray
             ;;
         [Bb][Aa][Ss][Hh])
             ## eval ${ARRAY_NAME}+=\(\"\${VARIABLE_VALUE}\"\);
-            case "$(/bin/env command -v readarray)" in
+            case "$(type readarray > /dev/null 2>&1)" in
                 "")
                     eval typeset -a $(eval echo \${ARRAY_NAME})=\( $(eval echo \${${ARRAY_NAME}[*]}) "${VARIABLE_VALUE}" \);
                     ;;
@@ -248,10 +248,10 @@ function shred
         return ${RETURN_CODE};
     fi
 
-	/bin/env cryptsetup -d /dev/urandom -c aes-xts-plain create delete ${FILENAME};
-	/bin/env shred -vzn 0 /dev/mapper/delete;
+	/usr/bin/env cryptsetup -d /dev/urandom -c aes-xts-plain create delete ${FILENAME};
+	/usr/bin/env shred -vzn 0 /dev/mapper/delete;
 	sync && sleep 4;
-	/bin/env cryptsetup remove delete;
+	/usr/bin/env cryptsetup remove delete;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -349,7 +349,7 @@ function corename
         return ${RETURN_CODE};
     fi
 
-    typeset PROGRAM_NAME=$(/bin/env gdb --core=${CORE_FILE} --batch | /bin/env head -1);
+    typeset PROGRAM_NAME=$(/usr/bin/env gdb --core=${CORE_FILE} --batch | /usr/bin/env head -1);
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROGRAM_NAME -> ${PROGRAM_NAME}";
@@ -433,7 +433,7 @@ function mktemp
 
     case $(which mktemp > /dev/null 2>&1; echo ${?}) in
         0)
-            /bin/env mktemp;
+            /usr/bin/env mktemp;
             ;;
         *)
             typeset FNAME=$(cat /dev/urandom | tr -dc "a-zA-Z0-9-_" | fold -w 9 | head -1);
@@ -880,7 +880,7 @@ function killProc
 
     [ -z ${1} ] && writeLogEntry "STDERR" "Unable to kill process - no process name provided." && return 1;
 
-    /bin/env kill -9 $(ps -ef | grep ${1} | grep -v grep | awk '{echo $2}');
+    /usr/bin/env kill -9 $(ps -ef | grep ${1} | grep -v grep | awk '{echo $2}');
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -945,7 +945,7 @@ function isNaN
         return ${RETURN_CODE};
     fi
 
-    [ -z "$(echo "${1}" | /bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
+    [ -z "$(echo "${1}" | /usr/bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1114,7 +1114,7 @@ function findpid
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     ## do it
-    [ ${EUID} -eq 0 ] && /bin/env lsof -tc "${PROCESS_NAME}" || /bin/env sudo /bin/env lsof -tc "${PROCESS_NAME}";
+    [ ${EUID} -eq 0 ] && /usr/bin/env lsof -tc "${PROCESS_NAME}" || /usr/bin/env sudo /usr/bin/env lsof -tc "${PROCESS_NAME}";
     typeset -i RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1212,7 +1212,7 @@ function mktar
         return ${RETURN_CODE};
     fi
 
-    /bin/env tar cvf "${1%%/}.tar" "${1%%/}/";
+    /usr/bin/env tar cvf "${1%%/}.tar" "${1%%/}/";
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -1314,12 +1314,12 @@ function lsz
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE -> ${FILE}";
 
     case "${FILE}" in
-        *.gz|*.tgz|*.tar.gz) /bin/env gzcat ${FILE} | /bin/env tar tvf - ;;
-        *.bz2|*.tbz2|*.tar.bz2) /bin/env bzcat ${FILE} | tar tvf - ;;
-        *.Z|*.tar.Z) /bin/env zcat ${FILE} | /bin/env tar tvf - ;;
-        *.jar|*.zip) /bin/env unzip -l "${FILE}" ;;
-        *.tar) /bin/env tar tvf "${FILE}" ;;
-        *.7z) /bin/env 7z l "${FILE}" ;;
+        *.gz|*.tgz|*.tar.gz) /usr/bin/env gzcat ${FILE} | /usr/bin/env tar tvf - ;;
+        *.bz2|*.tbz2|*.tar.bz2) /usr/bin/env bzcat ${FILE} | tar tvf - ;;
+        *.Z|*.tar.Z) /usr/bin/env zcat ${FILE} | /usr/bin/env tar tvf - ;;
+        *.jar|*.zip) /usr/bin/env unzip -l "${FILE}" ;;
+        *.tar) /usr/bin/env tar tvf "${FILE}" ;;
+        *.7z) /usr/bin/env 7z l "${FILE}" ;;
         *)
             RETURN_CODE=3;
 
@@ -1742,7 +1742,7 @@ function getFileStat
             continue;
         fi
 
-        /bin/env perl -we '
+        /usr/bin/env perl -we '
             ($mode, $uid, $size, $mtime) = stat($ARGV[0]);
 
             print("File mode: $mode, Owner: $uid, Size: $size, Modified: $mtime\n");' "${FILE_NAME}";
@@ -1828,10 +1828,10 @@ function listProcessForPort
 
         case $(uname) in
             SunOS)
-                /bin/env pfiles ${PID} 2>/dev/null | /usr/xpg4/bin/grep -q "port: ${PORT_NUMBER}";
+                /usr/bin/env pfiles ${PID} 2>/dev/null | /usr/xpg4/bin/grep -q "port: ${PORT_NUMBER}";
                 ;;
             *)
-                /bin/env lsof -i ":${PORT_NUMBER}" > /dev/null 2>&1;
+                /usr/bin/env lsof -i ":${PORT_NUMBER}" > /dev/null 2>&1;
                 ;;
         esac
     done
@@ -1911,7 +1911,7 @@ function returnEpochTime
 
     case ${#} in
         2)
-            echo ${*} | /bin/env perl -MTime::Local -ane '
+            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
                 qw(timelocal);
 
                 my $seconds = (3600 * 24);
@@ -1922,7 +1922,7 @@ function returnEpochTime
             ;;
         4)
             ## supposed to be quoted but support it anyway
-            echo ${*} | /bin/env perl -MTime::Local -ane '
+            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
                 qw(timelocal);
 
                 my $seconds = (3600 * 24);
@@ -1932,7 +1932,7 @@ function returnEpochTime
                 printf "$validationPeriod\n"; ';
             ;;
         *)
-            echo ${*} | /bin/env perl -MTime::Local -ane '
+            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
                 qw(timelocal);
                 my $epochtime = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
 
@@ -2099,7 +2099,7 @@ function isNaN
         return ${RETURN_CODE};
     fi
 
-    [ -z "$(echo "${1}" | /bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
+    [ -z "$(echo "${1}" | /usr/bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

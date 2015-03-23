@@ -26,12 +26,12 @@ function setPromptCommand
 
     case "${REAL_USER}" in
         "")
-            /bin/env echo -ne "\033]0;$(/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
-            PS1+='$(/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
+            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
+            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
             ;;
         *)
-            /bin/env echo -ne "\033]0;$(/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-            PS1+='$(/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
+            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
             ;;
     esac
 
@@ -76,7 +76,7 @@ function logoutUser
     then
         cd "${HOME}/workspace/cws-esolutions";
 
-        setArray COMMITTABLE_ENTRIES $(/bin/env git status | /bin/env grep modified | /bin/env cut -d ":" -f 2);
+        setArray COMMITTABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep modified | /usr/bin/env cut -d ":" -f 2);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
@@ -86,7 +86,7 @@ function logoutUser
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
-                /bin/env git add "${COMMITTABLE_ENTRY}";
+                /usr/bin/env git add "${COMMITTABLE_ENTRY}";
 
                 [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
             done
@@ -95,7 +95,7 @@ function logoutUser
             [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
         fi
 
-        setArray REMOVEABLE_ENTRIES $(/bin/env git status | /bin/env grep deleted | /bin/env cut -d ":" -f 2);
+        setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REMOVEABLE_ENTRIES -> ${REMOVEABLE_ENTRIES[*]}";
 
@@ -105,7 +105,7 @@ function logoutUser
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
-                /bin/env git rm "${REMOVEABLE_ENTRY}";
+                /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
 
                 [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
             done
@@ -119,20 +119,20 @@ function logoutUser
     fi
 
     ## turn off ssh-agent and keychain
-    [ ! -z "$(/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /bin/env ssh-add -D;
-    if [ ! -z "$(/bin/env ps -ef | grep keychain | grep -v grep)" ] && /bin/env keychain -k all;
+    [ ! -z "$(/usr/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /usr/bin/env ssh-add -D;
+    [ ! -z "$(/usr/bin/env ps -ef | grep keychain | grep -v grep)" ] && /usr/bin/env keychain -k all;
 
-    [ -f ${HOME}/.mysql_history ] && /bin/env rm -f ${HOME}/.mysql_history
-    [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-fsh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
+    [ -f ${HOME}/.mysql_history ] && /usr/bin/env rm -f ${HOME}/.mysql_history
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fsh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
     ## clear terminal scrollback
-    /bin/env printf "\033c";
+    /usr/bin/env printf "\033c";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
