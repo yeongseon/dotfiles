@@ -82,6 +82,11 @@ if { [ expr { $argc < 3 } ] } {
             set _USER_KEY [ lindex $_AUTH_DATA 0 ];
             set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
         }
+        default {
+            puts stderr "No valid authentication type was provided. Cannot continue.";
+
+            usage;
+        }
     }
 
     if { [ expr { $argc eq 5 } ] } {

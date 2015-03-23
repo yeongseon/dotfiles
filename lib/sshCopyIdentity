@@ -49,6 +49,9 @@ if { [ info exists env(THREAD_TIMEOUT) ] } {
     set timeout $env(THREAD_TIMEOUT)
 }
 
+## bring in the files
+source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+
 proc usage {} {
     global _METHOD_NAME
 
@@ -76,24 +79,24 @@ if { [ expr { $argc < 3 } ] } {
     set _TARGET_SYSTEM [ lindex $argv 0 ]
     set _USER_LOGINID [ lindex $argv 1 ]
     set _IDENTITY_FILE [ lindex $argv 2 ]
-    set _AUTH_STRING [ lindex $argv 3 ]
 
-    # type it
-    switch [ lindex $_AUTH_STRING 0 ] {
-        "pass" - "file" - "key" {
-            source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+    if { [ expr { $argc >= 4 } ] } {
+        set _AUTH_STRING [ lindex $argv 3 ];
+    }
 
-            set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $_AUTH_STRING ];
+    if { [ info exists _AUTH_STRING ] } {
+        set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $_AUTH_STRING ];
+    } else {
+        set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID ];
+    }
 
-            switch [ llength $_AUTH_DATA ] {
-                1 {
-                    set _USER_PASSWD $_AUTH_DATA;
-                }
-                2 {
-                    set _USER_KEY [ lindex $_AUTH_DATA 0 ];
-                    set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
-                }
-            }
+    switch [ llength $_AUTH_DATA ] {
+        1 {
+            set _USER_PASSWD $_AUTH_DATA;
+        }
+        2 {
+            set _USER_KEY [ lindex $_AUTH_DATA 0 ];
+            set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
         }
         default {
             puts stderr "No valid authentication type was provided. Cannot continue.";
