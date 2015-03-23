@@ -24,19 +24,19 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 ## safety
 case "$(uname)" in
     [Aa][Ii][Xx])
-        alias rm='/usr/bin/env rm -i'
-        alias mv='/usr/bin/env mv -i';
-        alias cp='/usr/bin/env cp -i';
-        alias ln='/usr/bin/env ln -i';
+        alias rm='/bin/env rm -i'
+        alias mv='/bin/env mv -i';
+        alias cp='/bin/env cp -i';
+        alias ln='/bin/env ln -i';
         ;;
     *)
-        alias rm='/usr/bin/env rm -i --preserve-root'
-        alias chown='/usr/bin/env chown --preserve-root';
-        alias chmod='/usr/bin/env chmod --preserve-root';
-        alias chgrp='/usr/bin/env chgrp --preserve-root';
-        alias mv='/usr/bin/env mv -i';
-        alias cp='/usr/bin/env cp -i';
-        alias ln='/usr/bin/env ln -i';
+        alias rm='/bin/env rm -i --preserve-root'
+        alias chown='/bin/env chown --preserve-root';
+        alias chmod='/bin/env chmod --preserve-root';
+        alias chgrp='/bin/env chgrp --preserve-root';
+        alias mv='/bin/env mv -i';
+        alias cp='/bin/env cp -i';
+        alias ln='/bin/env ln -i';
         ;;
 esac
 

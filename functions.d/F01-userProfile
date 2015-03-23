@@ -30,19 +30,19 @@ function selectProfile
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE_CONFIGURATION -> ${PROFILE_CONFIGURATION}";
 
     ## system information
-    typeset HOST_SYSTEM_NAME="$(/usr/bin/env echo "${HOSTNAME}" | /usr/bin/env tr '[A-Z]' '[a-z]')";
-    typeset HOST_DOMAIN_NAME="$(/usr/bin/env cat /etc/resolv.conf | /usr/bin/env grep -i domain | /usr/bin/env awk '{print $2}')";
-    typeset HOST_IP_ADDRESS="$(/usr/bin/env host "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}" | /usr/bin/env awk '{print $NF}')";
-    typeset HOST_KERNEL_VERSION="$(/usr/bin/env uname -r)";
-    typeset -i HOST_CPU_COUNT=$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env wc -l);
-    typeset HOST_CPU_INFO="$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env uniq | /usr/bin/env cut -d ":" -f 2 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g' | /usr/bin/env tr -s " ")";
+    typeset HOST_SYSTEM_NAME="$(/bin/env echo "${HOSTNAME}" | /bin/env tr '[A-Z]' '[a-z]')";
+    typeset HOST_DOMAIN_NAME="$(/bin/env cat /etc/resolv.conf | /bin/env grep -i domain | /bin/env awk '{print $2}')";
+    typeset HOST_IP_ADDRESS="$(/bin/env host "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}" | /bin/env awk '{print $NF}')";
+    typeset HOST_KERNEL_VERSION="$(/bin/env uname -r)";
+    typeset -i HOST_CPU_COUNT=$(/bin/env cat /proc/cpuinfo | /bin/env grep "model name" | /bin/env wc -l);
+    typeset HOST_CPU_INFO="$(/bin/env cat /proc/cpuinfo | /bin/env grep "model name" | /bin/env uniq | /bin/env cut -d ":" -f 2 | /bin/env sed -e 's/^ *//g;s/ *$//g' | /bin/env tr -s " ")";
 
-    case $(/usr/bin/env echo "scale=2; $(/usr/bin/env grep MemTotal /proc/meminfo | /usr/bin/env awk '{print $2}') / 1024 ^ 2" | /usr/bin/env bc | cut -d "." -f 1) in
+    case $(/bin/env echo "scale=2; $(/bin/env grep MemTotal /proc/meminfo | /bin/env awk '{print $2}') / 1024 ^ 2" | /bin/env bc | cut -d "." -f 1) in
         0)
-            typeset HOST_MEMORY_SIZE="$(/usr/bin/env echo "scale=2; $(/usr/bin/env grep MemTotal /proc/meminfo | /usr/bin/env awk '{print $2}') / 1024" | /usr/bin/env bc) MB"
+            typeset HOST_MEMORY_SIZE="$(/bin/env echo "scale=2; $(/bin/env grep MemTotal /proc/meminfo | /bin/env awk '{print $2}') / 1024" | /bin/env bc) MB"
             ;;
         *)
-            typeset HOST_MEMORY_SIZE="$(/usr/bin/env echo "scale=2; $(/usr/bin/env grep MemTotal /proc/meminfo | /usr/bin/env awk '{print $2}') / 1024 ^ 2" | /usr/bin/env bc) GB"
+            typeset HOST_MEMORY_SIZE="$(/bin/env echo "scale=2; $(/bin/env grep MemTotal /proc/meminfo | /bin/env awk '{print $2}') / 1024 ^ 2" | /bin/env bc) GB"
             ;;
     esac
 
@@ -55,9 +55,9 @@ function selectProfile
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
 
     ## user information
-    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ | /usr/bin/env awk '{print $1}');
-    typeset -i SYSTEM_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env wc -l | awk '{print $1}');
-    typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env grep "${LOGNAME}" | /usr/bin/env wc -l);
+    typeset -i USER_DISK_USAGE=$(/bin/env du -ms ${HOME}/ | /bin/env awk '{print $1}');
+    typeset -i SYSTEM_PROCESS_COUNT=$(/bin/env ps -ef | /bin/env wc -l | awk '{print $1}');
+    typeset -i USER_PROCESS_COUNT=$(/bin/env ps -ef | /bin/env grep "${LOGNAME}" | /bin/env wc -l);
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_DISK_USAGE -> ${USER_DISK_USAGE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_PROCESS_COUNT -> ${SYSTEM_PROCESS_COUNT}";
@@ -123,7 +123,7 @@ function selectProfile
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_ENVIRONMENT -> ${SELECTED_ENVIRONMENT}";
 
-            case "$(/usr/bin/env echo ${SELECTED_ENVIRONMENT} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+            case "$(/bin/env echo ${SELECTED_ENVIRONMENT} | /bin/env egrep -q '^[0-9]*$'; /bin/env echo ${?})" in
                 0)
                     typeset PROVIDED_ENVIRONMENT="${AVAILABLE_ENVIRONMENTS[(( SELECTED_ENVIRONMENT -+ 1 ))]}";
                     ;;
@@ -388,7 +388,7 @@ function selectProfile
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_ENVIRONMENT -> ${APPLICATION_ENVIRONMENT}";
 
                         ## print the name and base directory
-                        typeset APPLICATION_NAME="$(/usr/bin/env basename "${APPLICATION_ENVIRONMENT}")";
+                        typeset APPLICATION_NAME="$(/bin/env basename "${APPLICATION_ENVIRONMENT}")";
 
                         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "APPLICATION_NAME -> ${APPLICATION_NAME}";
 
@@ -406,7 +406,7 @@ function selectProfile
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_APPLICATION -> ${SELECTED_APPLICATION}";
 
-                    case "$(/usr/bin/env echo ${SELECTED_APPLICATION} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+                    case "$(/bin/env echo ${SELECTED_APPLICATION} | /bin/env egrep -q '^[0-9]*$'; /bin/env echo ${?})" in
                         0)
                             typeset PROVIDED_APPLICATION="${APPLICATION_ENVIRONMENTS[(( SELECTED_APPLICATION -+ 1 ))]}";
                             ;;
@@ -596,7 +596,7 @@ function selectProfile
 
                             printf "\n+-------------------------------------------------------------------+\n\n";
 
-                            if [ ! -z "$(/usr/bin/env ls -ltr ${PS_HOME}/CFG_HOME/appserv/prcs | grep ^d)" ]
+                            if [ ! -z "$(/bin/env ls -ltr ${PS_HOME}/CFG_HOME/appserv/prcs | grep ^d)" ]
                             then
                                 printf "\n"
                                 printf "%s \n" "The following process servers are available on this system:"
@@ -639,7 +639,7 @@ function selectProfile
 
                             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SELECTED_SCHEMA -> ${SELECTED_SCHEMA}";
 
-                            case "$(/usr/bin/env echo ${SELECTED_SCHEMA} | /usr/bin/env egrep -q '^[0-9]*$'; /usr/bin/env echo ${?})" in
+                            case "$(/bin/env echo ${SELECTED_SCHEMA} | /bin/env egrep -q '^[0-9]*$'; /bin/env echo ${?})" in
                                 0)
                                     typeset PROVIDED_SCHEMA="${AVAILABLE_ENVIRONMENTS[(( SELECTED_SCHEMA -+ 1 ))]}";
                                     ;;
@@ -990,12 +990,12 @@ function setPromptCommand
 
     case "${REAL_USER}" in
         "")
-            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${PWD}")';
+            /bin/env echo -ne "\033]0;$(/bin/env printf "[%s:%s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${PWD}")\007";
+            PS1+='$(/bin/env printf "\e[00;32m[%s:%s]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${HOSTNAME}" "${LOGNAME}" "${PWD}")';
             ;;
         *)
-            /usr/bin/env echo -ne "\033]0;$(/usr/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}.${DOMAINNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
-            PS1+='$(/usr/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/usr/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /usr/bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/usr/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}.${DOMAINNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
+            /bin/env echo -ne "\033]0;$(/bin/env printf "[%s:%s as %s] : <%s>" "${HOSTNAME}" "${LOGNAME}" "${REAL_USER}" "${PWD}")\007";
+            PS1+='$(/bin/env printf "\e[00;31mNOTE: YOU ARE %s\e[00;32m.\n\e[00;32m[%s:%s as \e[00;31m%s\e[00;32m]\e[m \e[00;00m:\e[m \e[00;33m<%s$([ $(/bin/env git status > /dev/null 2>&1 ; echo $?) == 0 ] && /bin/env printf "[\e[01;34m%s\e[00;33m]" "$(/bin/env git branch 2>/dev/null)")>\e[m \e[00;00m\e[m \n\n$ " "${REAL_USER}" "${HOSTNAME}" "${REAL_USER}" "${LOGNAME}" "${PWD}")';
             ;;
     esac
 
@@ -1040,7 +1040,7 @@ function logoutUser
     then
         cd "${HOME}/workspace/cws-esolutions";
 
-        setArray COMMITTABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep modified | /usr/bin/env cut -d ":" -f 2);
+        setArray COMMITTABLE_ENTRIES $(/bin/env git status | /bin/env grep modified | /bin/env cut -d ":" -f 2);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
@@ -1050,7 +1050,7 @@ function logoutUser
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
-                /usr/bin/env git add "${COMMITTABLE_ENTRY}";
+                /bin/env git add "${COMMITTABLE_ENTRY}";
 
                 [ ! -z "${COMMITTABLE_ENTRY}" ] && unset -v COMMITTABLE_ENTRY;
             done
@@ -1059,7 +1059,7 @@ function logoutUser
             [ ! -z "${COMMITTABLE_ENTRIES[*]}" ] && unset -v COMMITTABLE_ENTRIES;
         fi
 
-        setArray REMOVEABLE_ENTRIES $(/usr/bin/env git status | /usr/bin/env grep deleted | /usr/bin/env cut -d ":" -f 2);
+        setArray REMOVEABLE_ENTRIES $(/bin/env git status | /bin/env grep deleted | /bin/env cut -d ":" -f 2);
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REMOVEABLE_ENTRIES -> ${REMOVEABLE_ENTRIES[*]}";
 
@@ -1069,7 +1069,7 @@ function logoutUser
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "COMMITTABLE_ENTRIES -> ${COMMITTABLE_ENTRIES[*]}";
 
-                /usr/bin/env git rm "${REMOVEABLE_ENTRY}";
+                /bin/env git rm "${REMOVEABLE_ENTRY}";
 
                 [ ! -z "${REMOVEABLE_ENTRY}" ] && unset -v REMOVEABLE_ENTRY;
             done
@@ -1083,20 +1083,20 @@ function logoutUser
     fi
 
     ## turn off ssh-agent and keychain
-    [ ! -z "$(/usr/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /usr/bin/env ssh-add -D;
-    if [ ! -z "$(/usr/bin/env ps -ef | grep keychain | grep -v grep)" ] && /usr/bin/env keychain -k all;
+    [ ! -z "$(/bin/env ps -ef | grep ssh-agent | grep -v grep)" ] && /bin/env ssh-add -D;
+    if [ ! -z "$(/bin/env ps -ef | grep keychain | grep -v grep)" ] && /bin/env keychain -k all;
 
-    [ -f ${HOME}/.mysql_history ] && /usr/bin/env rm -f ${HOME}/.mysql_history
-    [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-fsh ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
-    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
+    [ -f ${HOME}/.mysql_history ] && /bin/env rm -f ${HOME}/.mysql_history
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fsh ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-sh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-csh-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
+    [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
     ## clear terminal scrollback
-    /usr/bin/env printf "\033c";
+    /bin/env printf "\033c";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";

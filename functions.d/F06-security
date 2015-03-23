@@ -67,8 +67,8 @@ function returnRandomCharacters
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "STRING_LENGTH -> ${STRING_LENGTH}";
 
-    [ ${INCLUDE_SPECIAL} -eq 0 ] && typeset RETURNED_CHARACTERS=$(/usr/bin/env cat /dev/urandom | /usr/bin/env tr -cd '[:alnum:]' | /usr/bin/env head -c ${STRING_LENGTH});
-    [ ${INCLUDE_SPECIAL} -eq 1 ] && typeset RETURNED_CHARACTERS=$(/usr/bin/env cat /dev/urandom | /usr/bin/env tr -cd '[:graph:]' | /usr/bin/env head -c ${STRING_LENGTH});
+    [ ${INCLUDE_SPECIAL} -eq 0 ] && typeset RETURNED_CHARACTERS=$(/bin/env cat /dev/urandom | /bin/env tr -cd '[:alnum:]' | /bin/env head -c ${STRING_LENGTH});
+    [ ${INCLUDE_SPECIAL} -eq 1 ] && typeset RETURNED_CHARACTERS=$(/bin/env cat /dev/urandom | /bin/env tr -cd '[:graph:]' | /bin/env head -c ${STRING_LENGTH});
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURNED_CHARACTERS -> ${RETURNED_CHARACTERS}";
 
@@ -221,12 +221,12 @@ function stringCrypt
 
     case ${METHOD} in
         [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            [ "$(/usr/bin/env gpg --version 2>/dev/null)" = "" ] && echo "${DECRYPTED}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass ${AUTHENTICATION};
-            [ "$(/usr/bin/env gpg --version 2>/dev/null)" != "" ] && echo "${DECRYPTED}" | /usr/bin/env gpg -a -r ${RECIPIENTS} --encrypt --sign;
+            [ "$(/bin/env gpg --version 2>/dev/null)" = "" ] && echo "${DECRYPTED}" | /bin/env openssl enc -aes-256-cbc -a -salt -pass ${AUTHENTICATION};
+            [ "$(/bin/env gpg --version 2>/dev/null)" != "" ] && echo "${DECRYPTED}" | /bin/env gpg -a -r ${RECIPIENTS} --encrypt --sign;
             ;;
         [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            [ "$(/usr/bin/env gpg --version 2>/dev/null)" = "" ] && echo "${DECRYPTED}" | /usr/bin/env openssl enc -d -aes-256-cbc -a -salt -pass ${AUTHENTICATION};
-            [ "$(/usr/bin/env gpg --version 2>/dev/null)" != "" ] && echo "${DECRYPTED}" | /usr/bin/env gpg --decrypt;
+            [ "$(/bin/env gpg --version 2>/dev/null)" = "" ] && echo "${DECRYPTED}" | /bin/env openssl enc -d -aes-256-cbc -a -salt -pass ${AUTHENTICATION};
+            [ "$(/bin/env gpg --version 2>/dev/null)" != "" ] && echo "${DECRYPTED}" | /bin/env gpg --decrypt;
             ;;
         *)
             RETURN_CODE=3;
@@ -376,7 +376,7 @@ function fileCrypt
 
     case ${METHOD} in
         [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(/usr/bin/env command -v gpg)" ]
+            if [ -z "$(/bin/env command -v gpg)" ]
             then
                 while ${_TRUE}
                 do
@@ -409,16 +409,16 @@ function fileCrypt
                             return ${RETURN_CODE};
                             ;;
                         *)
-                            [ -z "${AUTHENTICATION}" ] && continue || /usr/bin/env openssl enc -aes-256-cbc -a -salt -in ${FILE_NAME} -out ${FILE_NAME}.enc -pass ${AUTHENTICATION};
+                            [ -z "${AUTHENTICATION}" ] && continue || /bin/env openssl enc -aes-256-cbc -a -salt -in ${FILE_NAME} -out ${FILE_NAME}.enc -pass ${AUTHENTICATION};
                             ;;
                     esac
                 done
             else
-                [ -z "${RECIPIENTS}" ] && /usr/bin/env gpg -aes --output ${FILE_NAME}.asc ${FILE_NAME} || /usr/bin/env gpg -aes -r ${RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
+                [ -z "${RECIPIENTS}" ] && /bin/env gpg -aes --output ${FILE_NAME}.asc ${FILE_NAME} || /bin/env gpg -aes -r ${RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
             fi
             ;;
         [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(/usr/bin/env command -v gpg)" ]
+            if [ -z "$(/bin/env command -v gpg)" ]
             then
                 while ${_TRUE}
                 do
@@ -451,12 +451,12 @@ function fileCrypt
                             return ${RETURN_CODE};
                             ;;
                         *)
-                            [ -z "${AUTHENTICATION}" ] && continue || /usr/bin/env openssl enc -d -aes-256-cbc -a -in ${FILE_NAME} -pass ${AUTHENTICATION};
+                            [ -z "${AUTHENTICATION}" ] && continue || /bin/env openssl enc -d -aes-256-cbc -a -in ${FILE_NAME} -pass ${AUTHENTICATION};
                             ;;
                     esac
                 done
             else
-                /usr/bin/env gpg --decrypt ${FILE_NAME};
+                /bin/env gpg --decrypt ${FILE_NAME};
             fi
             ;;
         *)
@@ -562,7 +562,7 @@ function signFile
 
     [ ${#} -eq 0 ] && echo "A filename MUST be provided." && return 1;
 
-    /usr/bin/env gpg --output $(basename ${1}).sig --detach-sig ${1};
+    /bin/env gpg --output $(basename ${1}).sig --detach-sig ${1};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -757,7 +757,7 @@ function modifyAccountPassword
         return ${RETURN_CODE};
     fi
 
-    [ -f "${1}" ] && setArray HOSTLIST $(/usr/bin/env cat "${1}") || setArray HOSTLIST "${1}";
+    [ -f "${1}" ] && setArray HOSTLIST $(/bin/env cat "${1}") || setArray HOSTLIST "${1}";
     [ ${#} -eq 2 ] && typeset USER_NAME="${2}" || typeset USER_NAME="${LOGNAME}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOSTLIST -> ${HOSTLIST[*]}";
@@ -1018,11 +1018,11 @@ function modifyAccountPassword
         fi
 
         ## change password
-        case $(/usr/bin/env expect -v 2>/dev/null) in
+        case $(/bin/env expect -v 2>/dev/null) in
             "")
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> \${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"\"printf \"\"%s\n\"\" ${CURRENT_PASSWORD} ${NEW_PASSWORD} ${NEW_PASSWORD} | passwd\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> \${HOME}/.bin/watchdog -c \"/bin/env ssh\" -a \"-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"\"printf \"\"%s\n\"\" ${CURRENT_PASSWORD} ${NEW_PASSWORD} ${NEW_PASSWORD} | passwd\"";
 
-                typeset RETURN_DATA="$(${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"printf \"%s\n\" \"${CURRENT_PASSWORD}\" \"${NEW_PASSWORD}\" \"${NEW_PASSWORD}\" | passwd\"")";
+                typeset RETURN_DATA="$(${HOME}/.bin/watchdog -c "/bin/env ssh" -a "-aqCkXY -l ${USER_NAME} ${TARGET_HOST} \"printf \"%s\n\" \"${CURRENT_PASSWORD}\" \"${NEW_PASSWORD}\" \"${NEW_PASSWORD}\" | passwd\"")";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_DATA -> ${RETURN_DATA}";
                 ;;
@@ -1050,7 +1050,7 @@ function modifyAccountPassword
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                typeset RETURN_DATA="$(/usr/bin/env expect -f ${HOME}/.lib/ssh ${TARGET_HOST} ${USER_NAME} "passwd")";
+                typeset RETURN_DATA="$(/bin/env expect -f ${HOME}/.lib/ssh ${TARGET_HOST} ${USER_NAME} "passwd")";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_DATA -> ${RETURN_DATA}";
 
@@ -1348,7 +1348,7 @@ function chmod
             do
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_FILE -> ${TARGET_FILE}";
 
-                /usr/bin/env setfacl -s u::${USER_PERMISSIONS},g::${GROUP_PERMISSIONS},${WORLD_PERMISSIONS} ${TARGET_FILE} 2>/dev/null;
+                /bin/env setfacl -s u::${USER_PERMISSIONS},g::${GROUP_PERMISSIONS},${WORLD_PERMISSIONS} ${TARGET_FILE} 2>/dev/null;
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -1540,9 +1540,9 @@ function passwordRepository
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ENTRY_PASSWORD -> ${ENTRY_PASSWORD}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "STORE_ENTRY -> ${STORE_ENTRY}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN_COMMAND -> /usr/bin/env java -cp \".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}\" \"${PASSWORD_UTILITY_CLASS}\" \"--${SELECTED_OPTION}\" \"${ENTRY_NAME}\" \"${ENTRY_USERNAME}\" \"${ENTRY_PASSWORD}\" \"${STORE_ENTRY}\"";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN_COMMAND -> /bin/env java -cp \".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}\" \"${PASSWORD_UTILITY_CLASS}\" \"--${SELECTED_OPTION}\" \"${ENTRY_NAME}\" \"${ENTRY_USERNAME}\" \"${ENTRY_PASSWORD}\" \"${STORE_ENTRY}\"";
 
-            /usr/bin/env java -cp ".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}" ${PASSWORD_UTILITY_CLASS} --${SELECTED_OPTION} ${ENTRY_NAME} ${ENTRY_USERNAME} ${ENTRY_PASSWORD} ${STORE_ENTRY} 2>${LOG_ROOT}/PasswordUtility.err | tee ${LOG_ROOT}/PasswordUtility.out;
+            /bin/env java -cp ".:${UTILITY_CLASSPATH}:${PASSWORD_UTILITY_JAR}" ${PASSWORD_UTILITY_CLASS} --${SELECTED_OPTION} ${ENTRY_NAME} ${ENTRY_USERNAME} ${ENTRY_PASSWORD} ${STORE_ENTRY} 2>${LOG_ROOT}/PasswordUtility.err | tee ${LOG_ROOT}/PasswordUtility.out;
 
             typeset -i RET_CODE=${?};
             ;;
