@@ -60,7 +60,7 @@ function setArray
         [Bb][Aa][Ss][Hh])
             ## eval ${ARRAY_NAME}+=\(\"\${VARIABLE_VALUE}\"\);
             case "$(/bin/env command -v readarray)" in
-                ""
+                "")
                     eval typeset -a $(eval echo \${ARRAY_NAME})=\( $(eval echo \${${ARRAY_NAME}[*]}) "${VARIABLE_VALUE}" \);
                     ;;
                 *)
