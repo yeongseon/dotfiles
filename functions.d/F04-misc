@@ -26,7 +26,7 @@ function setArray
         RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Creates or updates an array with the given information";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ value to add ] [ current values ]
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ array name ] [ new value ]
                 -> The variable name for the given array
                 -> The value to add to the array";
 
@@ -58,10 +58,9 @@ function setArray
             set -A $(eval echo \${ARRAY_NAME}) $(eval echo \${${ARRAY_NAME}[*]}) "${VARIABLE_VALUE}";
             ;;
         [Bb][Aa][Ss][Hh])
-            ## eval ${ARRAY_NAME}+=\(\"\${VARIABLE_VALUE}\"\);
-            case "$(type readarray > /dev/null 2>&1)" in
+            case "$(type readarray 2>/dev/null)" in
                 "")
-                    eval typeset -a $(eval echo \${ARRAY_NAME})=\( $(eval echo \${${ARRAY_NAME}[*]}) "${VARIABLE_VALUE}" \);
+                    eval ${ARRAY_NAME}+=\(\"\${VARIABLE_VALUE}\"\);
                     ;;
                 *)
                     readarray -t $(eval echo \${ARRAY_NAME}) < <( eval echo \${${ARRAY_NAME}[*]} "${VARIABLE_VALUE}" );
