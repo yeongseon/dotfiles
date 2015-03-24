@@ -64,6 +64,40 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                 set _USER_PASSWD [ lindex $_AUTH_VARIABLE 2 ]
             }
         }
+        java {
+            set _DECRYPTED [ split [ exec -ignorestderr /usr/bin/env bash -c ". $env(HOME)/.functions.d/F06-security; passwordRepository decrypt $_USERNAME $_USERNAME 2>/dev/null" ] "\n" ]
+
+            foreach _ENTRY $_DECRYPTED {
+                if { [ string match "#*" $_ENTRY ] } {
+                    # ignore by just going straight to the next loop iteration
+                    continue;
+                }
+
+                set _AUTH_ENTRY [ split $_ENTRY ";" ];
+                set _ENTRY_NAME [ string trim [ lindex [ split [ lindex $_AUTH_ENTRY 0 ] ":" ] 1 ] ];
+                set _USER_NAME [ string trim [ lindex [ split [ lindex $_AUTH_ENTRY 1 ] ":" ] 1 ] ];
+                set _PLAIN_ENTRY [ string trim [ lindex [ split [ lindex $_AUTH_ENTRY 2 ] ":" ] 1 ] ];
+
+                if { [ string match "$_HOSTNAME:$_USERNAME" "$_ENTRY_NAME" ] } {
+                    ## set the password to the proper value
+                    set _AUTH_VALUE "$_PLAIN_ENTRY";
+
+                    break;
+                } elseif { [ string match "$_HOSTNAME" "$_ENTRY_NAME" ] } {
+                    ## set the password to the proper value
+                    set _AUTH_VALUE "$_PLAIN_ENTRY";
+
+                    break;
+                } elseif { [ string match "$_USERNAME" "$_ENTRY_NAME" ] } {
+                    ## set the password to the proper value
+                    set _AUTH_VALUE "$_PLAIN_ENTRY";
+
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        }
         file {
             if { [ file exists [ lindex $_AUTH_VARIABLE 1 ] ] == 1 } {
                 if { [ string length $_ENCRYPTION_TYPE ] != 0 } {
