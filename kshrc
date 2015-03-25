@@ -21,7 +21,7 @@
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 trap 'logoutUser; exit' 0;
 
@@ -51,6 +51,9 @@ do
     [ ! -z "${PROFILE}" ] && unset PROFILE;
 done
 
+[ ! -z "${INPUT}" ] && unset INPUT;
+[ ! -z "${PROFILE}" ] && unset PROFILE;
+
 case "${ENABLE_VERBOSE}" in
     "${_TRUE}")
         [ -f ${HOME}/.alias ] && . ${HOME}/.alias;
@@ -62,12 +65,8 @@ case "${ENABLE_VERBOSE}" in
         ;;
 esac
 
-[ ! -z "${INPUT}" ] && unset INPUT;
-[ ! -z "${PROFILE}" ] && unset PROFILE;
-
 ## system information
-typeset HOST_SYSTEM_NAME="$(/usr/bin/env echo "${HOSTNAME}" | /usr/bin/env tr '[A-Z]' '[a-z]')";
-typeset HOST_DOMAIN_NAME="$(/usr/bin/env cat /etc/resolv.conf | /usr/bin/env grep -i domain | /usr/bin/env awk '{print $2}')";
+typeset HOST_SYSTEM_NAME="$(/usr/bin/env hostname -f | /usr/bin/env tr '[A-Z]' '[a-z]')";
 typeset HOST_IP_ADDRESS="$(/usr/bin/env host "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}" | /usr/bin/env awk '{print $NF}')";
 typeset HOST_KERNEL_VERSION="$(/usr/bin/env uname -r)";
 typeset -i HOST_CPU_COUNT=$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env wc -l);
@@ -103,10 +102,9 @@ reset; clear;
 
 printf "\n";
 printf "%s\n" "+-------------------------------------------------------------------+";
-printf "%40s\n" "Welcome to FTP";
+printf "%40s\n" "Welcome to ${HOST_SYSTEM_NAME}";
 printf "%s\n" "+-------------------------------------------------------------------+";
 printf "%s\n" "+---------------------- System Information -------------------------+";
-printf "%-14s : %-10s\n" "+ Hostname" "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}";
 printf "%-14s : %-10s\n" "+ IP Address" "${HOST_IP_ADDRESS}";
 printf "%-14s : %-10s\n" "+ Kernel version" "$(uname -r)";
 printf "%-14s : %-10s\n" "+ CPU" "${HOST_CPU_COUNT} / ${HOST_CPU_INFO}";
@@ -133,3 +131,4 @@ printf "\n";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+

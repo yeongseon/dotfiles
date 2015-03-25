@@ -66,8 +66,7 @@ case "${ENABLE_VERBOSE}" in
 esac
 
 ## system information
-typeset HOST_SYSTEM_NAME="$(/usr/bin/env echo "${HOSTNAME}" | /usr/bin/env tr '[A-Z]' '[a-z]')";
-typeset HOST_DOMAIN_NAME="$(/usr/bin/env cat /etc/resolv.conf | /usr/bin/env grep -i domain | /usr/bin/env awk '{print $2}')";
+typeset HOST_SYSTEM_NAME="$(/usr/bin/env hostname -f | /usr/bin/env tr '[A-Z]' '[a-z]')";
 typeset HOST_IP_ADDRESS="$(/usr/bin/env host "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}" | /usr/bin/env awk '{print $NF}')";
 typeset HOST_KERNEL_VERSION="$(/usr/bin/env uname -r)";
 typeset -i HOST_CPU_COUNT=$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env wc -l);
@@ -103,10 +102,9 @@ reset; clear;
 
 printf "\n";
 printf "%s\n" "+-------------------------------------------------------------------+";
-printf "%40s\n" "Welcome to FTP";
+printf "%40s\n" "Welcome to ${HOST_SYSTEM_NAME}";
 printf "%s\n" "+-------------------------------------------------------------------+";
 printf "%s\n" "+---------------------- System Information -------------------------+";
-printf "%-14s : %-10s\n" "+ Hostname" "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}";
 printf "%-14s : %-10s\n" "+ IP Address" "${HOST_IP_ADDRESS}";
 printf "%-14s : %-10s\n" "+ Kernel version" "$(uname -r)";
 printf "%-14s : %-10s\n" "+ CPU" "${HOST_CPU_COUNT} / ${HOST_CPU_INFO}";
