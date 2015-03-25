@@ -1581,10 +1581,11 @@ function fssh
         RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ command ]
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ command ] [ ssh config file ]
             -> The username for access to the target server
             -> The hostname to ssh to
-            -> Any commands to execute against the target host, as necessary";
+            -> Any commands to execute against the target host, as necessary
+            -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1611,18 +1612,14 @@ function fssh
 
     typeset USERNAME="${1}";
     [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
-    typeset EXEC_COMMAND="${3}";
+    [ ${#} -eq 4 ] && typeset EXEC_COMMAND="${3}" || typeset -l SSH_CONFIG_FILE="~/.ssh/config.d/${4}";
+    [ ${#} -eq 4 ] && typeset -l SSH_CONFIG_FILE="~/.ssh/config.d/${4}"
+    [ ${#} -eq 4 ] && typeset -l SSH_CONFIG_FILE="~/.ssh/config";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[*]}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC_COMMAND -> ${EXEC_COMMAND}";
-
-    ## set up the config
-    typeset SSH_CONFIG_FILE="$(mktemp)";
-
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
-
-    /usr/bin/env cat ~/.ssh/config.d/* > "${SSH_CONFIG_FILE}";
 
     for TARGET_HOST in ${TARGET_HOSTS[*]}
     do

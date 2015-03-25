@@ -157,9 +157,6 @@ function validateServerAvailability
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
-        [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
-
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
@@ -167,6 +164,12 @@ function validateServerAvailability
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${ERROR_COUNT}" ] && typeset -i ERROR_COUNT=0;
+        [ ! -z "${SEARCH_ENTRY}" ] && unset -v SEARCH_ENTRY;
+        [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+        [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
@@ -204,26 +207,80 @@ function validateServerAvailability
             esac
             ;;
         *)
-            typeset RETURN_CODE=1;
+            ## lets do a few things here. dig/host don't use /etc/resolv.conf
+            ## so we have to kind of drag it in here.
+            for SEARCH_ENTRY in $(/usr/bin/env grep search /etc/resolv.conf)
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SEARCH_ENTRY -> ${SEARCH_ENTRY}";
 
-            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "${VALIDATE_HOSTNAME} does not appear to exist in DNS. Unable to determine availability.";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${VALIDATE_HOSTNAME} does not appear to exist in DNS. Unable to determine availability.";
+                [ "${SEARCH_ENTRY}" == "search" ] && continue;
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+                case $(/usr/bin/env host "${VALIDATE_HOSTNAME}.${SEARCH_ENTRY}" > /dev/null 2>&1; echo ${?};) in
+                    0)
+                        ## make sure to fix the error counter
+                        typeset -i ERROR_COUNT=0;
 
-            [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
-            [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
+                        case ${#} in
+                            1)
+                                case "$(uname)" in
+                                    [Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                                        /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                                        break;
+                                        ;;
+                                    *)
+                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} \"${VALIDATE_HOSTNAME}\" > /dev/null 2>&1";
 
-            return ${RETURN_CODE};
+                                        /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
+
+                                        break;
+                                        ;;
+                                esac
+                                ;;
+                            2)
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
+
+                                echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+
+                                break;
+                                ;;
+                        esac
+                        ;;
+                    *)
+                        (( ERROR_COUNT += 1 ));
+
+                        continue;
+                esac
+
+                if [ ${ERROR_COUNT} -ne 0 ]
+                then
+                    typeset RETURN_CODE=1;
+
+                    writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "${VALIDATE_HOSTNAME} does not appear to exist in DNS. Unable to determine availability.";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${VALIDATE_HOSTNAME} does not appear to exist in DNS. Unable to determine availability.";
+
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                    [ ! -z "${ERROR_COUNT}" ] && typeset -i ERROR_COUNT=0;
+                    [ ! -z "${SEARCH_ENTRY}" ] && unset -v SEARCH_ENTRY;
+                    [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+                    [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
+                    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+                    return ${RETURN_CODE};
+                fi
+            done
             ;;
     esac
 
@@ -232,9 +289,6 @@ function validateServerAvailability
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
-    [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
-
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
@@ -242,6 +296,12 @@ function validateServerAvailability
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ERROR_COUNT}" ] && typeset -i ERROR_COUNT=0;
+    [ ! -z "${SEARCH_ENTRY}" ] && unset -v SEARCH_ENTRY;
+    [ ! -z "${VALIDATE_HOSTNAME}" ] && unset -v VALIDATE_HOSTNAME;
+    [ ! -z "${VALIDATE_PORT}" ] && unset -v VALIDATE_PORT;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
 }
