@@ -22,27 +22,27 @@
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## defaults
-alias diff='/bin/env colordiff';
-alias mountt='/bin/env mount | column -t';
-alias ls='/bin/env ls -lhpF --color=auto';
-alias grep='/bin/env grep --color=auto';
-alias egrep='/bin/env egrep --color=auto';
-alias fgrep='/bin/env fgrep --color=auto';
-alias wget='/bin/env wget -c';
-alias stat='/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
-alias ssh-keygen='/bin/env ssh-keygen -C ""';
-alias ssh-keyscan='/bin/env ssh-keyscan -H';
-alias rsync='/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
-alias mailx='/bin/env mutt';
-alias du='/bin/env du -sk';
-alias netstat='/bin/env netstat -an';
-alias ldapsearch="/bin/env ldapsearch -h ${LDAP_HOST} -p ${LDAP_PORT:389} -b "dc=caspersbox,dc=com" -D "uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" -W";
-alias ping="/bin/env ping -c 4 -q -W ${THREAD_TIMEOUT}";
-alias mysql="/bin/env mysql --protocol tcp -h localhost -u ${LOGNAME} -p";
-alias nc="/bin/env nc -w ${THREAD_TIMEOUT}";
-alias jmap='/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
-alias pssh='/bin/env pssh -p 10 -o ${HOME}/.log -e ${HOME}/.log -t ${THREAD_TIMEOUT} -P'; # multiplexer
-alias recode='/bin/env recode -qt';
+alias diff='/usr/bin/env colordiff';
+alias mountt='/usr/bin/env mount | column -t';
+alias ls='/usr/bin/env ls -lhpF --color=auto';
+alias grep='/usr/bin/env grep --color=auto';
+alias egrep='/usr/bin/env egrep --color=auto';
+alias fgrep='/usr/bin/env fgrep --color=auto';
+alias wget='/usr/bin/env wget -c';
+alias stat='/usr/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
+alias ssh-keygen='/usr/bin/env ssh-keygen -C ""';
+alias ssh-keyscan='/usr/bin/env ssh-keyscan -H';
+alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
+alias mailx='/usr/bin/env mutt';
+alias du='/usr/bin/env du -sk';
+alias netstat='/usr/bin/env netstat -an';
+alias ldapsearch="/usr/bin/env ldapsearch -h ${LDAP_HOST} -p ${LDAP_PORT:389} -b "dc=caspersbox,dc=com" -D "uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" -W";
+alias ping="/usr/bin/env ping -c 4 -q -W ${THREAD_TIMEOUT}";
+alias mysql="/usr/bin/env mysql --protocol tcp -h localhost -u ${LOGNAME} -p";
+alias nc="/usr/bin/env nc -w ${THREAD_TIMEOUT}";
+alias jmap='/usr/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
+alias pssh='/usr/bin/env pssh -p 10 -o ${HOME}/.log -e ${HOME}/.log -t ${THREAD_TIMEOUT} -P'; # multiplexer
+alias recode='/usr/bin/env recode -qt';
 
 case $(uname) in
     [Ss][Uu][Nn][Oo][Ss]|[Ss][Oo]][Ll][Aa][Rr][Ii][Ss])

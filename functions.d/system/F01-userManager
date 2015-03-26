@@ -120,8 +120,8 @@ function addUserAccount
             \t\t+-------------------------------------------------------------------+
             \t\t                        Add a new User
             \t\t+-------------------------------------------------------------------+
-            \t\tHostname: $(/bin/env uname -n)
-            \t\tUptime: $(/bin/env uptime | /bin/env cut -d "," -f 1 | /bin/env sed -e 's/^ *//g;s/ *$//g')
+            \t\tHostname: $(/usr/bin/env uname -n)
+            \t\tUptime: $(/usr/bin/env uptime | /usr/bin/env cut -d "," -f 1 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g')
             \t\t+-------------------------------------------------------------------+\n\n";
 
         printf "Please provide the username:\n\n";
@@ -263,32 +263,32 @@ function addUserAccount
         ## complete, create account
         case "$(uname)" in
             [Ll][Ii][Nn][Uu][Xx])
-                /bin/env useradd -b "${HOME_DIRECTORY}" -d "${HOME_DIRECTORY}" -e -f -g "${USER_GUID}" -G -m -N -s "${SHELL_NAME}" -u "${USER_UID}" "${USERNAME}";
+                /usr/bin/env useradd -b "${HOME_DIRECTORY}" -d "${HOME_DIRECTORY}" -e -f -g "${USER_GUID}" -G -m -N -s "${SHELL_NAME}" -u "${USER_UID}" "${USERNAME}";
 
-                /bin/env mkdir -pv "${HOME_DIRECTORY}";
+                /usr/bin/env mkdir -pv "${HOME_DIRECTORY}";
 
-                /bin/env find "${HOME_DIRECTORY}" -print | /bin/env xargs /bin/env chown "${USERNAME}" "${USER_GUID}";
+                /usr/bin/env find "${HOME_DIRECTORY}" -print | /usr/bin/env xargs /usr/bin/env chown "${USERNAME}" "${USER_GUID}";
                 ;;
             *)
                 printf "%s:x:%s:%s:%s:%s:%s" "${USERNAME}" "${USER_UID}" "${USER_GUID}" "${FULL_NAME}" "${HOME_DIRECTORY}" "${SHELL_NAME}" >> "${ETC_PASSWORD}";
                 printf "%s:x:%s:%s" "${USERNAME}" "${USER_GUID}" "${USERNAME}" >> "${ETC_GROUP}";
 
-                /bin/env mkdir -pv "${HOME_DIRECTORY}";
+                /usr/bin/env mkdir -pv "${HOME_DIRECTORY}";
 
-                /bin/env cp -Rp /etc/skel/.[a-zA-Z]* "${HOME_DIRECTORY}";
+                /usr/bin/env cp -Rp /etc/skel/.[a-zA-Z]* "${HOME_DIRECTORY}";
 
-                /bin/env chmod -R 755 "${HOME_DIRECTORY}";
-                /bin/env chown -R 755 "${USER_UID}:${USER_GUID}";
+                /usr/bin/env chmod -R 755 "${HOME_DIRECTORY}";
+                /usr/bin/env chown -R 755 "${USER_UID}:${USER_GUID}";
                 ;;
         esac
 
         ## set initial password
-        typeset NEW_PASSWORD=$(/bin/env cat /dev/urandom | /bin/env tr -cd '[:graph:]' | /bin/env head -c ${STRING_LENGTH});
+        typeset NEW_PASSWORD=$(/usr/bin/env cat /dev/urandom | /usr/bin/env tr -cd '[:graph:]' | /usr/bin/env head -c ${STRING_LENGTH});
 
-        /bin/env printf "${NEW_PASSWORD}" "${NEW_PASSWORD}" | passwd;
+        /usr/bin/env printf "${NEW_PASSWORD}" "${NEW_PASSWORD}" | passwd;
 
         ## force expiration
-        /bin/env chage "$(date +"%Y-%m-%d")" "${USERNAME}";
+        /usr/bin/env chage "$(date +"%Y-%m-%d")" "${USERNAME}";
     done
 
     [ ! -z "${ETC_PASSWORD}" ] && unset -v ETC_PASSWORD;
@@ -469,7 +469,7 @@ function suspendUserAccount
     chmod 700 "/home/${USERNAME}";
 
     ## lock out account
-    /bin/env passwd -s /bin/false -l "${USER_NAME}";
+    /usr/bin/env passwd -s /bin/false -l "${USER_NAME}";
 
     ## change password
     modifyAccountPassword "$(hostname)" "${USER_NAME}";
@@ -588,7 +588,7 @@ function deleteUserAccount
     typeset -i ELAPSED=0;
     typeset -i INTERVAL=1;
     typeset USER_NAME="${1}";
-    typeset USER_UID="$(cut -d "=" -f 2 <<< "$(/bin/env id "${USER_NAME}")" | awk -F "(" '{print $1}')";
+    typeset USER_UID="$(cut -d "=" -f 2 <<< "$(/usr/bin/env id "${USER_NAME}")" | awk -F "(" '{print $1}')";
     typeset USER_TTY="$(awk '{print $2}' <<< "$(who | grep "${USER_NAME}")")";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "USER_NAME -> ${USER_NAME}";
@@ -643,10 +643,10 @@ function deleteUserAccount
     ## delete the account first
     case "$(uname)" in
         [Aa][Ii][Xx])
-            /bin/env rmuser -p "${USER_NAME}";
+            /usr/bin/env rmuser -p "${USER_NAME}";
             ;;
         [Ll][Ii][Nn][Uu][Xx]|[Ss][Oo][Ll][Aa][Rr][Ii][Ss])
-            /bin/env userdel -r "${USER_NAME}";
+            /usr/bin/env userdel -r "${USER_NAME}";
             ;;
         *)
     esac

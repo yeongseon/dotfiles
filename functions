@@ -32,24 +32,24 @@ do
         0)
             case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
                 [Kk][Ss][Hh])
-                    if [ ! -z "$(/bin/env ksh -n "${FUNCTION}")" ]
+                    if [ ! -z "$(/usr/bin/env ksh -n "${FUNCTION}")" ]
                     then
                         printf "%s\n" "NOT LOADING ${FUNCTION}: SYNTAX/COMPILATION ERRORS" >&2;
 
                         continue;
                     fi
 
-                    set -A FUNCTION_NAMES ${FUNCTION_NAMES[*]} $(/bin/env grep "function" "${FUNCTION}" | grep -v "#" | awk '{print $NF}');
+                    set -A FUNCTION_NAMES ${FUNCTION_NAMES[*]} $(/usr/bin/env grep "function" "${FUNCTION}" | grep -v "#" | awk '{print $NF}');
                     ;;
                 [Bb][Aa][Ss][Hh])
-                    if [ ! -z "$(/bin/env bash -n "${FUNCTION}")" ]
+                    if [ ! -z "$(/usr/bin/env bash -n "${FUNCTION}")" ]
                     then
                         printf "%s\n" "NOT LOADING ${FUNCTION}: SYNTAX/COMPILATION ERRORS" >&2;
 
                         continue;
                     fi
 
-                    typeset -a FUNCTION_NAMES=( ${FUNCTION_NAMES[*]} $(/bin/env grep "function" "${FUNCTION}" | grep -v "#" | awk '{print $NF}') );
+                    typeset -a FUNCTION_NAMES=( ${FUNCTION_NAMES[*]} $(/usr/bin/env grep "function" "${FUNCTION}" | grep -v "#" | awk '{print $NF}') );
                     ;;
             esac
 

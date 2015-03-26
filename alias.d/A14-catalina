@@ -22,8 +22,8 @@
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## catalina stuff
-alias stopServer='/bin/env sudo -u appsrv /opt/home/appsrv/bin/shutdown.sh';
-alias startServer='/bin/env sudo -u appsrv /opt/home/appsrv/bin/startup.sh';
+alias stopServer='/usr/bin/env sudo -u appsrv /opt/home/appsrv/bin/shutdown.sh';
+alias startServer='/usr/bin/env sudo -u appsrv /opt/home/appsrv/bin/startup.sh';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

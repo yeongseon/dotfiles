@@ -40,7 +40,7 @@ function reloadDotfiles
 
         writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating directory ${DIRECTORY_ENTRY}...";
 
-        if [ ! -d "${DIRECTORY_ENTRY} ]
+        if [ ! -d "${DIRECTORY_ENTRY}" ]
         then
             writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_ENTRY} doesn't currently exist. Creating.";
 
@@ -508,4 +508,3 @@ function setupNewServer
 
     return ${RETURN_CODE};
 }
-

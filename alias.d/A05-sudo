@@ -22,11 +22,11 @@
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## sudo aliases
-alias wasadm='/bin/env sudo su - wasadm';
-alias appadm='/bin/env sudo su - appadm';
-alias ihsadm='/bin/env sudo su - ihsadm';
-alias webadm='/bin/env sudo su - webadm';
-alias dnsadm='/bin/env sudo su - dnsadm';
+alias wasadm='/usr/bin/env sudo su - wasadm';
+alias appadm='/usr/bin/env sudo su - appadm';
+alias ihsadm='/usr/bin/env sudo su - ihsadm';
+alias webadm='/usr/bin/env sudo su - webadm';
+alias dnsadm='/usr/bin/env sudo su - dnsadm';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
