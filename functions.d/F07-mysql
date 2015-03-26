@@ -1,7 +1,7 @@
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  mysql
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Wrapper around the MySQL client to use autossh
+#    PARAMETERS:  Target host
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function mysql
@@ -89,3 +89,4 @@ function mysql
 
     return ${RETURN_CODE};
 }
+

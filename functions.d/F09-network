@@ -1,7 +1,7 @@
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  netinfo
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Returns pertinent network information
+#    PARAMETERS:  None
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function netinfo
@@ -52,11 +52,11 @@ function netinfo
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  wake
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
-#       RETURNS:  0 if success, 1 otherwise
+#   DESCRIPTION:  Sends a Wake-On-LAN packet to a provided host
+#    PARAMETERS:  MAC address to send to
+#       RETURNS:  0
 #==============================================================================
 function wake
 {
@@ -122,10 +122,10 @@ function wake
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  validateServerAvailability
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Validates that a given host exists in DNS and is alive
+#    PARAMETERS:  Target host, port number (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function validateServerAvailability
@@ -306,10 +306,10 @@ function validateServerAvailability
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  sendNotification
-#   DESCRIPTION:  Configures access to a new server for the current user
-#    PARAMETERS:  Target host to configure, username for access
+#   DESCRIPTION:  Sends a notification email to a provided address
+#    PARAMETERS:  Template, file content, target address, attachment (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function sendNotification
@@ -808,10 +808,10 @@ function sendNotification
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  setProxy
 #   DESCRIPTION:  Sets/unsets proxy information for the shell
-#    PARAMETERS:  None
+#    PARAMETERS:  Obtained via menu
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function setProxy
@@ -1141,3 +1141,4 @@ function setProxy
 
     return ${RETURN_CODE};
 }
+

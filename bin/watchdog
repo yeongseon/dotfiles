@@ -237,3 +237,4 @@ exec ${WATCHED_COMMAND} ${COMMAND_ARGS};
 wait ${WATCH_PID};
 
 exit ${?};
+

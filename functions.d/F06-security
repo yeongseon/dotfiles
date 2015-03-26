@@ -1,7 +1,7 @@
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  returnRandomCharacters
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Returns a random string of alphanumeric characters
+#    PARAMETERS:  Length of string, include special characters
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function returnRandomCharacters
@@ -92,10 +92,10 @@ function returnRandomCharacters
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  stringCrypt
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Encrypts/decrypts a provided string
+#    PARAMETERS:  Operation type, string, recipients (if using PGP/GPG)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function stringCrypt
@@ -283,10 +283,10 @@ function stringCrypt
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  fileCrypt
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Encrypts/decrypts a provided file
+#    PARAMETERS:  Operation type, file, recipients (if using PGP/GPG)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function fileCrypt
@@ -514,10 +514,10 @@ function fileCrypt
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  signFile
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Digitally signs a given file
+#    PARAMETERS:  The file to sign
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function signFile
@@ -685,9 +685,9 @@ function generateEntropyFile
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  modifyAccountPassword
-#   DESCRIPTION:  Configures access to a new server for the current user
+#   DESCRIPTION:  Changes the password for a provided account on given hosts
 #    PARAMETERS:  Target host to configure, username for access
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
@@ -1277,7 +1277,7 @@ function modifyAccountPassword
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  chmod
 #   DESCRIPTION:  Cleans up the archived log directory
 #    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
@@ -1391,33 +1391,16 @@ function chmod
             return ${RETURN_CODE};
             ;;
         *)
-            RETURN_CODE=1;
-
-            writeLogEntry "STDERR" "This utility can only be executed in a Cygwin environment.";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            [ ! -z "${STRING_LENGTH}" ] && unset -v STRING_LENGTH;
-            [ ! -z "${INCLUDE_SPECIAL}" ] && unset -v INCLUDE_SPECIAL;
-            [ ! -z "${RETURNED_CHARACTERS}" ] && unset -v RETURNED_CHARACTERS;
-
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
-
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-            return ${RETURN_CODE};
+            /usr/bin/env chmod ${USER_PERMISSIONS}${GROUP_PERMISSIONS}${WORLD_PERMISSIONS} ${TARGET_FILE};
+            return ${?};
+            ;;
     esac
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  passwordRepository
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Wrapper around the password repository jar
+#    PARAMETERS:  Operation type, entry name, username, password, store entry
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function passwordRepository
@@ -1617,3 +1600,4 @@ function passwordRepository
 
     return ${RETURN_CODE};
 }
+

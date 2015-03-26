@@ -1,7 +1,7 @@
 #=====  FUNCTION  =============================================================
 #          NAME:  setArray
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Creates or modifies an array with the given information
+#    PARAMETERS:  Name of array and value to add
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function setArray
@@ -89,8 +89,8 @@ function setArray
 
 #=====  FUNCTION  =============================================================
 #          NAME:  contains
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Verifies that a given entry exists in a provided array
+#    PARAMETERS:  Search string, array to search
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function contains
@@ -175,8 +175,8 @@ function contains
 
 #=====  FUNCTION  =============================================================
 #          NAME:  shred
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Destroys a target filesystem by overwriting the data
+#    PARAMETERS:  File
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function shred
@@ -270,8 +270,8 @@ function shred
 
 #=====  FUNCTION  =============================================================
 #          NAME:  corename
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Obtains the name of the program that generated a provided core
+#    PARAMETERS:  core file
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function corename
@@ -405,7 +405,7 @@ function corename
 #          NAME:  mktemp
 #   DESCRIPTION:  Implementation of the Linux mktemp utility for AIX, because
 #                 AIX doesn't have it.
-#    PARAMETERS:  Temporary directory to store the file in
+#    PARAMETERS:  Temporary directory to store the file in (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function mktemp
@@ -465,8 +465,8 @@ function mktemp
 
 #=====  FUNCTION  =============================================================
 #          NAME:  up
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Goes up a provided number of directories
+#    PARAMETERS:  The number of directories to go up to
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function up
@@ -568,8 +568,8 @@ function up
 
 #=====  FUNCTION  =============================================================
 #          NAME:  tree
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Directory output in a "tree" format
+#    PARAMETERS:  Directory to print (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function tree
@@ -660,9 +660,9 @@ function trace
 
 #=====  FUNCTION  =============================================================
 #          NAME:  spinner
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
-#       RETURNS:  0 if success, 1 otherwise
+#   DESCRIPTION:  Provides terminal output during long processes
+#    PARAMETERS:  None
+#       RETURNS:  0
 #==============================================================================
 function spinner
 {
@@ -760,8 +760,8 @@ function spinner
 
 #=====  FUNCTION  =============================================================
 #          NAME:  mkcd
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Creates a directory and then changes into it
+#    PARAMETERS:  Directory to create
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function mkcd
@@ -832,8 +832,8 @@ function mkcd
 
 #=====  FUNCTION  =============================================================
 #          NAME:  killProc
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Kills a provided process by name
+#    PARAMETERS:  The process to kill
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function killProc
@@ -899,9 +899,9 @@ function killProc
 
 #=====  FUNCTION  =============================================================
 #          NAME:  isNaN
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
-#       RETURNS:  0 regardless of result.
+#   DESCRIPTION:  Checks if the provided variable is a number
+#    PARAMETERS:  Variable to check
+#       RETURNS:  0 if true, 1 if false
 #==============================================================================
 function isNaN
 {
@@ -964,8 +964,8 @@ function isNaN
 
 #=====  FUNCTION  =============================================================
 #          NAME:  daemonize
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Executes a given command as a daemon
+#    PARAMETERS:  The command to execute
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function daemonize
@@ -1059,8 +1059,8 @@ function daemonize
 
 #=====  FUNCTION  =============================================================
 #          NAME:  findpid
-#   DESCRIPTION:  Configures access to a new server for the current user
-#    PARAMETERS:  Target host to configure, username for access
+#   DESCRIPTION:  Finds the PID for a given process name
+#    PARAMETERS:  The process name to search for
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function findpid
@@ -1084,7 +1084,7 @@ function findpid
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Perform a data mover process";
+        writeLogEntry "STDERR" "${METHOD_NAME} - Finds the PID for a given process name";
         writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ process ]
             -> The process to search for. Provide as much as possible for exact matching.";
 
@@ -1135,8 +1135,8 @@ function findpid
 
 #=====  FUNCTION  =============================================================
 #          NAME:  mktar
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Creates a tar archive of the given directory
+#    PARAMETERS:  Directory to archive
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function mktar
@@ -1262,8 +1262,8 @@ function mktar
 
 #=====  FUNCTION  =============================================================
 #          NAME:  lsz
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Lists the content of a provided archive
+#    PARAMETERS:  Archive to list
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function lsz
@@ -1361,11 +1361,10 @@ function lsz
     return ${RETURN_CODE};
 }
 
-
 #=====  FUNCTION  =============================================================
 #          NAME:  extract
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Extracts the provided archive
+#    PARAMETERS:  Archive to extract
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function extract
@@ -1472,8 +1471,8 @@ function extract
 
 #=====  FUNCTION  =============================================================
 #          NAME:  teeOutput
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Tee output of a given command
+#    PARAMETERS:  The command to tee, the file to tee to (optional)
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function teeOutput
@@ -1599,8 +1598,8 @@ function teeOutput
 
 #=====  FUNCTION  =============================================================
 #          NAME:  cronCommand
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Runs a command on a given schedule, similar to cron
+#    PARAMETERS:  Time period, command to execute
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function cronCommand
@@ -1676,8 +1675,8 @@ function cronCommand
 
 #=====  FUNCTION  =============================================================
 #          NAME:  getFileStat
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Returns statistics of given files/directories
+#    PARAMETERS:  File/directory to stat
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function getFileStat
@@ -1862,8 +1861,8 @@ function listProcessForPort
 
 #=====  FUNCTION  =============================================================
 #          NAME:  returnEpochTime
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#   DESCRIPTION:  Returns the UNIX Epoch time for a provided date/range
+#    PARAMETERS:  The date to convert, a future date (optional, for ranging)
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function returnEpochTime
@@ -1958,7 +1957,7 @@ function returnEpochTime
 #=====  FUNCTION  =============================================================
 #          NAME:  lockProcess
 #   DESCRIPTION:  Lock a provided process so it can only run at one time
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
+#    PARAMETERS:  Lock file, process, wait time
 #       RETURNS:  0 regardless of result.
 #==============================================================================
 function lockProcess
@@ -2061,52 +2060,3 @@ function lockProcess
     return ${RETURN_CODE};
 }
 
-#===  FUNCTION  ===============================================================
-#          NAME:  isNaN
-#   DESCRIPTION:  Cleans up the archived log directory
-#    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
-#       RETURNS:  0 regardless of result.
-#==============================================================================
-function isNaN
-{
-    trap 'set +v; set +x' INT TERM EXIT;
-
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x;
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
-    typeset METHOD_NAME="${THIS_CNAME}#${FUNCNAME[0]}";
-    typeset -i RETURN_CODE=0;
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${@}";
-
-    if [ ${#} -eq 0 ]
-    then
-        typeset RETURN_CODE=3;
-
-        echo "${0} - Validate that the provided string is numeric\n" >&2;
-        echo "Usage: ${0} [ string ]
-                 -> The string to validate\n" >&2;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
-
-        return ${RETURN_CODE};
-    fi
-
-    [ -z "$(echo "${1}" | /usr/bin/env perl -ne '/^(\d)+$/gm && print')" ] && RETURN_CODE=1 || RETURN_CODE=0;
-
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    unset -v METHOD_NAME;
-
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && trace;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && trace;
-
-    return ${RETURN_CODE};
-}

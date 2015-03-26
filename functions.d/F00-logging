@@ -3,7 +3,7 @@
 [ ! -z "${LOG_ROOT}" ] && mkdir -p "${LOG_ROOT}";
 [ ! -z "${ARCHIVE_LOG_ROOT}" ] && mkdir -p "${ARCHIVE_LOG_ROOT}";
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  writeLogEntry
 #   DESCRIPTION:  Cleans up the archived log directory
 #    PARAMETERS:  Archive Directory, Logfile Name, Retention Time
@@ -104,3 +104,4 @@ function writeLogEntry
 
     return ${RETURN_CODE};
 }
+

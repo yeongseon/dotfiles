@@ -64,6 +64,7 @@
 .ssh/archive
 .ssh/admin01.cmh
 .ssh/admin02.cmh
+.ssh/config.d
 .config/user-dirs.locale
 .config/gnome-session/
 .config/ibus/
@@ -95,6 +96,7 @@
 .config/Empathy/
 .config/goa-1.0/
 .config/google-chrome/
+.config/google-chrome-unstable/
 .config/dconf/
 Desktop/
 .local/
@@ -128,6 +130,7 @@ Downloads/
 workspace
 Desktop
 Dropbox
+Documents
 VirtualBox*
 Downloads
 Pictures/Webcam
