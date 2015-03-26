@@ -1,6 +1,6 @@
 +notcp
 +noignore
-+domain=hsbc.com
++domain=synacor.com
 +search
 +showsearch
 +noaaonly
@@ -23,6 +23,4 @@
 +noonesoa
 +nofail
 +besteffort
-+nodnssec
 +nonsid
-+noedns

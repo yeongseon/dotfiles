@@ -20,9 +20,6 @@
 [https]
     proxy =
 
-[push]
-    default = simple
-
 [alias]
     st = status
     ci = commit
@@ -34,3 +31,5 @@
 [commit]
 #    gpgsign = true
 
+[push]
+	default = simple

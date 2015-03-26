@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  java
-#         USAGE:  . java
-#   DESCRIPTION:  Useful java aliases
+#          FILE:  git
+#         USAGE:  . git
+#   DESCRIPTION:  Useful git aliases
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -21,12 +21,7 @@
 
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
-## java
-[ "$(uname -m)" == "x86_64" ] && alias java="${JAVA_HOME}/bin/java -d64 ${JAVA_OPTS}" || alias java="${JAVA_HOME}/bin/java ${JAVA_OPTS}";
-alias keytool="${JAVA_HOME}/bin/keytool";
-alias jad='~/.bin/jad -dead -ff -i -s java -t4';
-alias threadAnalyzer="java -jar ${HOME}/.lib/jca457.jar";
-alias heapAnalyzer="java -jar ${HOME}/.lib/ha456.jar";
+alias startvm='/usr/bin/env VBoxHeadless --vrde off -s';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

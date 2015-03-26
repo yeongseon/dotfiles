@@ -21,7 +21,7 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-[ ! -z "$(/usr/bin/env command -v expect)" ] && /usr/bin/env expect -d -f ${HOME}/.lib/keychain 2>/dev/null;
+[ ! -z "$(/bin/env command -v expect)" ] && /bin/env expect -d -f ${HOME}/.lib/keychain 2>/dev/null;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

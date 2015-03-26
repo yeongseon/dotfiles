@@ -376,7 +376,7 @@ function fileCrypt
 
     case ${METHOD} in
         [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(/usr/bin/env command -v gpg)" ]
+            if [ -z "$(type gpg > /dev/null 2>&1)" ]
             then
                 while ${_TRUE}
                 do
@@ -418,7 +418,7 @@ function fileCrypt
             fi
             ;;
         [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(/usr/bin/env command -v gpg)" ]
+            if [ -z "$(type gpg)" ]
             then
                 while ${_TRUE}
                 do
