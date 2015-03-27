@@ -1,21 +1,18 @@
 ### Section for authentication and authorization customizations.
 [auth]
-password-stores =
 ssl-client-cert-file-prompt = no
 store-passwords = no
 store-auth-creds = no
 
 [helpers]
 ### Set editor-cmd to the command used to invoke your text editor.
-# editor-cmd = editor (vi, emacs, notepad, etc.)
-# diff-cmd = diff_program (diff, gdiff, etc.)
-# diff-extensions = -u -p
-# diff3-cmd = diff3_program (diff3, gdiff3, etc.)
-# diff3-has-program-arg = [yes | no]
-# merge-tool-cmd = merge_command
+editor-cmd = vi
+diff-cmd = colordiff
+diff-extensions = -u -p
+diff3-cmd = diff3
 
 [tunnels]
-# ssh = $SVN_SSH ssh -q
+ssh = $SVN_SSH ssh -q
 
 ### Section for configuring miscellaneous Subversion options.
 [miscellany]
@@ -69,3 +66,4 @@ USERINFO = svn:eol-style=native; svn:keywords="Author Date Id Rev";
 ### Section for configuring working copies.
 [working-copy]
 exclusive-locking = false
+

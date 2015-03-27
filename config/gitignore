@@ -10,7 +10,6 @@
 *.class
 
 # Generated files
-bin/
 gen/
 
 # Gradle files
@@ -358,7 +357,6 @@ FakesAssemblies/
 *.pydevproject
 .metadata
 .gradle
-bin/
 tmp/
 *.tmp
 *.bak
@@ -455,4 +453,7 @@ ssh/id_cws-khuntly
 ## password repo files
 etc/password.properties
 etc/salt.properties
+
+## entropy
+etc/entropy
 

@@ -27,7 +27,7 @@ typeset -x LANG="en_US.UTF-8";
 typeset -x LC_ALL="en_US.UTF-8";
 typeset -x TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n';
 typeset -x LESS="-QR";
-typeset -x IGNOREEOF=1;
+typeset -ix IGNOREEOF=1;
 typeset -x GPG_TTY='tty';
 typeset -x BLOCKSIZE="K";
 typeset -x PAGER="/usr/bin/env less";
@@ -38,8 +38,11 @@ typeset -x DISPLAY=":0.0";
 typeset -x GZIP="-8v --name";
 typeset -x _TRUE="true";
 typeset -x _FALSE="false";
-typeset -x THREAD_TIMEOUT=10;
+typeset -ix THREAD_TIMEOUT=10;
 typeset -x MODIFIED_IFS="^";
+typeset -x RANDOM_GENERATOR="/dev/random";
+typeset -x ENTROPY_FILE="${HOME}/.etc/entropy";
+typeset -ix ENTROPY_FILE_SIZE=16384;
 
 case "$(uname)" in
     [Cc][Yy][Gg]][Ww][Ii][Nn]*)

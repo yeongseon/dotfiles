@@ -247,10 +247,10 @@ function shred
         return ${RETURN_CODE};
     fi
 
-	/usr/bin/env cryptsetup -d /dev/urandom -c aes-xts-plain create delete ${FILENAME};
-	/usr/bin/env shred -vzn 0 /dev/mapper/delete;
-	sync && sleep 4;
-	/usr/bin/env cryptsetup remove delete;
+    /usr/bin/env cryptsetup -d /dev/urandom -c aes-xts-plain create delete ${FILENAME};
+    /usr/bin/env shred -vzn 0 /dev/mapper/delete;
+    sync && sleep 4;
+    /usr/bin/env cryptsetup remove delete;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -733,13 +733,13 @@ function spinner
         return ${RETURN_CODE};
     fi
 
-	while [ -d /proc/${PROCESS} ]
-	do
-		echo -ne '\e[01;32m/\x08' ; sleep 0.05
-		echo -ne '\e[01;32m-\x08' ; sleep 0.05
-		echo -ne '\e[01;32m\\\x08' ; sleep 0.05
-		echo -ne '\e[01;32m|\x08' ; sleep 0.05
-	done
+    while [ -d /proc/${PROCESS} ]
+    do
+        echo -ne '\e[01;32m/\x08' ; sleep 0.05
+        echo -ne '\e[01;32m-\x08' ; sleep 0.05
+        echo -ne '\e[01;32m\\\x08' ; sleep 0.05
+        echo -ne '\e[01;32m|\x08' ; sleep 0.05
+    done
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1907,20 +1907,53 @@ function returnEpochTime
         return ${RETURN_CODE};
     fi
 
+    ## month directors
+    typeset Jan=00;
+    typeset Feb=01;
+    typeset Mar=02;
+    typeset Apr=03;
+    typeset May=04;
+    typeset Jun=05;
+    typeset Jul=06;
+    typeset Aug=07;
+    typeset Sep=08;
+    typeset Oct=09;
+    typeset Nov=10;
+    typeset Dec=11;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Jan -> ${Jan}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Feb -> ${Feb}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Mar -> ${Mar}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Apr -> ${Apr}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "May -> ${May}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Jun -> ${Jun}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Jul -> ${Jul}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Aug -> ${Aug}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Sep -> ${Sep}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Oct -> ${Oct}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Nov -> ${Nov}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Dec -> ${Dec}";
+
+    typeset YEAR="$(awk '{print $1}' <<< "${1}")";
+    typeset MONTH="$(typeset MONTH_NAME="$(awk '{print $2}' <<< "2015 Apr 01")"; /usr/bin/env sed -e "s/${MONTH_NAME}/$(eval echo \${${MONTH_NAME}})/" <<< "${MONTH_NAME}")";
+    typeset DAY="$(awk '{print $3}' <<< "${1}")";
+    [ ${#} -eq 2 ] && typeset -i FUTURE=${2};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "YEAR -> ${YEAR}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MONTH -> ${MONTH}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DAY -> ${DAY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FUTURE -> ${FUTURE}";
+
     case ${#} in
-        2)
-            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
+        1)
+            echo "${YEAR} ${MONTH} ${DAY}" | /usr/bin/env perl -MTime::Local -ane '
                 qw(timelocal);
+                my $epochtime = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
 
-                my $seconds = (3600 * 24);
-                my $now = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
-                my $validationPeriod = $now + ($F[3] * $seconds);
-
-                printf "$validationPeriod\n"; ';
+                printf "$epochtime\n"; ';
             ;;
-        4)
-            ## supposed to be quoted but support it anyway
-            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
+        2)
+            echo "${YEAR} ${MONTH} ${DAY}" | /usr/bin/env perl -MTime::Local -ane '
                 qw(timelocal);
 
                 my $seconds = (3600 * 24);
@@ -1930,11 +1963,27 @@ function returnEpochTime
                 printf "$validationPeriod\n"; ';
             ;;
         *)
-            echo ${*} | /usr/bin/env perl -MTime::Local -ane '
-                qw(timelocal);
-                my $epochtime = timelocal(0, 0, 0, $F[2], $F[1] - 1, $F[0]);
+            RETURN_CODE=3;
 
-                printf "$epochtime\n"; ';
+            writeLogEntry "STDERR" "${METHOD_NAME} - Generates and returns the Unix epoch for a provided date (or date range)";
+            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ <date to convert> ] [ <future date> ]
+                     -> Required arguments: The date to convert in form YYYY MM DD, quoted. (if provided, MUST be qouted)
+                     -> Optional arguments: A number of days to calculate a future epoch, for example, 45.";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+            return ${RETURN_CODE};
             ;;
     esac
 
@@ -1947,6 +1996,19 @@ function returnEpochTime
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${Jan}" ] && unset -v Jan;
+    [ ! -z "${Feb}" ] && unset -v Feb;
+    [ ! -z "${Mar}" ] && unset -v Mar;
+    [ ! -z "${Apr}" ] && unset -v Apr;
+    [ ! -z "${May}" ] && unset -v May;
+    [ ! -z "${Jun}" ] && unset -v Jun;
+    [ ! -z "${Jul}" ] && unset -v Jul;
+    [ ! -z "${Aug}" ] && unset -v Aug;
+    [ ! -z "${Sep}" ] && unset -v Sep;
+    [ ! -z "${Oct}" ] && unset -v Oct;
+    [ ! -z "${Nov}" ] && unset -v Nov;
+    [ ! -z "${Dec}" ] && unset -v Dec;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -2059,4 +2121,3 @@ function lockProcess
 
     return ${RETURN_CODE};
 }
-

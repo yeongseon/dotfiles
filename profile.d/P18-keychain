@@ -21,6 +21,23 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
+[ ! -d "${HOME}/.keychain" ] && return;
+
+case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
+    [Ff][Ii][Ss][Hh])
+        [ -f "${HOME}/.keychain/$(hostname -f)-fish" ] && . "${HOME}/.keychain/$(hostname -f)-fish";
+        [ -f "${HOME}/.keychain/$(hostname -f)-fish-gpg" ] && . "${HOME}/.keychain/$(hostname -f)-fish-gpg";
+        ;;
+    [Cc][Ss][Hh])
+        [ -f "${HOME}/.keychain/$(hostname -f)-csh" ] && . "${HOME}/.keychain/$(hostname -f)-csh";
+        [ -f "${HOME}/.keychain/$(hostname -f)-csh-gpg" ] && . "${HOME}/.keychain/$(hostname -f)-csh-gpg";
+        ;;
+    *)
+        [ -f "${HOME}/.keychain/$(hostname -f)-sh" ] && . "${HOME}/.keychain/$(hostname -f)-sh";
+        [ -f "${HOME}/.keychain/$(hostname -f)-sh-gpg" ] && . "${HOME}/.keychain/$(hostname -f)-sh-gpg";
+        ;;
+esac
+
 [ ! -z "$(/usr/bin/env command -v expect)" ] && /usr/bin/env expect -d -f ${HOME}/.lib/keychain 2>/dev/null;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;

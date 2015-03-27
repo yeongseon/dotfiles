@@ -24,13 +24,13 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
         typeset -x HISTFILE="${HOME}/.ksh_history";
-        typeset -x HISTSIZE=10000;
+        typeset -ix HISTSIZE=10000;
         typeset -x EXTENDED_HISTORY="ON";
         ;;
     [Bb][Aa][Ss][Hh])
         typeset -x HISTFILE="${HOME}/.bash_history";
-        typeset -x HISTSIZE=10000;
-        typeset -x HISTFILESIZE=10000;
+        typeset -ix HISTSIZE=10000;
+        typeset -ix HISTFILESIZE=10000;
         typeset -x HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S ";
         typeset -x HISTCONTROL="ignoredups:ignorespace";
         typeset -x HISTIGNORE="ls:ll:lt:la:l:cd:pwd:exit:mc:su:df:clear:cls:bg:fg";
