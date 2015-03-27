@@ -1,7 +1,7 @@
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  installBuild
-#   DESCRIPTION:  Processes and implements a DNS site failover
-#    PARAMETERS:  Parameters obtained via command-line flags
+#   DESCRIPTION:  Installs a given build to an application server
+#    PARAMETERS:  The maven package information
 #       RETURNS:  0 for positive result, >1 for non-positive
 #==============================================================================
 function installBuild
@@ -857,3 +857,4 @@ function installBuild
 
     return ${RETURN_CODE};
 }
+

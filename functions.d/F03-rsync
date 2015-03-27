@@ -1,7 +1,7 @@
 #=====  FUNCTION  ===============================================================
 #          NAME:  createBackup
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Creates a filesystem backup using rsync
+#    PARAMETERS:  hostname, username, source and destination
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function createBackup
@@ -195,8 +195,8 @@ function createBackup
 
 #=====  FUNCTION  ===============================================================
 #          NAME:  restoreBackup
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Restores a backup via rsync
+#    PARAMETERS:  hostname, username, source and target
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function restoreBackup
@@ -397,3 +397,4 @@ function restoreBackup
 
     return ${RETURN_CODE};
 }
+

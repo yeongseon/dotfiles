@@ -217,7 +217,7 @@ function buildSshConfig
 #=====  FUNCTION  =============================================================
 #          NAME:  changeSshPassphrase
 #   DESCRIPTION:  Modifies the password for a provided RSA/DSA private keyfile
-#    PARAMETERS:  Target host to obtain keys for
+#    PARAMETERS:  The keyfile to modify
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function changeSshPassphrase
@@ -540,7 +540,7 @@ function changeSshPassphrase
 #=====  FUNCTION  =============================================================
 #          NAME:  getSshKeys
 #   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#    PARAMETERS:  Target host or private key to transform
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function getSshKeys
@@ -1556,7 +1556,7 @@ function getSshKeys
 #=====  FUNCTION  =============================================================
 #          NAME:  ssh
 #   DESCRIPTION:  Configures access to a new server for the current user
-#    PARAMETERS:  Target host to configure, username for access
+#    PARAMETERS:  Username, Hostname, Commands (optional), SSH Config (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function fssh
@@ -1729,7 +1729,7 @@ function fssh
 #=====  FUNCTION  =============================================================
 #          NAME:  scp
 #   DESCRIPTION:  Wrapper around the actual ssh implementation.
-#    PARAMETERS:  Target host to obtain keys for
+#    PARAMETERS:  Transfer type, hostname, username, source and target
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function fscp
@@ -1943,3 +1943,4 @@ function fscp
 
     return ${RETURN_CODE};
 }
+

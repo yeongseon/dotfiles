@@ -1,7 +1,7 @@
 #=====  FUNCTION  ===============================================================
 #          NAME:  controlWebserver
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Wrapper for web server control
+#    PARAMETERS:  Control type, server name, user to run as
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function controlWebserver
@@ -130,8 +130,8 @@ function controlWebserver
 
 #=====  FUNCTION  ===============================================================
 #          NAME:  controlApplicationServer
-#   DESCRIPTION:  Obtains and stores the public key for a remote SSH node
-#    PARAMETERS:  Target host to obtain keys for
+#   DESCRIPTION:  Wrapper for application server
+#    PARAMETERS:  Server type, control type, profile name, server name, user to run as
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function controlApplicationServer
@@ -279,3 +279,4 @@ function controlApplicationServer
 
     return ${RETURN_CODE};
 }
+

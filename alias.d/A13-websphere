@@ -22,17 +22,17 @@
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## websphere stuff
-alias stopDMGR='/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/profiles/dmgrprofile/bin/stopManager.sh';
-alias stopNodeAgent='/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/profiles/appprofile/bin/stopNode.sh';
-alias getWASVersion='/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/bin/versionInfo.sh';
-alias installApp='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/installApp.py';
-alias configureSessionDatabase='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureSessionDatabase.py';
-alias configureMailSession='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureMailSession.py';
-alias configureDMGR='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureDMGR.py';
-alias configureTargetServer='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureTargetServer.py';
-alias configureNodeAgent='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureNodeAgent.py';
-alias restartCluster='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/restartCluster.py';
-alias wsadmin='/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython';
+alias stopDMGR='/usr/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/profiles/dmgrprofile/bin/stopManager.sh';
+alias stopNodeAgent='/usr/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/profiles/appprofile/bin/stopNode.sh';
+alias getWASVersion='/usr/bin/env sudo -u wasadm /opt/WebSphere70/AppServer/bin/versionInfo.sh';
+alias installApp='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/installApp.py';
+alias configureSessionDatabase='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureSessionDatabase.py';
+alias configureMailSession='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureMailSession.py';
+alias configureDMGR='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureDMGR.py';
+alias configureTargetServer='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureTargetServer.py';
+alias configureNodeAgent='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/configureNodeAgent.py';
+alias restartCluster='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython -f ${HOME}/.lib/restartCluster.py';
+alias wsadmin='/usr/bin/env sudo -u wasadm ${WAS_HOME}/bin/wsadmin.sh -lang jython';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
