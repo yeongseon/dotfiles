@@ -1,4 +1,4 @@
-#!/usr/bin/env ksh
+#!/usr/bin/env bash
 #==============================================================================
 #
 #          FILE:  watchdog
@@ -16,9 +16,7 @@
 #      REVISION:  ---
 #==============================================================================
 
-[ -f "${HOME}/.functions.d/F00-logging" ] && . "${HOME}/.functions.d/F00-logging";
-
-trap 'set -o bgnice; set +v; set +x' INT TERM EXIT;
+trap 'set +v; set +x' INT TERM EXIT;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
@@ -29,44 +27,183 @@ SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} starting up.. Process ID ${$}" >&2;
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> enter" >&2;
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}" >&2;
 
 ## default variables
+typeset -i ERROR_COUNT=0;
 typeset BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)"
 typeset CONFIG="${BASEDIR}/etc/install.conf.yaml"
 typeset DOTBOT_DIR="dotbot"
 typeset DOTBOT_BIN="bin/dotbot"
 
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BASEDIR -> ${BASEDIR}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIG -> ${CONFIG}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_DIR -> ${DOTBOT_DIR}";
-[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_BIN -> ${DOTBOT_BIN}";
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BASEDIR -> ${BASEDIR}" >&2;
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIG -> ${CONFIG}" >&2;
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_DIR -> ${DOTBOT_DIR}" >&2;
+[ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_BIN -> ${DOTBOT_BIN}" >&2;
+
+[ ! -d ${HOME}/.log ] && mkdir -pv ${HOME}/.log;
+
+#=====  FUNCTION  =============================================================
+#          NAME:  installFiles
+#   DESCRIPTION:  Re-loads existing dotfiles for use
+#    PARAMETERS:  None
+#       RETURNS:  0 if success, non-zero otherwise
+#==============================================================================
+function installFiles
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")" >&2;
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}" >&2;
+
+    typeset -i ERROR_COUNT=0;
+    typeset DOTFILES_HOME="${HOME}/.dotfiles";
+    typeset INSTALL_YAML="${DOTFILES_HOME}/etc/install.conf.yaml";
+    typeset CURR_IFS="${IFS}";
+    typeset IFS=$'\n'
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DOTFILES_HOME -> ${DOTFILES_HOME}" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INSTALL_YAML -> ${INSTALL_YAML}" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURR_IFS -> ${CURR_IFS}" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "IFS -> ${IFS}" >&2;
+
+    for DIRECTORY_ENTRY in $(cat "${INSTALL_YAML}" | grep "mkdir" | cut -d "," -f 1 | cut -d "[" -f 2)
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DIRECTORY_ENTRY -> ${DIRECTORY_ENTRY}" >&2;
+
+        typeset DIRECTORY_NAME="$(awk '{print $NF}' <<< "${DIRECTORY_ENTRY}" | sed -e "s^~/^^g")";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DIRECTORY_NAME -> ${DIRECTORY_NAME}" >&2;
+
+        [ -z "${DIRECTORY_NAME}" ] && continue;
+
+        if [ ! -d "${DIRECTORY_NAME}" ]
+        then
+            printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_NAME} doesn't currently exist. Creating." >&1;
+
+            mkdir -pv "${HOME}/${DIRECTORY_NAME}" 1>>/${HOME}/.log/mkdir.out 2>${HOME}/.log/mkdir.err;
+
+            if [ -d "${HOME}/${DIRECTORY_NAME}" ]
+            then
+                printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_NAME} created." >&1;
+            else
+                printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create directory ${DIRECTORY_NAME}" >&2;
+
+                (( ERROR_COUNT += 1 ));
+            fi
+        fi
+
+        [ ! -z "${DIRECTORY_NAME}" ] && unset -v DIRECTORY_NAME;
+        [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
+    done
+
+    for LINKED_ENTRY in $(cat "${INSTALL_YAML}" | grep "~/" | egrep -v "mkdir|dotfiles" | sed -e "s/^ *//g;s/ *$//g")
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINKED_ENTRY -> ${LINKED_ENTRY}" >&2;
+
+        [ -z "${LINKED_ENTRY}" ] && continue;
+
+        typeset LINK_TARGET="${HOME}/$(tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | cut -d ":" -f 1 | sed -e "s^~/^^g")";
+        typeset LINK_SOURCE="${DOTFILES_HOME}/$(tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | cut -d ":" -f 2 | sed -e "s^~/^^g")";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_TARGET -> ${LINK_TARGET}" >&2;
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_SOURCE -> ${LINK_SOURCE}" >&2;
+
+        if [ ! -L "${LINK_TARGET}" ]
+        then
+            printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating symbolic link for ${LINK_SOURCE} to ${LINK_TARGET}.." >&1;
+
+            ln -s ${LINK_SOURCE} ${LINK_TARGET} 1>>${HOME}/.log/link.out 2>>${HOME}/.log/link.err;
+
+            if [ -L "${LINK_TARGET}" ]
+            then
+                printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${LINK_SOURCE} successfully linked to ${LINK_TARGET}" >&1;
+            else
+                printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to link ${LINK_SOURCE} to ${LINK_TARGET}" >&2;
+
+                (( ERROR_COUNT += 1 ));
+            fi
+        fi
+
+        [ ! -z "${LINK_SOURCE}" ] && unset -v LINK_SOURCE;
+        [ ! -z "${LINK_TARGET}" ] && unset -v LINK_TARGET;
+        [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
+    done
+
+    [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit" >&2;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS" >&2;
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")" >&2;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    typeset -x IFS="${CURR_IFS}";
+
+    [ ${ERROR_COUNT} -ne 0 ] && typeset -i ERROR_COUNT=0;
+
+    [ ! -z "${DIRECTORY_NAME}" ] && unset -v DIRECTORY_NAME;
+    [ ! -z "${DOTFILES_HOME}" ] && unset -v DOTFILES_HOME;
+    [ ! -z "${INSTALL_YAML}" ] && unset -v INSTALL_YAML;
+    [ ! -z "${CURR_IFS}" ] && unset -v CURR_IFS;
+    [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
+    [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
+    [ ! -z "${LINK_TARGET}" ] && unset -v LINK_TARGET;
+    [ ! -z "${LINK_SOURCE}" ] && unset -v LINK_SOURCE;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    return ${RETURN_CODE};
+}
 
 cd "${BASEDIR}"
-/usr/bin/env git submodule update --init --recursive "${DOTBOT_DIR}"
-
-## try this first. it'll either work or it won't.
-"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}" > /dev/null 2>&1;
+/usr/bin/env git submodule update --init --recursive "${DOTBOT_DIR}" 2>/dev/null;
 typeset -i RET_CODE=${?};
 
-if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
 then
-    writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dotbot installation failed. Possible problem with Python libraries. Processing manual installation.";
-    writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dotbot installation failed. Possible problem with Python libraries. Processing manual installation.";
-
-    ## bring in the user profile so we dont have to write everything twice
-    [ -f "${HOME}/.dotfiles/functions.d/F01-userProfile" ] && . ${HOME}/.dotfiles/functions.d/F01-userProfile;
-
-    ## make the call
-    reloadDotFiles 1>${HOME}/reloadDotFiles.out 2>${HOME}/reloadDotFiles.err;
+    ## try this first. it'll either work or it won't.
+    "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}" > /dev/null 2>&1;
     typeset -i RET_CODE=${?};
 
     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
-        writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs.";
+        printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dotbot installation failed. Possible problem with Python libraries. Processing manual installation." >&2;
+
+        ## make the call
+        installFiles 1>${HOME}/installFiles.out 2>${HOME}/installFiles.err;
+        typeset -i RET_CODE=${?};
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
+        fi
+    fi
+else
+    printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dotbot installation failed. Possible problem with Python libraries. Processing manual installation.";
+
+    ## make the call
+    installFiles 1>${HOME}/installFiles.out 2>${HOME}/installFiles.err;
+    typeset -i RET_CODE=${?};
+
+    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+    then
+        printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
     fi
 fi
-
