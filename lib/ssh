@@ -77,7 +77,7 @@ if { [ expr { $argc < 2 } ] } {
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $TARGET_SYSTEM $USER_LOGINID java ] " " ];
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME java ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -91,23 +91,23 @@ if { [ expr { $argc < 2 } ] } {
 }
 
 if { [ info exists CONFIG_FILE ] } {
-    if { [ string match -nocase $EXEC_CMND "shell" ] } {
-        set _SSH_COMMAND "ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -qaCktl $USER_LOGINID -F $CONFIG_FILE";
+    if { [ string match -nocase $EXEC "shell" ] } {
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
     } else {
-        set _SSH_COMMAND "ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -qaCktl $USER_LOGINID -F $CONFIG_FILE \"$EXEC_CMND\"";
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE \"$EXEC\"";
     }
 } else {
-    set _SSH_COMMAND "ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -qaCktl $USER_LOGINID";
+    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME";
 }
 
 if { [ info exists env(NEW_PASSWD_FILE) ] } {
     set _ENCRYPTED $env(ENCR_TYPE);
-    set _CHANGE_DATA [ getAuthValue $TARGET_SYSTEM $USER_LOGINID $env(NEW_PASSWD_FILE) ];
+    set _CHANGE_DATA [ getAuthValue $HOSTNAME $USERNAME $env(NEW_PASSWD_FILE) ];
 }
 
 set i 0;
 
-eval spawn $_SSH_COMMAND $TARGET_SYSTEM
+eval spawn $_SSH_COMMAND $HOSTNAME
 
 expect {
     "*(yes/no)? " {
@@ -122,49 +122,49 @@ expect {
         exp_send "\r";
         exp_continue;
     }
-    "*Changing password for *$USER_LOGINID*" {
+    "*Changing password for *$USERNAME*" {
         ## set up password change here
         if { [ info exists _CHANGE_DATA ] } {
-            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
         } else {
-            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "" ];
+            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
         }
 
         switch $_RETURN_VALUE {
             1 - 2 - 3 {
-                puts stderr "Unable to change password for provided user account $USER_LOGINID on host $TARGET_SYSTEM";
+                puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
                 exit 0;
             }
             default {
                 puts "$_RETURN_VALUE"
-                puts "Password successfully changed for user $USER_LOGINID to $_RETURN_VALUE on host $TARGET_SYSTEM";
+                puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
             }
         }
     }
-    "*Changing password for user *$USER_LOGINID*" {
+    "*Changing password for user *$USERNAME*" {
         ## set up password change here
         if { [ info exists _CHANGE_DATA ] } {
-            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
         } else {
-            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "" ];
+            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
         }
 
         switch $_RETURN_VALUE {
             1 - 2 - 3 {
-                puts stderr "Unable to change password for provided user account $USER_LOGINID on host $TARGET_SYSTEM";
+                puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
                 exit 0;
             }
             default {
                 puts "$_RETURN_VALUE"
-                puts "Password successfully changed for user $USER_LOGINID to $_RETURN_VALUE on host $TARGET_SYSTEM";
+                puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
             }
         }
     }
     "*?assword*" {
         if { [ expr { $i == 1 } ] } {
-            puts stderr "An invalid password was provided for user account $USER_LOGINID on host $TARGET_SYSTEM";
+            puts stderr "An invalid password was provided for user account $USERNAME on host $HOSTNAME";
 
             exit 1;
         }
@@ -176,49 +176,49 @@ expect {
     }
     $_LINE_TERMINATOR {
         expect {
-            "*Changing password for *$USER_LOGINID*" {
+            "*Changing password for *$USERNAME*" {
                 ## set up password change here
                 if { [ info exists _CHANGE_DATA ] } {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                 } else {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "" ];
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
                 }
 
                 switch $_RETURN_VALUE {
                     1 - 2 - 3 {
-                        puts stderr "Unable to change password for provided user account $USER_LOGINID on host $TARGET_SYSTEM";
+                        puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
                         exit 0;
                     }
                     default {
                         puts "$_RETURN_VALUE"
-                        puts "Password successfully changed for user $USER_LOGINID to $_RETURN_VALUE on host $TARGET_SYSTEM";
+                        puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
                     }
                 }
             }
-            "*Changing password for user *$USER_LOGINID*" {
+            "*Changing password for user *$USERNAME*" {
                 ## set up password change here
                 if { [ info exists _CHANGE_DATA ] } {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                 } else {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "" ];
+                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
                 }
 
                 switch $_RETURN_VALUE {
                     1 - 2 - 3 {
-                        puts stderr "Unable to change password for provided user account $USER_LOGINID on host $TARGET_SYSTEM";
+                        puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
                         exit 0;
                     }
                     default {
                         puts "$_RETURN_VALUE"
-                        puts "Password successfully changed for user $USER_LOGINID to $_RETURN_VALUE on host $TARGET_SYSTEM";
+                        puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
                     }
                 }
             }
             "*?assword*" {
                 if { [ expr { $i == 1 } ] } {
-                    puts stderr "An invalid password was provided for user account $USER_LOGINID on host $TARGET_SYSTEM";
+                    puts stderr "An invalid password was provided for user account $USERNAME on host $HOSTNAME";
 
                     exit 1;
                 }
@@ -229,26 +229,26 @@ expect {
                 exp_continue;
             }
             $_LINE_TERMINATOR {
-                if { [ string compare $EXEC_CMND "shell" ] == 0 } {
+                if { [ string compare $EXEC "shell" ] == 0 } {
                     exp_send "\r";
                     interact;
                 } else {
-                    if { [ string compare $EXEC_CMND "passwd" ] == 0 } {
+                    if { [ string compare $EXEC "passwd" ] == 0 } {
                         if { [ info exists _CHANGE_DATA ] } {
-                            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
                         } else {
-                            set _RETURN_VALUE [ changeAccountPassword "account" "$USER_LOGINID" "$_USER_PASSWD" "" ];
+                            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
                         }
 
                         switch $_RETURN_VALUE {
                             1 - 2 - 3 {
-                                puts stderr "Unable to change password for provided user account $USER_LOGINID on host $TARGET_SYSTEM";
+                                puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
                                 exit 0;
                             }
                             default {
                                 puts "$_RETURN_VALUE"
-                                puts "Password successfully changed for user $USER_LOGINID to $_RETURN_VALUE on host $TARGET_SYSTEM";
+                                puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
                             }
                         }
                     }
