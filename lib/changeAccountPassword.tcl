@@ -15,8 +15,6 @@
 #      REVISION:  ---
 #==============================================================================
 
-set _CNAME "changeAccountPassword";
-set _METHOD_NAME "changeAccountPassword";
 set _RANDOM_GENERATOR "/dev/urandom";
 set _PASSWD_LENGTH "64";
 set _LINE_TERMINATOR "\r\n";

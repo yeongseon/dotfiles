@@ -376,7 +376,7 @@ function fileCrypt
 
     case ${METHOD} in
         [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(type gpg > /dev/null 2>&1)" ]
+            if [ -z "$(type gpg2 2>/dev/null)" ]
             then
                 while ${_TRUE}
                 do
@@ -414,11 +414,11 @@ function fileCrypt
                     esac
                 done
             else
-                [ -z "${RECIPIENTS}" ] && /usr/bin/env gpg -aes --output ${FILE_NAME}.asc ${FILE_NAME} || /usr/bin/env gpg -aes -r ${RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
+                [ -z "${RECIPIENTS}" ] && /usr/bin/env gpg2 -aes --output ${FILE_NAME}.asc ${FILE_NAME} || /usr/bin/env gpg2 -aes -r ${RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
             fi
             ;;
         [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(type gpg)" ]
+            if [ -z "$(type gpg2 2>/dev/null)" ]
             then
                 while ${_TRUE}
                 do
@@ -456,7 +456,7 @@ function fileCrypt
                     esac
                 done
             else
-                /usr/bin/env gpg --decrypt ${FILE_NAME};
+                /usr/bin/env gpg2 --decrypt ${FILE_NAME};
             fi
             ;;
         *)

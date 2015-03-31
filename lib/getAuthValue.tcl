@@ -15,15 +15,12 @@
 #      REVISION:  ---
 #==============================================================================
 
-set _CNAME "getAuthValue";
-set _METHOD_NAME "getAuthValue";
-set _DEFAULT_ENCRYPTION "GPG";
 set _AUTH_VALUE "none";
 set _PASSWD_LENGTH "64";
 set _RANDOM_GENERATOR "/dev/urandom";
-set _DEFAULT_AUTH [ split "file:env(HOME)/.etc/password.asc" ":" ];
+set _DEFAULT_AUTH "file:$env(HOME)/.etc/password.asc";
 
-proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENCRYPTED 0 } { _ENCRYPTION_PRG "" } } {
+proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENCRYPTED 1 } { _ENCRYPTION_PRG "gpg" } } {
     global env;
     global tcl_platform;
     global _DEFAULT_ENCRYPTION;
@@ -40,7 +37,7 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
         set _AUTH_VARIABLE [ split $_DEFAULT_AUTH ":" ];
     }
 
-    if { [ expr { $_ENCRYPTED ne 0 } == 0 ] } {
+    if { $_ENCRYPTED ne 0 } {
         if { [ info exists env(ENCR_TYPE) ] } {
             set _ENCRYPTION_TYPE $env(ENCR_TYPE);
         } elseif { [ string length $_ENCRYPTION_PRG ] != 0 } {
