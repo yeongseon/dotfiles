@@ -1896,16 +1896,16 @@ function fssh
         ## rock the ssh
         case "${EXEC_COMMAND}" in
             "")
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
             *)
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"\" 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
         esac
 
