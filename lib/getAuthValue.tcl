@@ -65,7 +65,7 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
             }
         }
         java {
-            set _DECRYPTED [ split [ exec -ignorestderr /usr/bin/env bash -c ". $env(HOME)/.functions.d/F06-security; passwordRepository decrypt $_USERNAME $_USERNAME 2>/dev/null" ] "\n" ]
+            set _DECRYPTED [ split [ exec -ignorestderr /usr/bin/env bash -c ". $env(HOME)/.functions.d/F06-security; passwordRepository decrypt $_HOSTNAME $_USERNAME 2>/dev/null" ] "\n" ]
 
             foreach _ENTRY $_DECRYPTED {
                 if { [ string match "#*" $_ENTRY ] } {
@@ -96,6 +96,12 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                 } else {
                     continue;
                 }
+
+                if { [ info exists _ENTRY ] } { unset _ENTRY; }
+                if { [ info exists _AUTH_ENTRY ] } { unset _AUTH_ENTRY; }
+                if { [ info exists _ENTRY_NAME ] } { unset _ENTRY_NAME; }
+                if { [ info exists _USER_NAME ] } { unset _USER_NAME; }
+                if { [ info exists _PLAIN_ENTRY ] } { unset _PLAIN_ENTRY; }
             }
         }
         file {
@@ -163,6 +169,9 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                         } else {
                             continue;
                         }
+
+                        if { [ info exists _ENTRY ] } { unset _ENTRY; }
+                        if { [ info exists _AUTH_ENTRY ] } { unset _AUTH_ENTRY; }
                     }
                 } else {
                     set _AUTH_FILE [ open [ lindex $_AUTH_VARIABLE 1 ] r ];
@@ -226,13 +235,35 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                                 continue;
                             }
                         }
+
+                        if { [ info exists _ENTRY ] } { unset _ENTRY; }
+                        if { [ info exists _AUTH_ENTRY ] } { unset _AUTH_ENTRY; }
                     }
 
                     close $_AUTH_FILE;
+
+                    if { [ info exists _AUTH_FILE ] } { unset _AUTH_FILE; }
                 }
             }
         }
     }
+
+    if { [ info exists _HOSTNAME ] } { unset _HOSTNAME; }
+    if { [ info exists _USERNAME ] } { unset _USERNAME; }
+    if { [ info exists _AUTH_FILE ] } { unset _AUTH_FILE; }
+    if { [ info exists _ID_FILE ] } { unset _ID_FILE; }
+    if { [ info exists _ENCRYPTED ] } { unset _ENCRYPTED; }
+    if { [ info exists _ENCRYPTION_PRG ] } { unset _ENCRYPTION_PRG; }
+    if { [ info exists _ENCRYPTION_TYPE ] } { unset _ENCRYPTION_TYPE; }
+    if { [ info exists _AUTH_VARIABLE ] } { unset _AUTH_VARIABLE; }
+    if { [ info exists _USER_PASSWD ] } { unset _USER_PASSWD; }
+    if { [ info exists _USER_KEY ] } { unset _USER_KEY; }
+    if { [ info exists _DECRYPTED ] } { unset _DECRYPTED; }
+    if { [ info exists _ENTRY ] } { unset _ENTRY; }
+    if { [ info exists _AUTH_ENTRY ] } { unset _AUTH_ENTRY; }
+    if { [ info exists _ENTRY_NAME ] } { unset _ENTRY_NAME; }
+    if { [ info exists _USER_NAME ] } { unset _USER_NAME; }
+    if { [ info exists _PLAIN_ENTRY ] } { unset _PLAIN_ENTRY; }
 
     return "$_AUTH_VALUE";
 }

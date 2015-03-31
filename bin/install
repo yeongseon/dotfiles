@@ -187,12 +187,14 @@ then
         printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Dotbot installation failed. Possible problem with Python libraries. Processing manual installation." >&2;
 
         ## make the call
-        installFiles 1>${HOME}/installFiles.out 2>${HOME}/installFiles.err;
+        installFiles 1>${HOME}/.log/installFiles.out 2>${HOME}/.log/installFiles.err;
         typeset -i RET_CODE=${?};
 
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
             printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
+
+            return 1;
         fi
     fi
 else
@@ -205,5 +207,7 @@ else
     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
         printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
+
+        return 1;
     fi
 fi
