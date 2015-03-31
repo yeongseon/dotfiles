@@ -206,9 +206,9 @@ function validateServerAvailability
 
                         /usr/bin/env nc -w 10 ${VALIDATE_HOSTNAME} ${VALIDATE_PORT} < /dev/null > /dev/null 2>&1;
                     else
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> printf \"quit\n\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
 
-                        echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+                        printf "quit\n" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
                     fi
                     ;;
             esac
@@ -225,6 +225,7 @@ function validateServerAvailability
                 case $(/usr/bin/env host "${VALIDATE_HOSTNAME}.${SEARCH_ENTRY}" > /dev/null 2>&1; echo ${?};) in
                     0)
                         ## make sure to fix the error counter
+                        [ ${ERROR_COUNT} -ne 0 ] && unset -v ERROR_COUNT;
                         typeset -i ERROR_COUNT=0;
 
                         case ${#} in
@@ -247,9 +248,9 @@ function validateServerAvailability
                                 esac
                                 ;;
                             2)
-                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> echo \"quit\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
+                                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> printf \"quit\n\" | /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1";
 
-                                echo "quit" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+                                printf "quit\n" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
 
                                 break;
                                 ;;

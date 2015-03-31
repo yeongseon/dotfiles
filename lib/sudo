@@ -50,6 +50,9 @@ if { [info exists env(THREAD_TIMEOUT)] } {
     set timeout $env(THREAD_TIMEOUT)
 }
 
+source [ file join [ file dirname [ info script ] ] misc.tcl ];
+source [ file join [ file dirname [ info script ] ] security.tcl ];
+
 proc usage {} {
     global _METHOD_NAME
 

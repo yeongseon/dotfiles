@@ -50,22 +50,17 @@ if { [ info exists env(THREAD_TIMEOUT) ] } {
 }
 
 ## bring in the files
-source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+source [ file join [ file dirname [ info script ] ] misc.tcl ];
+source [ file join [ file dirname [ info script ] ] security.tcl ];
 
 proc usage {} {
     global _METHOD_NAME
 
     puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
     puts stderr "Usage: $_METHOD_NAME \[ host \] \[ user \] \[ identity \] ( authentication mechanism ) ( timeout )";
-    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."
-    puts stderr "\tusername            The user to connect to the remote system as."
-    puts stderr "\tidentity            The identity file to send"
-    puts stderr "\tauthentication      Specify an authentication mechanism. One of 'pass' or 'file' can be provided, in the following formats:"
-    puts stderr "\t\t For password authentication: pass:the-password"
-    puts stderr "\t\t To use a file containing the authentication information. The following syntaxes are available:"
-    puts stderr "\t\t\t hostname:username:type:value(:value)"
-    puts stderr "\t\t The same syntax rules as above apply here as well."
-    puts stderr "\tNote that key-based authentication cannot be utilized here."
+    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname." ## _TARGET_SYSTEM
+    puts stderr "\tusername            The user to connect to the remote system as." ## _USER_LOGINID
+    puts stderr "\tidentity            The identity file to send" ## _IDENTITY_FILE
     puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."
 }
 
@@ -76,19 +71,14 @@ if { [ expr { $argc < 3 } ] } {
     exit 1
 } else {
     ## set runtime information
-    set _TARGET_SYSTEM [ lindex $argv 0 ]
-    set _USER_LOGINID [ lindex $argv 1 ]
-    set _IDENTITY_FILE [ lindex $argv 2 ]
+    for { set a 0 } { $a ne $argc } { incr a } {
+        set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ]
+        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ]
 
-    if { [ expr { $argc >= 4 } ] } {
-        set _AUTH_STRING [ lindex $argv 3 ];
+        incr a;
     }
 
-    if { [ info exists _AUTH_STRING ] } {
-        set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID $_AUTH_STRING ];
-    } else {
-        set _AUTH_DATA [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID ];
-    }
+    set _AUTH_DATA [ split [ getAuthValue $TARGET_SYSTEM $USER_LOGINID java ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -98,17 +88,6 @@ if { [ expr { $argc < 3 } ] } {
             set _USER_KEY [ lindex $_AUTH_DATA 0 ];
             set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
         }
-        default {
-            puts stderr "No valid authentication type was provided. Cannot continue.";
-
-            usage;
-        }
-    }
-
-    if { [string compare -nocase [ lindex $argv 4 ] ""] != 0 } {
-        set timeout [ lindex $argv 4 ]
-    } else {
-        set timeout 10
     }
 }
 

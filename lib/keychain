@@ -40,7 +40,8 @@ set _LINE_TERMINATOR "\r\n";
 set _KEYFILES "id_rsa id_dsa"; ## default keyfiles
 set timeout 60;
 
-source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
+source [ file join [ file dirname [ info script ] ] misc.tcl ];
+source [ file join [ file dirname [ info script ] ] security.tcl ];
 
 ## make sure we have all our arguments
 if { [ expr { $argc != 0 } ] } {

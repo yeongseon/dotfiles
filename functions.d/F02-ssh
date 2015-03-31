@@ -1431,7 +1431,7 @@ function getSshKeys
                 fi
             fi
 
-            if [ ${ERROR_COUNT} -ne 0 ]
+            if [ ! -z "${ERROR_COUNT}" ] && [ ${ERROR_COUNT} -ne 0 ]
             then
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "One or more hosts failed during execution. Please review logs to determine cause of failure.";
 
@@ -1611,10 +1611,56 @@ function fssh
     fi
 
     typeset USERNAME="${1}";
-    [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
-    [ ${#} -eq 4 ] && typeset EXEC_COMMAND="${3}" || typeset -l SSH_CONFIG_FILE="~/.ssh/config.d/${4}";
-    [ ${#} -eq 4 ] && typeset -l SSH_CONFIG_FILE="~/.ssh/config.d/${4}"
-    [ ${#} -eq 4 ] && typeset -l SSH_CONFIG_FILE="~/.ssh/config";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+
+    case ${#} in
+        2)
+            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
+            ;;
+        3)
+            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
+            typeset EXEC_COMMAND="${3}";
+            ;;
+        4)
+            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
+            typeset EXEC_COMMAND="${3}";
+            typeset SSH_CONFIG_FILE="~/.ssh/config.d/${4}"
+            ;;
+        *)
+            RETURN_CODE=3;
+
+            writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
+            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ command ] [ ssh config file ]
+                -> The username for access to the target server
+                -> The hostname to ssh to
+                -> Any commands to execute against the target host, as necessary
+                -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+            [ ! -z "${SSH_CONFIG_FILE}" ] && [ -f "${SSH_CONFIG_FILE}" ] && rm -rf "${SSH_CONFIG_FILE}";
+
+            [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+            return ${RETURN_CODE};
+            ;;
+    esac
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[*]}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
@@ -1691,16 +1737,21 @@ function fssh
         fi
 
         ## rock the ssh
-        if [ ! -z "${EXEC_COMMAND}" ]
-        then
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"\" 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
+        set -x
+        case "${EXEC_COMMAND}" in
+            "")
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
 
-            ${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"" 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
-        else
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
+                /usr/bin/env expect -f ${HOME}/.lib/ssh ${TARGET_HOST} ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+                ;;
+            *)
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"\" 2>&1 | /usr/bin/env tee -a \"${LOGNAME}-$(date +%Y%m%d).log\"";
 
-            [ -z "${EXEC_COMMAND}" ] && /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
-        fi
+                [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"" 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.bin/watchdog -c "/usr/bin/env ssh" -a "-qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"" 2>&1 | /usr/bin/env tee -a "${LOGNAME}-$(date +%Y%m%d).log";
+                ;;
+        esac
+        set +x
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";

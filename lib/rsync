@@ -45,17 +45,20 @@ set _METHOD_NAME "rsync"
 set _LINE_TERMINATOR "\r\n"
 set timeout -1
 
+source [ file join [ file dirname [ info script ] ] misc.tcl ];
+source [ file join [ file dirname [ info script ] ] security.tcl ];
+
 proc usage {} {
     global _METHOD_NAME
 
     puts stderr "$_METHOD_NAME Perform an automated SCP-based task without user interaction.";
     puts stderr "Usage: $_METHOD_NAME \[ host \] \[ username \] \[ type \] \[ src \] \[ dst \] ( timeout )";
-    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."
-    puts stderr "\tusername            The user to connect to the remote system as."
-    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required."
-    puts stderr "\tsrc                 The source path/file to operate against."
-    puts stderr "\tdst                 The target path/file to operate into."
-    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."
+    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname." ## _TARGET_SYSTEM
+    puts stderr "\tusername            The user to connect to the remote system as." ## _USER_LOGINID
+    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required." ## _TRANSFER_TYPE
+    puts stderr "\tsrc                 The source path/file to operate against." ## _SRC_FILE
+    puts stderr "\tdst                 The target path/file to operate into." ## _DST_FILE
+    puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used." ## timeout
 
     exit 1;
 }
@@ -64,15 +67,15 @@ proc usage {} {
 if { [ expr { $argc < 4 } ] } {
     usage;
 } else {
-    source [ file join [ file dirname [ info script ] ] getAuthValue.tcl ];
-
     # set runtime information
-    set _TARGET_SYSTEM [ lindex $argv 0 ]
-    set _USER_LOGINID [ lindex $argv 1 ]
-    set _TRANSFER_TYPE [ lindex $argv 2 ]
-    set _SRC_FILE [ lindex $argv 3 ]
-    set _DST_FILE [ lindex $argv 4 ]
-    set _AUTH_DATA [ split [ getAuthValue $_TARGET_SYSTEM $_USER_LOGINID "file:$env(HOME)/.etc/password.asc" "GPG" ] ":" ];
+    for { set a 0 } { $a ne $argc } { incr a } {
+        set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ]
+        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ]
+
+        incr a;
+    }
+
+    set _AUTH_DATA [ split [ getAuthValue $TARGET_SYSTEM $USER_LOGINID java ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -82,10 +85,6 @@ if { [ expr { $argc < 4 } ] } {
             set _USER_KEY [ lindex $_AUTH_DATA 0 ];
             set _USER_PASSWD [ lindex $_AUTH_DATA 1 ];
         }
-    }
-
-    if { [ expr { $argc eq 5 } ] } {
-        set timeout [ lindex $argv 4 ];
     }
 }
 
