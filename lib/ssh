@@ -42,6 +42,7 @@ global _LINE_TERMINATOR;
 set _CNAME "ssh";
 set _METHOD_NAME "ssh";
 set _LINE_TERMINATOR "\r\n";
+set USERNAME $env(LOGNAME);
 set timeout 10;
 
 if { [info exists env(THREAD_TIMEOUT)] } {
@@ -55,7 +56,7 @@ proc usage {} {
     global _METHOD_NAME;
 
     puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
-    puts stderr "Usage: $_METHOD_NAME \[ -host <hostname> \] \[ -user <user> \] \[ -config <config file> \] \[ -cmd <command> \] ( -tmout <timeout> )";
+    puts stderr "Usage: $_METHOD_NAME \[ --hostname <hostname> \] \[ --username <user> \] \[ --cfgfile <config file> \] \[ --exec <command> \] ( --timeout <timeout> )";
     puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname.";
     puts stderr "\tusername            The user to connect to the remote system as.";
     puts stderr "\tKey File            The SSH keyfile to utilize (optional)";
@@ -63,7 +64,7 @@ proc usage {} {
     puts stderr "\tcommand             The command to execute on the remote system. If an interactive shell is required, specify 'shell' here.";
     puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used.";
 
-    exit 1;
+    exit 3;
 }
 
 ## make sure we have all our arguments
@@ -71,8 +72,8 @@ if { [ expr { $argc < 2 } ] } {
     usage;
 } else {
     for { set a 0 } { $a ne $argc } { incr a } {
-        set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ]
-        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ]
+        set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ];
+        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ];
 
         incr a;
     }
@@ -112,6 +113,7 @@ eval spawn $_SSH_COMMAND $HOSTNAME
 expect {
     "*(yes/no)? " {
         exp_send "yes\r";
+
         exp_continue;
     }
     "*id_?sa*" {
@@ -120,6 +122,7 @@ expect {
         }
 
         exp_send "\r";
+
         exp_continue;
     }
     "*Changing password for *$USERNAME*" {
@@ -226,6 +229,7 @@ expect {
                 set i [ expr { $i + 1 } ];
 
                 exp_send "$_USER_PASSWD\r";
+
                 exp_continue;
             }
             $_LINE_TERMINATOR {
@@ -254,6 +258,7 @@ expect {
                     }
 
                     append output $expect_out(buffer);
+
                     exp_continue;
                 }
             }
