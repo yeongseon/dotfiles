@@ -40,10 +40,12 @@ global _CNAME;
 global _METHOD_NAME;
 global _LINE_TERMINATOR;
 
+set i 0;
 set _CNAME "scp";
 set _METHOD_NAME "scp";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
+set AUTHFILE "file:/home/synbuf.local/khuntly/.etc/password.asc";
 set timeout -1; ## set an infinite timeout. user can override as necessary
 
 if { [info exists env(THREAD_TIMEOUT)] } {
@@ -71,18 +73,19 @@ proc usage {} {
 }
 
 ## make sure we have all our arguments
-if { [ expr { $argc < 3 } ] } {
+if { [ expr { $argc < 2 } ] } {
     usage;
 } else {
-    ## set runtime information
     for { set a 0 } { $a ne $argc } { incr a } {
         set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ];
-        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ];
+        set [ set PARM_NAME ] [ lindex $argv [ expr "$a" + "1" ] ];
 
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME java ] " " ];
+    source [ file join [ file dirname [ info script ] ] security.tcl ];
+
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -95,7 +98,7 @@ if { [ expr { $argc < 3 } ] } {
     }
 }
 
-switch [ string match -nocase $_TRANSFER_TYPE "local" ] {
+switch [ string match -nocase $TYPE "local" ] {
     0 {
         if { [ info exists CFGILE ] } {
             eval spawn scp -pqrC -F $CFGFILE $USERNAME@$HOSTNAME:$DEST $SOURCE;

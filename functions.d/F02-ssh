@@ -729,7 +729,7 @@ function getSshKeys
                 3)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
 
-                    [ -f "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
                     [ "${3}" == "show" ] && typeset SHOW_KEYS="${_TRUE}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
@@ -738,7 +738,7 @@ function getSshKeys
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
                     [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
 
-                    [ -f "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
                     [ "${3}" == "show" ] && typeset SHOW_KEYS="${_TRUE}" || typeset REPLACE_INVALID_KEYS="${_TRUE}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
@@ -748,7 +748,7 @@ function getSshKeys
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
                     [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
 
-                    [ -f "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
                     typeset REPLACE_INVALID_KEYS="${4}";
                     typeset SHOW_KEYS="${_TRUE}";
 
@@ -1711,7 +1711,7 @@ function getSshKeys
 }
 
 #=====  FUNCTION  =============================================================
-#          NAME:  ssh
+#          NAME:  fssh
 #   DESCRIPTION:  Configures access to a new server for the current user
 #    PARAMETERS:  Username, Hostname, Commands (optional), SSH Config (optional)
 #       RETURNS:  0 if success, 1 otherwise
@@ -1755,8 +1755,6 @@ function fssh
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-        [ ! -z "${SSH_CONFIG_FILE}" ] && [ -f "${SSH_CONFIG_FILE}" ] && rm -rf "${SSH_CONFIG_FILE}";
-
         [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -1768,22 +1766,18 @@ function fssh
     fi
 
     typeset USERNAME="${1}";
+    [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${1}") || setArray TARGET_HOSTS "${2}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
 
     case ${#} in
-        2)
-            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
-            ;;
         3)
-            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
             typeset EXEC_COMMAND="${3}";
             ;;
         4)
-            [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${2}") || setArray TARGET_HOSTS "${2}";
             typeset EXEC_COMMAND="${3}";
-            typeset SSH_CONFIG_FILE="~/.ssh/config.d/${4}"
+            [ -f "${4}" ] && typeset SSH_CONFIG_FILE="${4}" || typeset SSH_CONFIG_FILE="${HOME}/.ssh/config";
             ;;
         *)
             RETURN_CODE=3;
@@ -1805,8 +1799,6 @@ function fssh
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-            [ ! -z "${SSH_CONFIG_FILE}" ] && [ -f "${SSH_CONFIG_FILE}" ] && rm -rf "${SSH_CONFIG_FILE}";
 
             [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -1885,8 +1877,6 @@ function fssh
 
             (( ERROR_COUNT += 1 ));
 
-            [ ! -z "${SSH_CONFIG_FILE}" ] && [ -f "${SSH_CONFIG_FILE}" ] && rm -rf "${SSH_CONFIG_FILE}";
-
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
@@ -1902,10 +1892,10 @@ function fssh
                 [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
             *)
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.bin/watchdog -c \"/usr/bin/env ssh\" -a \"-F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} \"${EXEC_COMMAND}\"\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND}\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --exec ${EXEC_COMMAND} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
         esac
 
@@ -1920,8 +1910,6 @@ function fssh
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-    [ ! -z "${SSH_CONFIG_FILE}" ] && [ -f "${SSH_CONFIG_FILE}" ] && rm -rf "${SSH_CONFIG_FILE}";
 
     [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
     [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -1961,25 +1949,18 @@ function fscp
         typeset RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
-                   -> The type of transfer to perform
-                       -> local: A typeset copy to the remote system
-                       -> remote: A remote copy to the typeset system
-                   -> The target host to perform the SCP against
-                   -> The username to perform the SCP against
-                   -> The source file/directory
-                   -> The target file/directory";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ type ] [ source ] [ target ]
+                    -> The username to perform the SCP against
+                    -> The target host to perform the SCP against
+                    -> The type of transfer to perform
+                        -> local: A typeset copy to the remote system
+                        -> remote: A remote copy to the typeset system
+                    -> The source file/directory
+                    -> The target file/directory";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
@@ -1988,157 +1969,180 @@ function fscp
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+        [ ! -z "${CFG_FILE}" ] && unset -v CFG_FILE;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
         return ${RETURN_CODE};
     fi
 
-    typeset TRANSFER_TYPE=${1};
-    typeset TARGET_HOST=${2};
-    typeset USERNAME=${3};
-    typeset SOURCE_COPY=${4};
-    typeset TARGET_COPY=${5};
+    typeset USERNAME="${1}";
+    [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${1}") || setArray TARGET_HOSTS "${2}";
+    typeset TRANSFER_TYPE="${3}";
+    typeset SOURCE_COPY="${4}";
+    typeset TARGET_COPY="${5}";
+    [ ${#} -eq 6 ] && typeset CFG_FILE="${6}" || typeset CFG_FILE="${HOME}/.ssh/config";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TRANSFER_TYPE -> ${TRANSFER_TYPE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[*]}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TRANSFER_TYPE -> ${TRANSFER_TYPE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SOURCE_COPY -> ${SOURCE_COPY}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_COPY -> ${TARGET_COPY}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CFG_FILE -> ${CFG_FILE}";
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
-
-    validateServerAvailability "${TARGET_HOST}" 22;
-    typeset -i RET_CODE=${?};
-
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-
-    set +o noclobber;
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
-
-    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-    then
-        RETURN_CODE=1;
-
-        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
-        writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
-
-        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    for TARGET_HOST in ${TARGET_HOSTS[*]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        validateServerAvailability "${TARGET_HOST}" 22;
+        typeset -i RET_CODE=${?};
 
-        return ${RETURN_CODE};
-    fi
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        set +o noclobber;
+        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
-    getSshKeys host "${TARGET_HOST}";
-    typeset -i RET_CODE=${?};
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            RETURN_CODE=1;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
+            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-    set +o noclobber;
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
-    then
-        RETURN_CODE=1;
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain SSH host keys for target.";
-        writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+            [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+            [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+            [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+            [ ! -z "${CFG_FILE}" ] && unset -v CFG_FILE;
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
-        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
-        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
-        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            return ${RETURN_CODE};
+        fi
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        getSshKeys host "${TARGET_HOST}";
+        typeset -i RET_CODE=${?};
 
-        return ${RETURN_CODE};
-    fi
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    case $(/usr/bin/env expect -v 2>/dev/null) in
-        "")
-            case ${TRANSFER_TYPE} in
-                [Ll][Oo][Cc][Aa][Ll])
-                    ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env scp" -a "-pqrC ${SOURCE_COPY} ${USERNAME}@${TARGET_HOST}:${TARGET_COPY}" 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
-                    ;;
-                [Rr][Ee][Mm][Oo][Tt][Ee])
-                    ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env scp" "-pqrC ${USERNAME}@${TARGET_HOST}:${SOURCE_COPY} ${TARGET_COPY}" 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
-                    ;;
-                *)
-                    typeset RETURN_CODE=3;
+        set +o noclobber;
+        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
-                    writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
-                    writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
-                               -> The type of transfer to perform
-                                   -> local: A typeset copy to the remote system
-                                   -> remote: A remote copy to the typeset system
-                               -> The target host to perform the SCP against
-                               -> The username to perform the SCP against
-                               -> The source file/directory
-                               -> The target file/directory";
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            RETURN_CODE=1;
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain SSH host keys for target.";
+            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-                    [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
-                    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-                    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-                    [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
-                    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
-                    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+            [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+            [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+            [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+            [ ! -z "${CFG_FILE}" ] && unset -v CFG_FILE;
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                    return ${RETURN_CODE};
-                    ;;
-            esac
-            ;;
-        *)
-            /usr/bin/env expect -f ${HOME}/.lib/scp ${TARGET_HOST} ${USERNAME} ${TRANSFER_TYPE} ${SOURCE_COPY} ${TARGET_COPY} 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
-            ;;
-    esac
+            return ${RETURN_CODE};
+        fi
 
-    wait;
+        case $(/usr/bin/env expect -v 2>/dev/null) in
+            "")
+                case ${TRANSFER_TYPE} in
+                    [Ll][Oo][Cc][Aa][Ll])
+                        ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env scp" -a "-pqrC ${SOURCE_COPY} ${USERNAME}@${TARGET_HOST}:${TARGET_COPY}" 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
+                        ;;
+                    [Rr][Ee][Mm][Oo][Tt][Ee])
+                        ${HOME}/.bin/watchdog -t ${SSH_THREAD_TIMEOUT} -c "/usr/bin/env scp" "-pqrC ${USERNAME}@${TARGET_HOST}:${SOURCE_COPY} ${TARGET_COPY}" 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
+                        ;;
+                    *)
+                        typeset RETURN_CODE=3;
 
-    RETURN_CODE=${?};
+                        writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
+                        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
+                                -> The type of transfer to perform
+                                    -> local: A typeset copy to the remote system
+                                    -> remote: A remote copy to the typeset system
+                                -> The target host to perform the SCP against
+                                -> The username to perform the SCP against
+                                -> The source file/directory
+                                -> The target file/directory";
+
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                        [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+                        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+                        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+                        [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+                        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+                        [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+                        [ ! -z "${CFG_FILE}" ] && unset -v CFG_FILE;
+                        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+                        return ${RETURN_CODE};
+                        ;;
+                esac
+                ;;
+            *)
+                /usr/bin/env expect -f ${HOME}/.lib/scp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${CFG_FILE} --type ${TRANSFER_TYPE} --source ${SOURCE_COPY} --dest ${TARGET_COPY} 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
+                ;;
+        esac
+
+        wait;
+
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && (( ERROR_COUNT += 1 ));
+    done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+
+    [ ${ERROR_COUNT} -ne 0 ] && typeset i RETURN_CODE=${ERROR_COUNT};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-    [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
-    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-    [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
-    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
-    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -2147,6 +2151,15 @@ function fscp
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${SOURCE_COPY}" ] && unset -v SOURCE_COPY;
+    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+    [ ! -z "${TARGET_COPY}" ] && unset -v TARGET_COPY;
+    [ ! -z "${CFG_FILE}" ] && unset -v CFG_FILE;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
 }

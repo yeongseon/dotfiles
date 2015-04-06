@@ -43,6 +43,7 @@ set _CNAME "ssh";
 set _METHOD_NAME "ssh";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
+set AUTHFILE "file:/home/synbuf.local/khuntly/.etc/password.asc";
 set timeout 10;
 
 if { [info exists env(THREAD_TIMEOUT)] } {
@@ -56,9 +57,10 @@ proc usage {} {
     global _METHOD_NAME;
 
     puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
-    puts stderr "Usage: $_METHOD_NAME \[ --hostname <hostname> \] \[ --username <user> \] \[ --cfgfile <config file> \] \[ --exec <command> \] ( --timeout <timeout> )";
+    puts stderr "Usage: $_METHOD_NAME \[ --hostname <hostname> \] \[ --username <user> \] \[ --auth <auth data> \] \[ --cfgfile <config file> \] \[ --exec <command> \] ( --timeout <timeout> )";
     puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname.";
     puts stderr "\tusername            The user to connect to the remote system as.";
+    puts stderr "\tAuthentication      The authentication information to utilize";
     puts stderr "\tKey File            The SSH keyfile to utilize (optional)";
     puts stderr "\tConfigFile          The configuration file to utilize (optional).";
     puts stderr "\tcommand             The command to execute on the remote system. If an interactive shell is required, specify 'shell' here.";
@@ -73,12 +75,14 @@ if { [ expr { $argc < 2 } ] } {
 } else {
     for { set a 0 } { $a ne $argc } { incr a } {
         set PARM_NAME [ string toupper [ string range [ lindex $argv $a ] 2 [ string length [ lindex $argv $a ] ] ] ];
-        set [ set PARM_NAME ] [ lindex [ split [ parseParams "[ lindex $argv $a ] [ lindex $argv [ expr "$a" + "1" ] ]" ] " " ] 1 ];
+        set [ set PARM_NAME ] [ lindex $argv [ expr "$a" + "1" ] ];
 
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME java ] " " ];
+    source [ file join [ file dirname [ info script ] ] security.tcl ];
+
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -91,14 +95,14 @@ if { [ expr { $argc < 2 } ] } {
     }
 }
 
-if { [ info exists CONFIG_FILE ] } {
+if { [ info exists CFGFILE ] } {
     if { [ string match -nocase $EXEC "shell" ] } {
         set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
     } else {
-        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE \"$EXEC\"";
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"$EXEC\"";
     }
 } else {
-    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME";
+    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME";
 }
 
 if { [ info exists env(NEW_PASSWD_FILE) ] } {
