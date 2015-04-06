@@ -3,7 +3,6 @@
 *.ap_
 *.dex
 *.class
-bin/
 gen/
 .gradle/
 build/
@@ -240,7 +239,6 @@ FakesAssemblies/
 *.pydevproject
 .metadata
 .gradle
-bin/
 tmp/
 *.tmp
 *.bak
