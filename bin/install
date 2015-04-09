@@ -46,6 +46,243 @@ typeset DOTBOT_BIN="bin/dotbot"
 [ ! -d ${HOME}/.log ] && mkdir -pv ${HOME}/.log;
 
 #=====  FUNCTION  =============================================================
+#          NAME:  loadFilesToRemote
+#   DESCRIPTION:  Re-loads existing dotfiles for use
+#    PARAMETERS:  None
+#       RETURNS:  0 if success, non-zero otherwise
+#==============================================================================
+function loadFilesToRemote
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")" >&2;
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}" >&2;
+
+    if [ ${#} -eq 0 ]
+    then
+        typeset -i RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Transfer and apply dotfiles";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
+                -> The type of key to retrieve - host or public
+                -> If the type of key is \"keyfile\", this should be the private key. If the type of key is \"host\", this should be the system hostname.
+                -> The known_hosts file to utilize.
+                    -> Required if key type is \"host\"
+                -> Replace invalid/incorrect keys
+                    -> Required if key type is \"host\", defaults to ${_FALSE}
+                -> Show keys instead of saving them";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${SSH_CONFIG_DIRECTORY}" ] && unset -v SSH_CONFIG_DIRECTORY;
+        [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+        [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    ## if there's an actual ssh_config (${HOME}/.ssh/config); then use that first
+    for TARGET_HOSTNAME in $(grep HostName ${HOME}/.ssh/config | awk '{print $NF}')
+    do
+        printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Processing node: ${TARGET_HOSTNAME}" >&1;
+
+        for SSH_KEYFILE in $(grep IdentityFile ${HOME}/.ssh/config | awk -F "=" '{print $2}' | sort | uniq)
+        do
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_KEYFILE -> ${SSH_KEYFILE}" >&2;
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Adding keyfile ${SSH_KEYFILE}.." >&2;
+
+            /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} khuntly@${TARGET_HOSTNAME} > /dev/null 2>&1;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+            [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+        done
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to remove existing files.." >&2;
+
+        /usr/bin/env ssh -qtl ${USERNAME} -i ${HOME}/.ssh/id_rsa ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
+            .pythonrc .profile.d .profile .my.cnf .mailrc .lib .kshrc .inputrc .gnupg .gitconfig .functions.d .functions .etc .digrc .curlrc .config .colordiffrc .bin .alias.d .mail .m2 \
+            .ansible .dotfiles .viminfo .rnd .log" > /dev/null 2>&1;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+            [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+            [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+
+            continue;
+        fi
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to install files..." >&2;
+
+        /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -i ${HOME}/.ssh/id_rsa -l ${USERNAME}" \
+            --temp-dir=/var/tmp --timeout=45 --no-motd --delete --delete-excluded --progress --exclude-from=${HOME}/.etc/excludes \
+            --blocking-io --stats --progress --log-file=${HOME}/.log/rsync.log ~/.dotfiles ${TARGET_HOSTNAME}: >/dev/null 2>&1;
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+        if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+        then
+            printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+            [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+            [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+
+            continue;
+        fi
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to apply profile.." >&2;
+
+        /usr/bin/env ssh -qtl ${USERNAME} -i ~/.ssh/id_rsa ${TARGET_HOSTNAME} ".dotfiles/bin/install";
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+        [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+    done
+
+    ## check if there are any config directories housing files
+    for SSH_CONFIG_DIRECTORY in $(find ${HOME}/.ssh -type d -name config.d)
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_CONFIG_DIRECTORY -> ${SSH_CONFIG_DIRECTORY}" >&2;
+
+        for TARGET_HOSTNAME in $(grep HostName ${SSH_CONFIG_DIRECTORY} | awk '{print $NF}')
+        do
+            printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Processing node: ${TARGET_HOSTNAME}" >&1;
+
+            for SSH_KEYFILE in $(grep IdentityFile ${SSH_CONFIG_DIRECTORY} | awk -F "=" '{print $2}' | egrep -v "~/.ssh/id_rsa|~/.ssh/id_dsa|~/.ssh/id_ecdsa" | sort | uniq)
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_KEYFILE -> ${SSH_KEYFILE}" >&2;
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Adding keyfile ${SSH_KEYFILE}.." >&2;
+
+                /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} khuntly@${TARGET_HOSTNAME} > /dev/null 2>&1;
+                typeset -i RET_CODE=${?};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+                [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+                [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+            done
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to remove existing files.." >&2;
+
+            /usr/bin/env ssh -qtl khuntly -i ~/.ssh/cmh/admin/id_rsa ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
+                .pythonrc .profile.d .profile .my.cnf .mailrc .lib .kshrc .inputrc .gnupg .gitconfig .functions.d .functions .etc .digrc .curlrc .config .colordiffrc .bin .alias.d .mail .m2 \
+                .ansible .dotfiles .viminfo .rnd .log" > /dev/null 2>&1;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+                [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+                [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+
+                continue;
+            fi
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to install files..." >&2;
+
+            /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -i ${HOME}/.ssh/cmh/admin/id_rsa -l khuntly" \
+                --temp-dir=/var/tmp --timeout=45 --no-motd --delete --delete-excluded --progress --exclude-from=${HOME}/.etc/excludes \
+                --blocking-io --stats --progress --log-file=${HOME}/.log/rsync.log ~/.dotfiles ${TARGET_HOSTNAME}: >/dev/null 2>&1;
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+            if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
+            then
+                printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+                [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+                [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+                [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+
+                continue;
+            fi
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to apply profile.." >&2;
+
+            /usr/bin/env ssh -qtl khuntly -i ~/.ssh/cmh/admin/id_rsa ${TARGET_HOSTNAME} ".dotfiles/bin/install";
+            typeset -i RET_CODE=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
+
+            [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && printf "%s %s %s %s %s\n" "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred adding key ${SSH_KEYFILE} to host ${TARGET_HOSTNAME}" >&2;
+
+            [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+            [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        done
+
+        [ ! -z "${SSH_CONFIG_DIRECTORY}" ] && unset -v SSH_CONFIG_DIRECTORY;
+        [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+        [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    done
+
+    [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}" >&2;
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit" >&2;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS" >&2;
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")" >&2;
+
+    [ ! -z "${SSH_CONFIG_DIRECTORY}" ] && unset -v SSH_CONFIG_DIRECTORY;
+    [ ! -z "${TARGET_HOSTNAME}" ] && unset -v TARGET_HOSTNAME;
+    [ ! -z "${SSH_KEYFILE}" ] && unset -v SSH_KEYFILE;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  =============================================================
 #          NAME:  installFiles
 #   DESCRIPTION:  Re-loads existing dotfiles for use
 #    PARAMETERS:  None
