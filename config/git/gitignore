@@ -45,7 +45,6 @@ Mercury.modules
 *.so
 *.dylib
 *.beams
-*.d
 *.c_date
 
 ## mercurial
