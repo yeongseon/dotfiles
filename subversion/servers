@@ -1,7 +1,0 @@
-[global]
-http-compression = yes
-http-timeout = 30
-store-passwords = no
-store-ssl-client-cert-pp = no
-store-plaintext-passwords = no
-store-ssl-client-cert-pp-plaintext = no

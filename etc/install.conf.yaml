@@ -42,7 +42,6 @@
     ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
     ~/.curlrc: curlrc
-    ~/.subversion: subversion/
     ~/.colordiffrc: colordiffrc
     ~/.pythonrc: pythonrc
     ~/.config/git/gitignore: config/git/gitignore

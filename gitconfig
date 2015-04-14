@@ -35,4 +35,5 @@
 	default = simple
 
 [gui]
-	recentrepo = /home/khuntly/.dotfiles
+[gui]
+	recentrepo = /home/synbuf.local/khuntly/.dotfiles
