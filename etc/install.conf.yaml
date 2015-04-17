@@ -28,6 +28,7 @@
     ~/.functions.d: functions.d/
     ~/.gnupg/gpg.conf: gnupg/gpg.conf
     ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
+    ~/.ssh/config: ssh/config
     ~/.ssh/config.d: ssh/config.d
     ~/.lib: lib/
     ~/.etc/SecurityService: etc/SecurityService

@@ -18,6 +18,13 @@
 
 [[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
 
+if [ -z "${TMUX}" ]
+then
+    exec /usr/bin/env tmux;
+
+    exit;
+fi
+
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 

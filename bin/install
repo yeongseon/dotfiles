@@ -416,6 +416,7 @@ typeset -i RET_CODE=${?};
 if [ ! -z "${RET_CODE}" ] && [ ${RET_CODE} -eq 0 ]
 then
     ## try this first. it'll either work or it won't.
+    echo "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN} -d ${BASEDIR} -c ${CONFIG} ${@}"
     "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" -c "${CONFIG}" "${@}" > /dev/null 2>&1;
     typeset -i RET_CODE=${?};
 
