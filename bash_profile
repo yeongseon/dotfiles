@@ -17,6 +17,7 @@
 #==============================================================================
 
 [[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
+[ "${TERM}" != "screen" ] && [ -z "${TMUX}" ] && exec /usr/bin/env tmux;
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
