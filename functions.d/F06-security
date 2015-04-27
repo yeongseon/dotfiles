@@ -1060,7 +1060,7 @@ function modifyAccountPassword
                 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
                 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                typeset RETURN_DATA="$(/usr/bin/env expect -f ${HOME}/.lib/ssh ${TARGET_HOST} ${USER_NAME} "passwd")";
+                typeset RETURN_DATA="$(/usr/bin/env expect -f ${HOME}/.lib/ssh.exp ${TARGET_HOST} ${USER_NAME} "passwd")";
 
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_DATA -> ${RETURN_DATA}";
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env expect
 #==============================================================================
 #
-#          FILE:  keychain
-#         USAGE:  ./keychain
+#          FILE:  ssh-add
+#         USAGE:  ./ssh-add
 #   DESCRIPTION:  Executes an scp connection to a pre-defined server
 #
 #       OPTIONS:  ---
@@ -32,10 +32,10 @@ if { [ info exists env(ENABLE_TRACE) ] } {
     }
 }
 
-log_file -a $env(HOME)/.log/loadKeychain.log;
+log_file -a $env(HOME)/.log/ssh-add.log;
 
-set _CNAME "loadKeychain";
-set _METHOD_NAME "loadKeychain";
+set _CNAME "ssh-add";
+set _METHOD_NAME "ssh-add";
 set _LINE_TERMINATOR "\r\n";
 set _KEYFILES "id_rsa id_dsa"; ## default keyfiles
 set timeout 60;

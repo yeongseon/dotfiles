@@ -309,3 +309,7 @@ etc/entropy
 etc/password.properties
 etc/salt.properties
 etc/password.asc
+
+## systemd
+config/systemd/user/default.target.wants
+
