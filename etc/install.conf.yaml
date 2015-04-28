@@ -23,7 +23,6 @@
     ~/.functions: functions
     ~/.bashrc: bashrc
     ~/.bash_profile: bash_profile
-    ~/.tmux.conf: tmux.conf
     ~/.bin: bin/
     ~/.functions.d: functions.d/
     ~/.gnupg/gpg.conf: gnupg/gpg.conf
@@ -46,3 +45,5 @@
     ~/.colordiffrc: colordiffrc
     ~/.pythonrc: pythonrc
     ~/.config/git/gitignore: config/git/gitignore
+    ~/.config/systemd: config/systemd
+    ~/.config/tmux: config/tmux

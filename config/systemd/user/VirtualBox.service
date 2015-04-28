@@ -3,8 +3,8 @@ Description=Start VirtualBox platform
 
 [Service]
 Type=forking
-ExecStart=${HOME}/.bin/startVirtualBox start
-ExecStop=${HOME}/.bin/startVirtualBox stop
+ExecStart=%h/.bin/startVirtualBox start
+ExecStop=%h/.bin/startVirtualBox stop
 
 [Install]
 WantedBy=default.target
