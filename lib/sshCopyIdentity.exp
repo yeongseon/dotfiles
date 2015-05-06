@@ -98,8 +98,6 @@ if { ! [ info exists _USER_PASSWD ] } {
     exit 1;
 }
 
-set _USER_PASSWD "7KH&?EVU+Nyq=9+30+qL9UHfvOoejAAf";
-
 eval spawn /usr/bin/env ssh-copy-id -i "$IDENTITY" "$USERNAME@$HOSTNAME";
 
 set i 0;
