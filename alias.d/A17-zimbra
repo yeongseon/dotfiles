@@ -21,16 +21,13 @@
 
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
-## defaults
-[ -f ${HOME}/.etc/sudo ] && typeset SUDO_PASSWORD="< ${HOME}/.etc/sudo";
-
-alias zmcontrol="/usr/bin/env sudo -u zimbra /opt/zimbra/bin/zmcontrol ${SUDO_PASSWORD}";
-alias zmprov="/usr/bin/env sudo -u zimbra /opt/zimbra/bin/zmprov ${SUDO_PASSWORD}";
-alias zmysql="/usr/bin/env sudo -u zimbra /opt/zimbra/bin/mysql -u zimbra ${SUDO_PASSWORD}";
-alias zimbra="/usr/bin/env sudo -u zimbra ${SUDO_PASSWORD}";
-alias jstack="/usr/bin/env sudo -u zimbra /opt/zimbra/java/bin/jstack ${SUDO_PASSWORD}";
-alias zmstats="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin zmstat lmtp_threads http_threads db_conn_count db_pool_size gc_major_count ${SUDO_PASSWORD} | tail";
-alias ldapsearch="/opt/zimbra/bin/ldapsearch -H $(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s ldap_master_url < ~/.etc/sudo | /usr/bin/env awk -F "=" '{print $2}' | /usr/bin/env sed -e 's/^ *//g;s/ *$//g') -D \"uid=zimbra,cn=admins,cn=zimbra\" -w $(/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s zimbra_ldap_password < ~/.etc/sudo | /usr/bin/env awk -F "=" '{print $2}' | /usr/bin/env sed -e 's/^ *//g;s/ *$//g') -ZZ";
+alias zmcontrol="/usr/bin/env sudo -u zimbra /opt/zimbra/bin/zmcontrol < ~/.etc/sudo";
+alias zmprov="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/zmprov < ~/.etc/sudo";
+alias zmysql="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/mysql -u zimbra < ~/.etc/sudo";
+alias zimbra="/usr/bin/env sudo -Su zimbra < ~/.etc/sudo";
+alias jstack="/usr/bin/env sudo -Su zimbra /opt/zimbra/java/bin/jstack < ~/.etc/sudo";
+alias zmstats="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin zmstat lmtp_threads http_threads db_conn_count db_pool_size gc_major_count < ~/.etc/sudo | tail";
+alias ldapsearch="/opt/zimbra/bin/ldapsearch -H $(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey ldap_master_url < ~/.etc/sudo) -D \"uid=zimbra,cn=admins,cn=zimbra\" -w $(/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey zimbra_ldap_password < ~/.etc/sudo) -ZZ";
 
 #sudo -u root /var/tmp/zimbra-postinstall/unattendedinstall.sh; \
 #    sudo -u zimbra /opt/zimbra/bin/zmcontrol stop \
