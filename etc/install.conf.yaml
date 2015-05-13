@@ -7,6 +7,7 @@
     - [mkdir -p ~/.gnupg/, Making GPG directory]
     - [mkdir -p ~/.config/git, Making git config directory]
     - [mkdir -p ~/.etc, Making etc directory]
+    - [mkdir -p ~/.m2, Making maven directory]
 - link:
     ~/.dotfiles: ''
     ~/.inputrc: inputrc
@@ -47,3 +48,4 @@
     ~/.config/git/gitignore: config/git/gitignore
     ~/.config/systemd: config/systemd
     ~/.config/tmux: config/tmux
+    ~/.m2/settings.xml: m2/settings.xml
