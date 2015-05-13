@@ -26,6 +26,7 @@
     ~/.bash_profile: bash_profile
     ~/.bin: bin/
     ~/.functions.d: functions.d/
+    ~/.davmail.properties: davmail.properties
     ~/.gnupg/gpg.conf: gnupg/gpg.conf
     ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
     ~/.ssh/config: ssh/config
