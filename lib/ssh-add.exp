@@ -49,7 +49,7 @@ if { [ expr { $argc != 0 } ] } {
 }
 
 foreach { _KEYFILE } $_KEYFILES {
-    set _PASSPHRASE [ getAuthValue $_KEYFILE $_KEYFILE java ];
+    set _PASSPHRASE [ getAuthValue $_KEYFILE $_KEYFILE ];
 
     if { [ info exists _PASSPHRASE ] } {
         eval spawn /usr/bin/env ssh-add $env(HOME)/.ssh/$_KEYFILE;

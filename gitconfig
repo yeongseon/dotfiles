@@ -6,7 +6,7 @@
 [core]
     editor = vi
     pager = less
-	excludesfile = ~/.config/git/gitignore
+    excludesfile = ~/.config/git/gitignore
 
 [help]
     autocorrect = 1
@@ -32,8 +32,7 @@
     #gpgsign = true
 
 [push]
-	default = simple
+    default = simple
 
 [gui]
-[gui]
-	recentrepo = /home/synbuf.local/khuntly/.dotfiles
+    recentrepo = /home/synbuf.local/khuntly/.dotfiles

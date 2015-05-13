@@ -122,12 +122,24 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                         set _AUTH_ENTRY [ split $_ENTRY " " ];
 
                         if { [ string match "id_*" [ lindex $_AUTH_ENTRY 0 ] ] } {
-                            if { [ string match [ lindex $_AUTH_ENTRY 0 ] $_ID_FILE ] } {
-                                set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
-
-                                break;
+                            if { [ string length $_ID_FILE ] != 0 } {
+                                if { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
+                                    set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
+                                }
+                                elseif { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
+                                    set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
+                                }
+                                else {
+                                    continue;
+                                }
                             } else {
-                                continue;
+                                if { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
+                                    set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
+                                } elseif { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
+                                    set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
+                                } else {
+                                    continue;
+                                }
                             }
                         } elseif { [ string match -nocase [ lindex $_AUTH_ENTRY 0 ] $_USERNAME ] } {
                             # username:home directory:pass:password:(new pass)
