@@ -49,4 +49,5 @@
     ~/.config/git/gitignore: config/git/gitignore
     ~/.config/systemd: config/systemd
     ~/.config/tmux: config/tmux
+    ~/.config/autostart: config/autostart
     ~/.m2/settings.xml: m2/settings.xml

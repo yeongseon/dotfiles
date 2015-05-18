@@ -5,7 +5,7 @@ Description=OpenSSH private key agent
 Type=forking
 Environment=SSH_AUTH_SOCK=%h/.ssh/ssh-agent.socket
 ExecStart=/usr/bin/ssh-agent -a ${SSH_AUTH_SOCK}
-ExecStop=/usr/bin/ssh-agent -k
+ExecStop=/usr/bin/pkill ssh-agent
 ExecStopPost=/bin/rm ${SSH_AUTH_SOCK}
 
 [Install]

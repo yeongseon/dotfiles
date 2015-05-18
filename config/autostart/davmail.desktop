@@ -1,0 +1,21 @@
+[Desktop Entry]
+Categories=Network;
+Comment[en_US]=DavMail POP/IMAP/SMTP/CalDav/LDAP Exchange Gateway
+Comment=DavMail POP/IMAP/SMTP/CalDav/LDAP Exchange Gateway
+Exec=davmail
+GenericName[en_US]=DavMail
+GenericName=DavMail
+Icon=davmail
+MimeType=
+Name[en_US]=DavMail
+Name=DavMail
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.0
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

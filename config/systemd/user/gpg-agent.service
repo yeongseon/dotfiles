@@ -6,7 +6,6 @@ IgnoreOnIsolate=true
 Type=forking
 ExecStart=/usr/bin/gpg-agent --daemon
 ExecStop=/usr/bin/pkill gpg-agent
-ExecStopPost=/bin/rm %h/.gnupg/gpg-agent.env
 Restart=on-abort
 
 [Install]
