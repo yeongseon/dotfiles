@@ -45,6 +45,7 @@ set _METHOD_NAME "rsync"
 set _LINE_TERMINATOR "\r\n"
 set USERNAME $env(LOGNAME);
 set timeout -1
+set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 
 source [ file join [ file dirname [ info script ] ] misc.tcl ];
 source [ file join [ file dirname [ info script ] ] security.tcl ];
@@ -78,7 +79,7 @@ if { [ expr { $argc < 4 } ] } {
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME java ] " " ];
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {

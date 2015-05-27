@@ -43,7 +43,7 @@ set _CNAME "ssh";
 set _METHOD_NAME "ssh";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
-set AUTHFILE "file:/home/synbuf.local/khuntly/.etc/password.asc";
+set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 set timeout 10;
 
 if { [info exists env(THREAD_TIMEOUT)] } {

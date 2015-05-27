@@ -45,7 +45,7 @@ set _CNAME "scp";
 set _METHOD_NAME "scp";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
-set AUTHFILE "file:/home/synbuf.local/khuntly/.etc/password.asc";
+set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 set timeout -1; ## set an infinite timeout. user can override as necessary
 
 if { [info exists env(THREAD_TIMEOUT)] } {
@@ -101,16 +101,16 @@ if { [ expr { $argc < 2 } ] } {
 switch [ string match -nocase $TYPE "local" ] {
     0 {
         if { [ info exists CFGILE ] } {
-            eval spawn scp -pqrC -F $CFGFILE $USERNAME@$HOSTNAME:$DEST $SOURCE;
+            set _SCP_CMD "scp -pqrC -F $CFGFILE $USERNAME@$HOSTNAME:$DEST $SOURCE";
         } else {
-            eval spawn scp -pqrC $USERNAME@$HOSTNAME:$DEST $SOURCE;
+            set _SCP_CMD "scp -pqrC $USERNAME@$HOSTNAME:$DEST $SOURCE";
         }
     }
     1 {
         if { [ info exists CFGILE ] } {
-            eval spawn scp -pqrC -F $CFGFILE $SOURCE $USERNAME@$HOSTNAME:$DEST;
+            set _SCP_CMD "scp -pqrC -F $CFGFILE $SOURCE $USERNAME@$HOSTNAME:$DEST";
         } else {
-            eval spawn scp -pqrC $SOURCE $USERNAME@$HOSTNAME:$DEST;
+            set _SCP_CMD "scp -pqrC $SOURCE $USERNAME@$HOSTNAME:$DEST";
         }
     }
     default {
@@ -119,6 +119,8 @@ switch [ string match -nocase $TYPE "local" ] {
         exit 1;
     }
 }
+
+eval spawn $_SCP_CMD
 
 expect {
     "*(yes/no)? " {

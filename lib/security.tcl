@@ -125,11 +125,9 @@ proc getAuthValue { _HOSTNAME _USERNAME { _AUTH_FILE "" } { _ID_FILE "" } { _ENC
                             if { [ string length $_ID_FILE ] != 0 } {
                                 if { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
                                     set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
-                                }
-                                elseif { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
+                                } elseif { [ string match $_HOSTNAME [ lindex $_AUTH_ENTRY 0 ] ] } {
                                     set _AUTH_VALUE [ lindex $_AUTH_ENTRY 1 ];
-                                }
-                                else {
+                                } else {
                                     continue;
                                 }
                             } else {

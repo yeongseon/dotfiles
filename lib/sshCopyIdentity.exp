@@ -45,6 +45,7 @@ set _METHOD_NAME "sshCopyIdentity";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
 set timeout 30;
+set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 
 if { [ info exists env(THREAD_TIMEOUT) ] } {
     set timeout $env(THREAD_TIMEOUT);
@@ -79,7 +80,7 @@ if { [ expr { $argc < 3 } ] } {
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME java ] " " ];
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
