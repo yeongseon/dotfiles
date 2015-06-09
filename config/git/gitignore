@@ -314,3 +314,6 @@ etc/password.asc
 ## systemd
 config/systemd/user/default.target.wants
 
+## ansible hosts
+etc/ansible/hosts
+
