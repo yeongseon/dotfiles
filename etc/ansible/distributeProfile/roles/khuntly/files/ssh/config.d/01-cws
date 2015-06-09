@@ -1,0 +1,62 @@
+Host caspersb-vbox1
+    HostName                    = 192.168.10.7
+
+Host caspersb-ddns1
+    HostName                    = 192.168.10.100
+
+Host caspersb-daws1
+    HostName                    = 192.168.10.102
+
+Host caspersb-damq1
+    HostName                    = 192.168.10.104
+
+Host caspersb-dsql1
+    HostName                    = 192.168.10.106
+
+Host caspersb-dads1
+    HostName                    = 192.168.10.108
+
+Host caspersb-repo1
+    HostName                    = 192.168.10.110
+
+Host caspersb-bld1
+    HostName                    = 192.168.10.111
+
+Host github.com
+    HostName                    = github.com
+    User                        = git
+    IdentitiesOnly              = yes
+    IdentityFile                = ~/.ssh/id_cws-khuntly
+
+Host *
+    AddressFamily               = inet
+    CanonicalizeHostname        = no
+    CanonicalizeFallbackLocal   = no
+    CheckHostIP                 = yes
+    Compression                 = yes
+    ConnectionAttempts          = 2
+    ConnectTimeout              = 10
+    EscapeChar                  = ~
+    ForwardAgent                = no
+    ForwardX11                  = no
+    ForwardX11Trusted           = yes
+    GlobalKnownHostsFile        = /etc/ssh/known_hosts
+    UserKnownHostsFile          = ~/.ssh/known_hosts
+    HashKnownHosts              = yes
+    HostbasedAuthentication     = no
+    PubkeyAuthentication        = yes
+    LogLevel                    = INFO
+    NumberOfPasswordPrompts     = 3
+    PreferredAuthentications    = publickey,keyboard-interactive,password
+    Protocol                    = 2
+    ServerAliveCountMax         = 30
+    ServerAliveInterval         = 60
+    StrictHostKeyChecking       = no
+    TCPKeepAlive                = yes
+    VerifyHostKeyDNS            = ask
+    VisualHostKey               = yes
+    XAuthLocation               = /usr/bin/xauth
+    User                        = khuntly
+    IdentitiesOnly              = yes
+    IdentityFile                = ~/.ssh/id_rsa
+    IdentityFile                = ~/.ssh/id_dsa

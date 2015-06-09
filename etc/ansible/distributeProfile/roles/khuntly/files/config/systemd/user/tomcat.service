@@ -1,0 +1,13 @@
+[Unit]
+Description=Tomcat webserver
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=tomcat
+EnvironmentFile=/etc/sysconfig/tomcat
+ExecStart=/home/tomcat/tomcat/bin/daemon.sh start
+ExecStop=/home/tomcat/tomcat/bin/daemon.sh stop
+
+[Install]
+WantedBy=default.target

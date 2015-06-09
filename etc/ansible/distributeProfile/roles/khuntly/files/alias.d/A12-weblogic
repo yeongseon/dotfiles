@@ -1,0 +1,33 @@
+#==============================================================================
+#
+#          FILE:  weblogic
+#         USAGE:  . weblogic
+#   DESCRIPTION:  Useful weblogic aliases
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
+
+## weblogic command aliases
+alias startNM='nohup ${WL_SERVER_ROOT}/server/bin/startNodeManager.sh 1>${WL_HOME}/logs/startNodeManager.out 2>${WL_HOME}/logs/startNodeManager.err &';
+alias wlst='${WL_SERVER_ROOT}/common/bin/wlst.sh';
+alias wladmin='java -Xms=256m -Xmx256m -Dweblogic.security.TrustKeyStore=DemoTrust weblogic.Admin'
+alias pack='${WL_SERVER_ROOT}/common/bin/pack.sh';
+alias unpack='${WL_SERVER_ROOT}/common/bin/unpack.sh';
+alias deployApp='java -Dweblogic.security.SSL.ignoreHostnameVerification=true -Dweblogic.security.TrustKeyStore=DemoTrust weblogic.Deployer';
+
+[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;

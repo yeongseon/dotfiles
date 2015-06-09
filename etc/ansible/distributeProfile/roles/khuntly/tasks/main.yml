@@ -1,0 +1,6 @@
+- name: Get dotfiles from github
+  git: repo=ssh://git@github.com/cws-kuntly/dotfiles.git dest=/home/khuntly/.dotfiles
+  sudo: false
+
+- name: Run git install
+  script: /home/khuntly/.dotfiles/bin/install

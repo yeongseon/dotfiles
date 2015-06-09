@@ -1,0 +1,19 @@
+set show-all-if-ambiguous on # List all matches in case multiple possible completions are possible
+set completion-ignore-case on # Make Tab autocomplete regardless of filename case
+set mark-symlinked-directories on # Immediately add a trailing slash when autocompleting symlinks to directories
+set match-hidden-files off # Do not autocomplete hidden files unless the pattern explicitly begins with a dot
+set page-completions off
+set completion-query-items 200 # If there are more than 200 possible completions for a word, ask to show them all
+set visible-stats on # Show extra file information when completing, like `ls -F` does
+set skip-completed-text on
+set input-meta on # Enable unicode
+set output-meta on # Enable unicode
+set convert-meta off # Enable unicode
+set enable-keypad on # Enable unicode
+set editing-mode vi
+set bell-style none
+set horizontal-scroll-mode off
+set completion-map-case on # Treat _ and - as the same
+set keymap vi-command
+set keymap vi-insert
+
