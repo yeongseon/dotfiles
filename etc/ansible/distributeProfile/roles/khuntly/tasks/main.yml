@@ -4,3 +4,7 @@
 
 - name: Run git install
   script: /home/khuntly/.dotfiles/bin/install
+
+- name: Copy/create files
+  copy: src=etc/sudo dest={{home_directory}}/.etc/sudo
+  mode: 600

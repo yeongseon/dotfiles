@@ -43,7 +43,7 @@ typeset -x MODIFIED_IFS="^";
 typeset -x RANDOM_GENERATOR="/dev/random";
 typeset -x ENTROPY_FILE="${HOME}/.etc/entropy";
 typeset -ix ENTROPY_FILE_SIZE=16384;
-typeset -x SSH_AUTH_SOCK="${HOME}/.ssh/ssh-agent.socket";
+typeset -x SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket";
 
 case "$(uname)" in
     [Cc][Yy][Gg]][Ww][Ii][Nn]*)
