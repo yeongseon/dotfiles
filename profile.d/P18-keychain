@@ -27,6 +27,8 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 [ -f "${HOME}/.keychain/${HOSTNAME}-fish" ] && rm -f "${HOME}/.keychain/${HOSTNAME}-fish";
 [ -f "${HOME}/.keychain/${HOSTNAME}-csh" ] && rm -f "${HOME}/.keychain/${HOSTNAME}-csh";
 
+[ ! -z "$(pidof ssh-agent)" ] || [ ! -z "$(pidof gpg-agent)" ] && return;
+
 case $(/usr/bin/env type keychain > /dev/null 2>&1; echo ${?}) in
 	0)
 		/usr/bin/env keychain --timeout 86400 --nocolor --nogui --quiet --quick --agents "ssh,gpg";
