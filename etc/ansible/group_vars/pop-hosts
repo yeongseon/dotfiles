@@ -1,0 +1,3 @@
+ansible_ssh_user: khuntly
+ansible_ssh_private_key_file: /home/khuntly/.ssh/cmh/admin/id_rsa
+ansible_python_interpreter: /usr/bin/python2.6

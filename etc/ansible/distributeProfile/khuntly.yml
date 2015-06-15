@@ -1,8 +1,5 @@
 - hosts: all
   gather_facts: false
-  vars:
-    username: "{{ lookup('env','USER') }}"
-    home_directory: "/home/{{username}}"
   sudo: false
   user: "{{username}}"
   roles:

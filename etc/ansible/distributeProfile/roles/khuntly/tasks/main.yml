@@ -1,10 +1,7 @@
-- name: Get dotfiles from github
-  git: repo=ssh://git@github.com/cws-kuntly/dotfiles.git dest=/home/khuntly/.dotfiles
-  sudo: false
-
-- name: Run git install
-  script: /home/khuntly/.dotfiles/bin/install
+- name: Create ~/.etc
+  file: path={{home_directory}}/.etc state=directory
+        owner={{username}} group={{groupname}} mode=0755
 
 - name: Copy/create files
   copy: src=etc/sudo dest={{home_directory}}/.etc/sudo
-  mode: 600
+        owner={{username}} group={{groupname}} mode=0600

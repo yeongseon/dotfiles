@@ -1,1 +1,3 @@
-home_directory: /home/$username
+username: khuntly
+groupname: mailadmin
+home_directory: /home/khuntly
