@@ -316,7 +316,6 @@ etc/sudo
 config/systemd/user/default.target.wants
 
 ## ansible hosts
-etc/ansible/hosts
 etc/ansible/*.cmh
 etc/ansible/*.dfw
 etc/ansible/*.aga

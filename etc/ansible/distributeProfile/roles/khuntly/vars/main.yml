@@ -1,3 +1,5 @@
 username: khuntly
 groupname: mailadmin
-home_directory: /home/khuntly
+dotfiles: /home/khuntly/.dotfiles
+local_home: /home/khuntly
+remote_home: /home/khuntly
