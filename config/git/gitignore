@@ -316,12 +316,12 @@ etc/sudo
 config/systemd/user/default.target.wants
 
 ## ansible hosts
-etc/ansible/*.cmh
-etc/ansible/*.dfw
-etc/ansible/*.aga
-etc/ansible/*.yyz
-etc/ansible/group_vars/*.cmh
-etc/ansible/group_vars/*.dfw
-etc/ansible/group_vars/*.aga
-etc/ansible/group_vars/*/yyz
+etc/ansible/*cmh
+etc/ansible/*dfw
+etc/ansible/*aga
+etc/ansible/*yyz
+etc/ansible/group_vars/*cmh
+etc/ansible/group_vars/*dfw
+etc/ansible/group_vars/*aga
+etc/ansible/group_vars/*yyz
 sudo
