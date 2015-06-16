@@ -5,7 +5,7 @@
         rsync_opts=-vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E {{ local_home }}/.log/ssh.log"
 
 - name: Install dotfiles
-  shell: "{{ remote_home }}/.dotfiles/install > /dev/null 2>&1"
+  shell: "{{ remote_home }}/.dotfiles/bin/install > /dev/null 2>&1"
 
 - name: Copy/create files
   copy: src={{ local_home }}/.etc/sudo dest={{remote_home}}/.etc/sudo

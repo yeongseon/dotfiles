@@ -358,6 +358,8 @@ function installFiles
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_TARGET -> ${LINK_TARGET}" >&2;
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_SOURCE -> ${LINK_SOURCE}" >&2;
 
+        [ -f "${LINK_TARGET}" ] && [ ! -L "${LINK_TARGET}" ] && rm -f "${LINK_TARGET}";
+
         if [ ! -L "${LINK_TARGET}" ]
         then
             printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating symbolic link for ${LINK_SOURCE} to ${LINK_TARGET}.." >&1;
@@ -432,7 +434,7 @@ then
         then
             printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
 
-            return 1;
+            exit 1;
         fi
     fi
 else
@@ -446,6 +448,6 @@ else
     then
         printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
 
-        return 1;
+        exit 1;
     fi
 fi
