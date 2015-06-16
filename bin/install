@@ -358,7 +358,11 @@ function installFiles
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_TARGET -> ${LINK_TARGET}" >&2;
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_SOURCE -> ${LINK_SOURCE}" >&2;
 
+        [ -z "${LINK_TARGET}" ] && continue;
+        [ -z "${LINK_SOURCE}" ] && continue;
+
         [ -f "${LINK_TARGET}" ] && [ ! -L "${LINK_TARGET}" ] && rm -f "${LINK_TARGET}";
+        [ -d "${LINK_TARGET}" ] && [ ! -L "${LINK_TARGET}" ] && rm -rf "${LINK_TARGET}";
 
         if [ ! -L "${LINK_TARGET}" ]
         then
