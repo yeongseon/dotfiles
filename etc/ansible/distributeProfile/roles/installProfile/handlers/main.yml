@@ -1,5 +1,0 @@
----
-- name: install
-  shell: "{{ home_directory }}/.dotfiles/bin/install"
-
-

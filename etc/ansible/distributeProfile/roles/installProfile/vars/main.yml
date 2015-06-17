@@ -1,7 +1,0 @@
-is_synacor: false
-username: khuntly
-groupname: mailadmin
-dotfiles: /home/khuntly/.dotfiles
-local_home: /home/khuntly
-remote_home: /home/khuntly
-rsync_options: -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E {{ local_home }}/.log/ssh.log"

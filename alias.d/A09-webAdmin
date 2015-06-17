@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  sudo
-#         USAGE:  . sudo
-#   DESCRIPTION:  Useful sudo aliases
+#          FILE:  webAdmin
+#         USAGE:  . webAdmin
+#   DESCRIPTION:  Web Administration script suite aliases
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -21,16 +21,12 @@
 
 trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
-## sudo aliases
-alias wasadm='/usr/bin/env sudo su - wasadm';
-alias appadm='/usr/bin/env sudo su - appadm';
-alias ihsadm='/usr/bin/env sudo su - ihsadm';
-alias webadm='/usr/bin/env sudo su - webadm';
-alias dnsadm='/usr/bin/env sudo su - dnsadm';
-alias zimbra='/usr/bin/env sudo su - zimbra';
-alias sysadmin='/usr/bin/env sudo su - sysadmin';
-alias ecuser='/usr/bin/env sudo su - ecuser';
-alias root='/usr/bin/env sudo su -';
+## web script aliases
+alias webAdmin='${HOME}/bin/webAdministrationUI.sh';
+alias certAdmin='${HOME}/bin/certManagementUI.sh';
+alias serviceAdmin='${HOME}/bin/serviceControlUI.sh';
+alias pushAdmin='${HOME}/lib/sys/pushAdmin.sh';
+alias rotateEntropy='${HOME}/lib/security/generateEntropy.sh';
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
