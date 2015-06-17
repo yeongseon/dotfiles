@@ -5,19 +5,19 @@
     dest="{{ remote_home }}"
     archive=yes
     checksum=yes
-    compress=no
+    compress=yes
     mode=push
     perms=yes
     recursive=yes
     rsync_timeout=10
-    rsync_opts="{{ rsync_options }}"
+    rsync_opts="-vcarbupEogtIzChi4 --safe-links --delete --exclude-from={{ local_home }}/.etc/excludes --no-motd --blocking-io --stats --progress -e 'ssh -qaCkT -E {{ local_home }}/.log/ssh.log'"
   notify:
     - install
 
 - name: Copy/create files
   copy:
     src="{{ local_home }}/.etc/sudo"
-    dest="{{remote_home}}/.etc/sudo"
+    dest="{{ remote_home }}/.etc/sudo"
     owner="{{ username }}"
     group="{{ groupname }}"
     mode=0600
@@ -25,14 +25,14 @@
 - name: update security service config
   template:
     src=SecurityService/config/ServiceConfig.xml
-    dest="{{remote_home}}/.etc/SecurityService/config/ServiceConfig.xml"
+    dest="{{ remote_home }}/.etc/SecurityService/config/ServiceConfig.xml"
 
 - name: update esol-core service config
   template:
     src=eSolutionsCore/config/ServiceConfig.xml
-    dest="{{remote_home}}/.etc/eSolutionsCore/config/ServiceConfig.xml"
+    dest="{{ remote_home }}/.etc/eSolutionsCore/config/ServiceConfig.xml"
 
 - name: update esol-core mail config
   template:
     src=eSolutionsCore/mail/MailConfig.properties
-    dest="{{remote_home}}/.etc/eSolutionsCore/mail/MailConfig.properties"
+    dest="{{ remote_home }}/.etc/eSolutionsCore/mail/MailConfig.properties"
