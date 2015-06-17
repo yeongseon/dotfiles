@@ -3,4 +3,4 @@
   sudo: false
   user: "{{username}}"
   roles:
-    - khuntly
+    - installProfile
