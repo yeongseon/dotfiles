@@ -58,8 +58,6 @@ case $(uname) in
         unalias fgrep; alias fgrep='/usr/xpg4/bin/fgrep -v grep';
         ;;
     [Cc][Yy][Gg]][Ww][Ii][Nn]*)
-        unalias sqlplus; alias sqlplus='/cygdrive/c/ORACLE/ORA92/bin/sqlplus.exe';
-
         case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
             [Ss][Hh]|[Bb][Aa][Ss][Hh])
                 unalias print; alias print='echo -ne';

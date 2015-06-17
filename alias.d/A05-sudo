@@ -27,7 +27,6 @@ alias appadm='/usr/bin/env sudo su - appadm';
 alias ihsadm='/usr/bin/env sudo su - ihsadm';
 alias webadm='/usr/bin/env sudo su - webadm';
 alias dnsadm='/usr/bin/env sudo su - dnsadm';
-alias zimbra='/usr/bin/env sudo su - zimbra';
 alias sysadmin='/usr/bin/env sudo su - sysadmin';
 alias ecuser='/usr/bin/env sudo su - ecuser';
 alias root='/usr/bin/env sudo su -';

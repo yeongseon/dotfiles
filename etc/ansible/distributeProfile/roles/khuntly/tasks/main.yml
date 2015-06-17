@@ -1,6 +1,0 @@
----
-- include: copy-files.yml
-  when: "{{ is_synacor }}" != true
-
-- include: rsync-files.yml
-  when: "{{ is_synacor }}" == true
