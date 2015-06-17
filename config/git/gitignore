@@ -320,8 +320,11 @@ etc/ansible/*cmh
 etc/ansible/*dfw
 etc/ansible/*aga
 etc/ansible/*yyz
+etc/ansible/*dev
 etc/ansible/group_vars/*cmh
 etc/ansible/group_vars/*dfw
 etc/ansible/group_vars/*aga
 etc/ansible/group_vars/*yyz
+etc/ansible/group_vars/*dev
 sudo
+
