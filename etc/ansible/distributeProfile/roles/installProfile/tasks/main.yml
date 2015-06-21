@@ -5,21 +5,6 @@
     path="{{ remote_home }}/.dotfiles"
     state=absent
 
-- name: Synchronize profile across hosts
-  synchronize:
-    src="{{ local_home }}/.dotfiles"
-    dest="{{ remote_home }}"
-    archive=yes
-    checksum=yes
-    compress=no
-    mode=push
-    perms=yes
-    recursive=yes
-    rsync_timeout=0
-    rsync_opts="-avr --exclude-from={{ local_home }}/.etc/excludes --no-motd --stats --progress"
-  notify:
-    - install
-
 - name: Create ~/.etc/SecurityService/config/
   file:
     path="{{ remote_home }}/.etc/SecurityService/config/"
@@ -40,40 +25,40 @@
 
 - name: Copy/create files
   copy:
-    src="{{ local_home }}/.etc/sudo"
+    src= "{{ ansible_env.HOME }}/ .etc/sudo"
     dest="{{ remote_home }}/.etc/sudo"
-    owner="{{ username }}"
-    group="{{ groupname }}"
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
     mode=0600
 
 - name: update security service config
   template:
     src=SecurityService/config/ServiceConfig.j2
     dest="{{ remote_home }}/.etc/SecurityService/config/ServiceConfig.xml"
-    owner={{ username }}
-    group={{ groupname }}
+    owner={{ remote_user }}
+    group={{ remote_group }}
     mode=0644
 
 - name: update esol-core service config
   template:
     src=eSolutionsCore/config/ServiceConfig.j2
     dest="{{ remote_home }}/.etc/eSolutionsCore/config/ServiceConfig.xml"
-    owner={{ username }}
-    group={{ groupname }}
+    owner={{ remote_user }}
+    group={{ remote_group }}
     mode=0644
 
 - name: update esol-core mail config
   template:
     src=eSolutionsCore/mail/MailConfig.j2
     dest="{{ remote_home }}/.etc/eSolutionsCore/mail/MailConfig.properties"
-    owner={{ username }}
-    group={{ groupname }}
+    owner={{ remote_user }}
+    group={{ remote_group }}
     mode=0644
 
 - name: update ssh config
   template:
     src=ssh/config.j2
     dest="{{ remote_home }}/.ssh/config"
-    owner={{ username }}
-    group={{ groupname }}
+    owner={{ remote_user }}
+    group={{ remote_group }}
     mode=0644

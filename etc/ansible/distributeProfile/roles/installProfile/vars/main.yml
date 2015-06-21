@@ -1,10 +1,17 @@
 ---
-## global variables
+## local vars
 username: khuntly
-groupname: mailadmin
-local_home: /home/khuntly
-dotfiles: "{{ local_home }}/.dotfiles"
-remote_home: /home/khuntly
+dotfiles: "{{ ansible_env.HOME }}/.dotfiles"
+
+## remote vars
+remote_user: khuntly
+remote_group: mailadmin
+remote_home: "/home/{{ remote_user }}"
+
+## git checkout
+ssh_key: "{{ ansible_env.HOME }}/.ssh/id_cws-khuntly"
+dotfiles_repo: git://github.com/cws-khuntly/dotfiles.git
+version: HEAD
 
 ## replacement variables for eSolutionsCore/ServiceConfig.xml
 mail_address: khuntly@synacor.com
@@ -19,7 +26,7 @@ proxy_auth_user:
 proxy_auth_salt: 
 proxy_auth_pass: 
 ssh_properties: "{{ remote_home }}/.ssh/config"
-ssh_user: "{{ username }}"
+ssh_user: "{{ remote_user }}"
 ssh_key: "{{ remote_home }}/.ssh/id_rsa"
 ssh_salt: 
 ssh_pass: 
