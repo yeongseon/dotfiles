@@ -1,10 +1,4 @@
 ---
-## This is a one time thing - because apparently something is fucked.
-- name: Remove existing dotfiles directory if it exists
-  file:
-    path="{{ remote_home }}/.dotfiles"
-    state=absent
-
 - name: Create ~/.etc/SecurityService/config/
   file:
     path="{{ remote_home }}/.etc/SecurityService/config/"
@@ -25,7 +19,7 @@
 
 - name: Copy/create files
   copy:
-    src= "{{ ansible_env.HOME }}/ .etc/sudo"
+    src="{{ ansible_env.HOME }}/.etc/sudo"
     dest="{{ remote_home }}/.etc/sudo"
     owner="{{ remote_user }}"
     group="{{ remote_group }}"
@@ -35,30 +29,30 @@
   template:
     src=SecurityService/config/ServiceConfig.j2
     dest="{{ remote_home }}/.etc/SecurityService/config/ServiceConfig.xml"
-    owner={{ remote_user }}
-    group={{ remote_group }}
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
     mode=0644
 
 - name: update esol-core service config
   template:
     src=eSolutionsCore/config/ServiceConfig.j2
     dest="{{ remote_home }}/.etc/eSolutionsCore/config/ServiceConfig.xml"
-    owner={{ remote_user }}
-    group={{ remote_group }}
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
     mode=0644
 
 - name: update esol-core mail config
   template:
     src=eSolutionsCore/mail/MailConfig.j2
     dest="{{ remote_home }}/.etc/eSolutionsCore/mail/MailConfig.properties"
-    owner={{ remote_user }}
-    group={{ remote_group }}
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
     mode=0644
 
 - name: update ssh config
   template:
     src=ssh/config.j2
     dest="{{ remote_home }}/.ssh/config"
-    owner={{ remote_user }}
-    group={{ remote_group }}
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
     mode=0644

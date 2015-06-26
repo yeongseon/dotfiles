@@ -1,4 +1,12 @@
 ---
+- name: Synchronize SSH authorized_keys
+  copy:
+    src="{{ ansible_env.HOME }}/.ssh/{{ datacenter }}/admin/authorized_keys"
+    dest="{{ remote_home }}/.ssh/authorized_keys"
+    owner="{{ remote_user }}"
+    group="{{ remote_group }}"
+    mode=0600
+
 - name: Synchronize profile across hosts
   synchronize:
     src="{{ ansible_env.HOME }}/dotfiles"
