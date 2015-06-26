@@ -7,7 +7,7 @@ Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
 ExecStart=/usr/bin/env ssh-agent -a ${SSH_AUTH_SOCK}
 ExecStartPost=/usr/bin/env systemctl --user set-environment SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
 ExecStartPost=%s -c "ps x -o pid,comm | grep ssh-agent | cut -d ' ' -f 1 > %t/ssh-agent.pid"
-ExecStartPost=/usr/bin/env expect -f %h/.lib/ssh-add.exp
+#ExecStartPost=/usr/bin/env expect -f %h/.lib/ssh-add.exp
 ExecStop=/usr/bin/env ssh-add -D
 ExecStopPost=/usr/bin/env ssh-agent -k
 ExecStopPost=/usr/bin/env pkill ssh-agent

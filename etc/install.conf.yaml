@@ -10,13 +10,8 @@
     - [mkdir -p ~/.m2, Making maven directory]
 - link:
     ~/.dotfiles: ''
-    ~/.inputrc: inputrc
-    ~/.my.cnf: my.cnf
-    ~/.xlaunch: xlaunch
     ~/.screenrc: screenrc
-    ~/.vimrc: vimrc
     ~/.wgetrc: wgetrc
-    ~/.mailrc: mailrc
     ~/.digrc: digrc
     ~/.profile: profile
     ~/.kshrc: kshrc
@@ -26,7 +21,6 @@
     ~/.bash_profile: bash_profile
     ~/.bin: bin/
     ~/.functions.d: functions.d/
-    ~/.davmail.properties: davmail.properties
     ~/.gnupg/gpg.conf: gnupg/gpg.conf
     ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
     ~/.ssh/config: ssh/config
@@ -41,13 +35,11 @@
     ~/.etc/logging.properties: etc/logging.properties
     ~/.etc/excludes: etc/excludes
     ~/.alias.d: alias.d/
-    ~/.gitconfig: gitconfig
     ~/.profile.d: profile.d/
     ~/.curlrc: curlrc
-    ~/.colordiffrc: colordiffrc
-    ~/.pythonrc: pythonrc
-    ~/.config/git/gitignore: config/git/gitignore
+    ~/.config/git/ignore: config/git/ignore
+    ~/.config/git/config: config/git/config
+    ~/.config/git/attributes: config/git/attributes
     ~/.config/systemd: config/systemd
     ~/.config/tmux: config/tmux
-    ~/.config/autostart: config/autostart
     ~/.m2/settings.xml: m2/settings.xml

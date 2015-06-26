@@ -272,9 +272,6 @@ test-results/
 # Notepad++ backups #
 *.bak
 
-## svn
-.svn/
-
 ## vim
 [._]*.s[a-w][a-z]
 [._]s[a-w][a-z]
@@ -313,7 +310,7 @@ etc/password.asc
 etc/sudo
 
 ## systemd
-config/systemd/user/default.target.wants
+*.wants
 
 ## ansible hosts
 etc/ansible/*cmh
@@ -327,4 +324,3 @@ etc/ansible/group_vars/*aga
 etc/ansible/group_vars/*yyz
 etc/ansible/group_vars/*dev
 sudo
-

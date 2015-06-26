@@ -2,7 +2,8 @@
 Description=Daily Backups
 
 [Timer]
-OnCalendar=*-*-* 3:21:00
+OnBootSec=10min
+OnUnitActiveSec=1h
 Persistent=true
 Unit=backup-daily.target
 

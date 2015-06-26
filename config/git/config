@@ -7,9 +7,9 @@
     autocrlf = true
     editor = vi
     pager = less -FRSX
-    excludesfile = ~/.config/git/gitignore
+    #excludesfile = ~/.config/git/ignore
     logallrefupdates = true
-    attributesfile = ~/.config/git/attributes
+    #attributesfile = ~/.config/git/attributes
 
 [branch]
     autosetuprebase = always
@@ -39,7 +39,7 @@
     clean = unexpand --tabs=4 --first-only
     smudge = expand --tabs=4 --initial
 
-[ merge]
+[merge]
     renormalize = true
 
 [log]

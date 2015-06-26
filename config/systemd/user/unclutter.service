@@ -9,4 +9,4 @@ ExecStart=/usr/bin/unclutter -idle 2 -jitter 3
 Restart=always
 
 [Install]
-WantedBy=mystuff.target
+WantedBy=default.target
