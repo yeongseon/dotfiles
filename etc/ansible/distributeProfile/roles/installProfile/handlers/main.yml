@@ -1,3 +1,0 @@
----
-- name: install
-  shell: "{{ remote_home }}/.dotfiles/bin/install"
