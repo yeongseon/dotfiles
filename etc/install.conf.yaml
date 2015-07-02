@@ -37,6 +37,7 @@
     ~/.alias.d: alias.d/
     ~/.profile.d: profile.d/
     ~/.curlrc: curlrc
+    ~/.vimrc: vimrc
     ~/.config/git/ignore: config/git/ignore
     ~/.config/git/config: config/git/config
     ~/.config/git/attributes: config/git/attributes
