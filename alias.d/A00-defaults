@@ -33,8 +33,8 @@ alias stat='/usr/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
 alias ssh-keygen='/usr/bin/env ssh-keygen -C ""';
 alias ssh-keyscan='/usr/bin/env ssh-keyscan -H';
 alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
-alias mailx='/usr/bin/env mutt';
-alias du='/usr/bin/env du -sk';
+alias mailx='/usr/bin/env mailx';
+alias du='/usr/bin/env du -sh';
 alias netstat='/usr/bin/env netstat -an';
 alias ldapsearch="/usr/bin/env ldapsearch -h ${LDAP_HOST} -p ${LDAP_PORT:389} -b "dc=caspersbox,dc=com" -D "uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" -W";
 alias ping="/usr/bin/env ping -c 4 -q -W ${THREAD_TIMEOUT}";
@@ -44,8 +44,7 @@ alias jmap='/usr/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
 alias pssh='/usr/bin/env pssh -p 10 -o ${HOME}/.log -e ${HOME}/.log -t ${THREAD_TIMEOUT} -P'; # multiplexer
 alias recode='/usr/bin/env recode -qt';
 alias pssh="/usr/bin/env pssh -l khuntly -o ${HOME}/.log/pssh/stdout -e ${HOME}/.log/pssh/stderr";
-alias sshfs="/usr/bin/env sshfs -o sshfs_sync,reconnect,no_readahead,idmap=user,umask=644,uid=$(/usr/bin/env id -u),gid=$(/usr/bin/env id -g) ${LOGNAME}@";
-alias ansible="/usr/bin/env ansible -i ${HOME}/.etc/ansible/hosts";
+alias sshfs="/usr/bin/env sshfs -o sshfs_sync,reconnect,no_readahead,idmap=user,umask=644,uid=$(/usr/bin/env id -u),gid=$(/usr/bin/env id -g)";
 alias vi='/usr/bin/env vim';
 
 case $(uname) in
@@ -56,15 +55,6 @@ case $(uname) in
         unalias grep; alias grep='/usr/xpg4/bin/grep -v grep';
         unalias egrep; alias egrep='/usr/xpg4/bin/egrep -v grep';
         unalias fgrep; alias fgrep='/usr/xpg4/bin/fgrep -v grep';
-        ;;
-    [Cc][Yy][Gg]][Ww][Ii][Nn]*)
-        unalias sqlplus; alias sqlplus='/cygdrive/c/ORACLE/ORA92/bin/sqlplus.exe';
-
-        case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
-            [Ss][Hh]|[Bb][Aa][Ss][Hh])
-                unalias print; alias print='echo -ne';
-                ;;
-        esac
         ;;
 esac
 
