@@ -11,7 +11,6 @@
 - link:
     ~/.dotfiles: ''
     ~/.screenrc: screenrc
-    ~/.wgetrc: wgetrc
     ~/.digrc: digrc
     ~/.profile: profile
     ~/.kshrc: kshrc
@@ -36,7 +35,6 @@
     ~/.etc/excludes: etc/excludes
     ~/.alias.d: alias.d/
     ~/.profile.d: profile.d/
-    ~/.curlrc: curlrc
     ~/.vimrc: vimrc
     ~/.config/git/ignore: config/git/ignore
     ~/.config/git/config: config/git/config
