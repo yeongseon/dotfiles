@@ -98,7 +98,7 @@ typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env grep "${LOGNA
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_PROCESS_COUNT -> ${SYSTEM_PROCESS_COUNT}";
 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "true" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_PROCESS_COUNT -> ${USER_PROCESS_COUNT}";
 
-reset; clear;
+clear;
 
 printf "\n";
 printf "%s\n" "+-------------------------------------------------------------------+";
