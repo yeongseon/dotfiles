@@ -27,7 +27,7 @@ alias zmysql="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/mysql -u zimbra < ~/.
 alias zimbra="/usr/bin/env sudo -Su root su - zimbra < ~/.etc/sudo";
 alias jstack="/usr/bin/env sudo -Su zimbra /opt/zimbra/java/bin/jstack < ~/.etc/sudo";
 alias zmstats="/usr/bin/env sudo -Su zimbra /opt/zimbra/bin zmstat lmtp_threads http_threads db_conn_count db_pool_size gc_major_count < ~/.etc/sudo | tail";
-alias ldapsearch="/opt/zimbra/bin/ldapsearch -H \"$(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey ldap_url < ~/.etc/sudo | awk '{print $1}')\" -D \"$(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey zimbra_ldap_userdn < ~/.etc/sudo)\" -w \"$(/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey zimbra_ldap_password < ~/.etc/sudo | awk '{print $1}')\" -ZZ";
+alias ldapsearch="/opt/zimbra/bin/ldapsearch -H \"$(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey ldap_url < ~/.etc/sudo | awk '{print $1}')\" -D \"$(sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey zimbra_ldap_userdn < ~/.etc/sudo)\" -w \"$(/usr/bin/env sudo -Su zimbra /opt/zimbra/bin/zmlocalconfig -s -m nokey zimbra_ldap_password < ~/.etc/sudo | awk '{print $1}')\" -LLL";
 
 #sudo -u root /var/tmp/zimbra-postinstall/unattendedinstall.sh; \
 #    sudo -u zimbra /opt/zimbra/bin/zmcontrol stop \

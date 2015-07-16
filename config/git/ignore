@@ -312,22 +312,20 @@ etc/sudo
 ## systemd
 *.wants
 
-## ansible hosts
-etc/ansible/*cmh
-etc/ansible/*dfw
-etc/ansible/*aga
-etc/ansible/*yyz
-etc/ansible/*dev
-etc/ansible/group_vars/*cmh
-etc/ansible/group_vars/*dfw
-etc/ansible/group_vars/*aga
-etc/ansible/group_vars/*yyz
-etc/ansible/group_vars/*dev
-sudo
-
 ## binary files
 *.tar
 *.tar.gz
 *.gz
 *.tgz
+
+## synacor
+hosts
+yyz
+cmh
+dfw
+dev
+buf
+quartz
+topaz
+aga
 
