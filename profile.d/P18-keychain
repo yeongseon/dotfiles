@@ -21,13 +21,13 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
+[ ! -z "$(pidof ssh-agent)" ] || [ ! -z "$(pidof gpg-agent)" ] && return;
+
 [ ! -d "${HOME}/.keychain" ] && mkdir ${HOME}/.keychain;
 
 [ -f "${HOME}/.keychain/${HOSTNAME}-sh" ] && rm -f "${HOME}/.keychain/${HOSTNAME}-sh";
 [ -f "${HOME}/.keychain/${HOSTNAME}-fish" ] && rm -f "${HOME}/.keychain/${HOSTNAME}-fish";
 [ -f "${HOME}/.keychain/${HOSTNAME}-csh" ] && rm -f "${HOME}/.keychain/${HOSTNAME}-csh";
-
-[ ! -z "$(pidof ssh-agent)" ] || [ ! -z "$(pidof gpg-agent)" ] && return;
 
 case $(/usr/bin/env type keychain > /dev/null 2>&1; echo ${?}) in
 	0)
