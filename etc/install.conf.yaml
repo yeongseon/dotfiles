@@ -27,9 +27,7 @@
     ~/.lib: lib/
     ~/.etc/SecurityService: etc/SecurityService
     ~/.etc/eSolutionsCore: etc/eSolutionsCore
-    ~/.etc/templates: etc/templates
     ~/.etc/resources: etc/resources
-    ~/.etc/ansible: etc/ansible
     ~/.etc/mail.properties: etc/mail.properties
     ~/.etc/logging.properties: etc/logging.properties
     ~/.etc/excludes: etc/excludes
