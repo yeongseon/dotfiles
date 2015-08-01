@@ -67,7 +67,7 @@ esac
 
 ## system information
 typeset HOST_SYSTEM_NAME="$(/usr/bin/env hostname -f | /usr/bin/env tr '[A-Z]' '[a-z]')";
-typeset HOST_IP_ADDRESS="$(/usr/bin/env host "${HOST_SYSTEM_NAME}.${HOST_DOMAIN_NAME}" | /usr/bin/env awk '{print $NF}')";
+typeset HOST_IP_ADDRESS="$(/usr/bin/env ip addr show 2>/dev/null | grep inet | grep -v "127.0.0.1/8" | head -1 | awk '{print $2}')";
 typeset HOST_KERNEL_VERSION="$(/usr/bin/env uname -r)";
 typeset -i HOST_CPU_COUNT=$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env wc -l);
 typeset HOST_CPU_INFO="$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env grep "model name" | /usr/bin/env uniq | /usr/bin/env cut -d ":" -f 2 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g' | /usr/bin/env tr -s " ")";
