@@ -308,6 +308,7 @@ etc/password.properties
 etc/salt.properties
 etc/password.asc
 etc/sudo
+vault.txt
 
 ## systemd
 *.wants
@@ -328,4 +329,5 @@ buf
 quartz
 topaz
 aga
+ams
 
