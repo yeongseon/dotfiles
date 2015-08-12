@@ -4,7 +4,7 @@ IgnoreOnIsolate=true
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/gpg-agent --daemon
+ExecStart=/usr/bin/gpg-agent --homedir /home/khuntly/.gnupg --use-standard-socket --daemon
 ExecStop=/usr/bin/pkill gpg-agent
 Restart=on-abort
 
