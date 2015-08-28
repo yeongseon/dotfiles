@@ -43,7 +43,6 @@ set _CNAME "ssh";
 set _METHOD_NAME "ssh";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
-set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 set timeout 10;
 
 if { [info exists env(THREAD_TIMEOUT)] } {
@@ -82,7 +81,7 @@ if { [ expr { $argc < 2 } ] } {
 
     source [ file join [ file dirname [ info script ] ] security.tcl ];
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {
@@ -99,7 +98,8 @@ if { [ info exists CFGFILE ] } {
     if { [ string match -nocase $EXEC "shell" ] } {
         set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
     } else {
-        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"$EXEC\"";
+        puts "$EXEC"
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"bash --noprofile $EXEC\"";
     }
 } else {
     set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME";
@@ -112,7 +112,7 @@ if { [ info exists env(NEW_PASSWD_FILE) ] } {
 
 set i 0;
 
-eval spawn $_SSH_COMMAND $HOSTNAME
+eval spawn $_SSH_COMMAND
 
 expect {
     "*(yes/no)? " {

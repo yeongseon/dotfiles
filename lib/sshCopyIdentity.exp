@@ -45,7 +45,6 @@ set _METHOD_NAME "sshCopyIdentity";
 set _LINE_TERMINATOR "\r\n";
 set USERNAME $env(LOGNAME);
 set timeout 30;
-set AUTHFILE "file:/home/khuntly/.etc/password.asc";
 
 if { [ info exists env(THREAD_TIMEOUT) ] } {
     set timeout $env(THREAD_TIMEOUT);
@@ -59,8 +58,8 @@ proc usage {} {
     global _METHOD_NAME;
 
     puts stderr "$_METHOD_NAME Perform an automated SSH-based task without user interaction.";
-    puts stderr "Usage: $_METHOD_NAME \[ host \] \[ user \] \[ identity \]";
-    puts stderr "\thost                The target hostname to connect to. The host must be either an IP address or resolvable hostname."; ## _TARGET_SYSTEM
+    puts stderr "Usage: $_METHOD_NAME \[ hostname \] \[ user \] \[ identity \]";
+    puts stderr "\thostname                The target hostname to connect to. The host must be either an IP address or resolvable hostname."; ## _TARGET_SYSTEM
     puts stderr "\tusername            The user to connect to the remote system as."; ## _USER_LOGINID
     puts stderr "\tidentity            The identity file to send"; ## _IDENTITY_FILE
     puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used.";
@@ -80,7 +79,7 @@ if { [ expr { $argc < 3 } ] } {
         incr a;
     }
 
-    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME $AUTHFILE gpg ] " " ];
+    set _AUTH_DATA [ split [ getAuthValue $HOSTNAME $USERNAME ] " " ];
 
     switch [ llength $_AUTH_DATA ] {
         1 {

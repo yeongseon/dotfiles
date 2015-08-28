@@ -41,7 +41,8 @@ alias ping="/usr/bin/env ping -c 4 -q -W ${THREAD_TIMEOUT}";
 alias mysql="/usr/bin/env mysql --protocol tcp -h localhost -u ${LOGNAME} -p";
 alias nc="/usr/bin/env nc -w ${THREAD_TIMEOUT}";
 alias jmap='/usr/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
-alias pssh="/usr/bin/env pssh -p 10 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 900 -P -l ${LOGNAME} -h ~/.etc/pssh/hosts"; # multiplexer
+alias pssh="/usr/bin/env pssh -p 5 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 900 -P -l ${LOGNAME} -h ~/.etc/pssh/hosts";
+alias prsync="/usr/bin/env prsync -p 5 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 900 -l ${LOGNAME} -h ~/.etc/pssh/hosts";
 alias recode='/usr/bin/env recode -qt';
 alias sshfs="/usr/bin/env sshfs -o sshfs_sync,reconnect,no_readahead,idmap=user,umask=644,uid=$(/usr/bin/env id -u),gid=$(/usr/bin/env id -g)";
 alias vi='/usr/bin/env vim';
