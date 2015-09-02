@@ -51,6 +51,8 @@ alias icanhazip='/usr/bin/env dig +short @resolver1.opensdns.com myip.opendns.co
 # dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | sed 's/"//g'
 alias sshd='/usr/bin/env ssh -F ~/.ssh/config.dev';
 alias scpd='/usr/bin/env scp -F ~/.ssh/config.dev';
+alias fortune='/usr/bin/env fortune -a -e -o';
+alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
 
 ## script tracing
 alias debug="[ ! -z \"${ENABLE_DEBUG}\" ] && [ \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
