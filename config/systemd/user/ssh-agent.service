@@ -6,8 +6,7 @@ Type=forking
 Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
 ExecStart=/bin/ssh-agent -a ${SSH_AUTH_SOCK}
 ExecStartPost=/bin/systemctl --user set-environment SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
-ExecStartPost=%s -c "/bin/ps x -o pid,comm | /bin/grep ssh-agent | /bin/cut -d ' ' -f 1 > %t/ssh-agent.pid"
-#ExecStartPost=/bin/expect -f %h/.lib/ssh-add.exp
+ExecStartPost=/bin/bash -c /bin/ps x -o pid,comm | /bin/grep ssh-agent | /bin/cut -d ' ' -f 1 > %t/ssh-agent.pid
 ExecStop=/bin/ssh-add -D
 ExecStopPost=/bin/ssh-agent -k
 ExecStopPost=/bin/pkill ssh-agent

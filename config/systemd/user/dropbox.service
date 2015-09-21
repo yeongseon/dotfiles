@@ -3,10 +3,9 @@ Description=Load Dropbox daemon
 
 [Service]
 Type=forking
-ExecStart="%h/.dropbox-dist/dropboxd"
+ExecStart=/home/khuntly/.dropbox-dist/dropboxd
 ExecStop=/usr/bin/pkill dropboxd
 Restart=on-abort
 
 [Install]
 WantedBy=default.target
-

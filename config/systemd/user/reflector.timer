@@ -1,0 +1,12 @@
+[Unit]
+Description=Run reflector weekly
+
+[Timer]
+OnBootSec=10min
+OnCalendar=daily
+Persistent=true
+Unit=reflector.target
+
+[Install]
+WantedBy=timers.target
+
