@@ -3,8 +3,8 @@ Description=Start VirtualBox platform
 
 [Service]
 Type=forking
-ExecStart=%h/.bin/startVirtualBox start
-ExecStop=%h/.bin/startVirtualBox stop
+ExecStart=/home/khuntly/.bin/startVirtualBox start
+ExecStop=/home/khuntly/.bin/startVirtualBox stop
 
 [Install]
 WantedBy=default.target
