@@ -6,7 +6,7 @@ Description=Synchronizes user profile across given hosts
 Wants=profile-sync.timer
 
 [Service]
-ExecStart=/bin/prsync %u/.dotfiles/ ~/
+ExecStart=/bin/expect -f %u/.lib/rsync.exp --hostname admin01.buf.synacor.com --username khuntly --type local --source ~/ --dest /home/khuntly/backups/$(date +'%Y-%m-%d')
 
 [Install]
 WantedBy=user-backup.target
