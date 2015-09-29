@@ -1,0 +1,13 @@
+##
+## ~/.config/systemd/user/user-backup.timer
+##
+[Unit]
+Description=Synchronize profile
+
+[Timer]
+OnBootSec=5min
+OnCalendar=*-*-* 00:00:00 ## run every day
+Unit=user-backup.target
+
+[Install]
+WantedBy=basic.target

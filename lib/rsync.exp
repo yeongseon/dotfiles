@@ -59,7 +59,7 @@ proc usage {} {
     puts stderr "\tusername            The user to connect to the remote system as.";
     puts stderr "\tKey File            The SSH keyfile to utilize (optional)";
     puts stderr "\tConfigFile          The configuration file to utilize (optional).";
-    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required."; ## _TRANSFER_TYPE
+    puts stderr "\ttype                The transfer type to execute. One of 'local' or 'remote' is required."; ## _TYPE
     puts stderr "\tsrc                 The source path/file to operate against."; ## _SRC_FILE
     puts stderr "\tdst                 The target path/file to operate into."; ## _DST_FILE
     puts stderr "\ttimeout             A timeout value for the script to wait if it hangs. If not specified, a value of 10 seconds is used."; ## timeout
@@ -97,12 +97,12 @@ if { [ info exists CFGFILE ] } {
     append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress ";
     append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log ";
 } else {
-    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSzihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -l $USERNAME\" ";
+    set _RSYNC_COMMAND "rsync -qCcarulKHpEAgtSihs -e \"ssh -qaCkT -E $env(HOME)/.log/ssh.log -l $USERNAME\" ";
     append _RSYNC_COMMAND "--temp-dir=/var/tmp --timeout=10 --no-motd --delete --delete-excluded --progress ";
     append _RSYNC_COMMAND "--exclude-from=$env(HOME)/.etc/excludes --blocking-io --stats --progress --log-file=$env(HOME)/.log/rsync.log ";
 }
 
-switch -nocase $_TRANSFER_TYPE {
+switch -nocase $TYPE {
     local {
         append _RSYNC_COMMAND " $SOURCE $HOSTNAME:$DEST";
     }

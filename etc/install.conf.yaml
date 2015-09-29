@@ -34,9 +34,7 @@
     ~/.alias.d: alias.d/
     ~/.profile.d: profile.d/
     ~/.vimrc: vimrc
-    ~/.config/git/ignore: config/git/ignore
-    ~/.config/git/config: config/git/config
-    ~/.config/git/attributes: config/git/attributes
+    ~/.config/git: config/git
     ~/.config/systemd: config/systemd
     ~/.config/tmux: config/tmux
     ~/.m2/settings.xml: m2/settings.xml

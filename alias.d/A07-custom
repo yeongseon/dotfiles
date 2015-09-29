@@ -61,13 +61,13 @@ alias trace="[ ! -z \"${ENABLE_TRACE}\" ] && [ \"${ENABLE_TRACE}\" = \"${_TRUE}\
 alias performance="[ ! -z \"${ENABLE_PERFORMANCE}\" ] && [ \"${ENABLE_PERFORMANCE}\" = \"${_TRUE}\" ] && export ENABLE_PERFORMANCE=\"${_FALSE}\" || export ENABLE_PERFORMANCE=\"${_TRUE}\"";
 
 ## expect
-alias escp="/usr/bin/env expect -f ${HOME}/.lib/scp";
-alias essh="/usr/bin/env expect -f ${HOME}/.lib/ssh";
-alias essh-copy-id="/usr/bin/env expect -f ${HOME}/.lib/sshCopyIdentity";
-alias esudo="/usr/bin/env expect -f ${HOME}/.lib/sudo";
-alias ersync="/usr/bin/env expect -f ${HOME}/.lib/rsync";
-alias egpg="/usr/bin/env expect -f ${HOME}/.lib/gpg";
-alias ekeychain="/usr/bin/env expect -f ${HOME}/.lib/keychain";
+alias scp.exp="/usr/bin/env expect -f ${HOME}/.lib/scp.exp";
+alias ssh.exp="/usr/bin/env expect -f ${HOME}/.lib/ssh.exp";
+alias ssh-copy-id.exp="/usr/bin/env expect -f ${HOME}/.lib/sshCopyIdentity.exp";
+alias sudo.exp="/usr/bin/env expect -f ${HOME}/.lib/sudo.exp";
+alias rsync.exp="/usr/bin/env expect -f ${HOME}/.lib/rsync.exp";
+alias gpg.exp="/usr/bin/env expect -f ${HOME}/.lib/gpg.exp";
+alias keychain.exp="/usr/bin/env expect -f ${HOME}/.lib/keychain.exp";
 
 case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])

@@ -1,0 +1,6 @@
+##
+## ~/.config/systemd/user/user-backup.target
+##
+[Unit]
+Description=Back up user profile
+StopWhenUnneeded=yes

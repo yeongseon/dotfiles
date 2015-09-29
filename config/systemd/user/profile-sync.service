@@ -1,0 +1,12 @@
+##
+## ~/.config/systemd/user/profile-sync.service
+##
+[Unit]
+Description=Synchronizes user profile across given hosts
+Wants=profile-sync.timer
+
+[Service]
+ExecStart=/bin/prsync %u/.dotfiles/ ~/
+
+[Install]
+WantedBy=profile-sync.target

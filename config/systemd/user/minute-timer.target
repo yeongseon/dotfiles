@@ -1,0 +1,6 @@
+##
+## /etc/systemd/system/minute-timer.target
+##
+[Unit]
+Description=Minute Timer Target
+StopWhenUnneeded=yes

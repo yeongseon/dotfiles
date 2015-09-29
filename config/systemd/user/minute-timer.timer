@@ -1,0 +1,14 @@
+##
+## /etc/systemd/system/minute-timer.timer
+##
+[Unit]
+Description=Minute Timer
+
+[Timer]
+OnBootSec=5min
+OnCalendar=*:0/1
+Unit=minute-timer.target
+
+[Install]
+WantedBy=basic.target
+
