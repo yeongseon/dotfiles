@@ -6,6 +6,8 @@ Description=Synchronizes user profile across given hosts
 Wants=profile-sync.timer
 
 [Service]
+#WorkingDirectory=/home/khuntly/workspace/cwsus/ansible/distributeProfile
+#ExecStart=/bin/ansible site.yml
 ExecStart=/bin/prsync %u/.dotfiles/ ~/
 
 [Install]
