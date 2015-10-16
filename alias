@@ -26,7 +26,7 @@ for ALIAS in ${HOME}/.alias.d/*
 do
     [ -z "${ALIAS}" ] && continue;
 
-    case $([ ! -z "$(echo "${ALIAS}" | egrep "^A([\d]{1,3})-[\w].*")" ] && echo "0") in
+    case $([ ! -z "$(awk -F "/" '{print $NF}' <<< "${ALIAS}" | egrep "^A([0-9]{1,3})-.*")" ] && echo "0") in
         0)
 	    case "${ENABLE_VERBOSE}" in
 	        "${_TRUE}")
