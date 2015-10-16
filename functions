@@ -24,11 +24,9 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 ## load functions
 for FUNCTION in ${HOME}/.functions.d/F*
 do
-    [ -z "${FUNCTION}" ] || [ ! -f "${FUNCTION}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${FUNCTION}")")" != "F" ] && continue;
+    [ -z "${FUNCTION}" ] && continue;
 
-    typeset INPUT=$(echo $(basename "${FUNCTION}") | awk '{print substr($0, 2, 2)}');
-
-    case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+    case $([ ! -z "$(awk -F "/" '{print $NF}' <<< "${FUNCTION}" | egrep "^F([0-9]{1,3})-.*")" ] && echo "0") in
         0)
             case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
                 [Kk][Ss][Hh])
