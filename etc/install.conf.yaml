@@ -7,6 +7,7 @@
     - [mkdir -p ~/.gnupg/, Making GPG directory]
     - [mkdir -p ~/.etc, Making etc directory]
     - [mkdir -p ~/.m2, Making maven directory]
+    - [mkdir -p ~/.config, Making configuration directory]
 - link:
     ~/.dotfiles: ''
     ~/.screenrc: screenrc
