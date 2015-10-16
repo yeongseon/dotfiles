@@ -32,11 +32,9 @@ for PROFILE in ${HOME}/.profile.d/*
 do
     [ -z "${PROFILE}" ] && continue;
 
-    if [ ! -d "${PROFILE}" ]
-    then
-    	case $([ ! -z "$(echo "${PROFILE}" | egrep "^A([\d]{1,3})-[\w].*")" ] && echo "0") in
-    	    0)
-    	        case "${ENABLE_VERBOSE}" in
+    case $([ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE}" | egrep "^P([0-9]{1,3})-.*")" ] && echo "0") in
+    	0)
+    	    case "${ENABLE_VERBOSE}" in
     	            "${_TRUE}")
     	                . ${PROFILE};
     	                ;;
@@ -51,9 +49,9 @@ do
 	do
 	    [ -z "${PROFILE1}" ] && continue;
 
-	    if [ -f "${PROFILE}" ]
+	    if [ -f "${PROFILE1}" ]
 	    then
-		case $([ ! -z "$(echo "${PROFILE1}" | egrep "^A([\d]{1,3})-[\w].*")" ] && echo "0") in
+		case $([ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^P([0-9]{1,3})-.*")" ] && echo "0") in
 		    0)
 			case "${ENABLE_VERBOSE}" in
 			    "${_TRUE}")
@@ -155,4 +153,3 @@ printf "\n";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
-
