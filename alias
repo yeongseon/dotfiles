@@ -24,53 +24,53 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 ## load aliases
 for ALIAS in ${HOME}/.alias.d/*
 do
-    [ -z "${ALIAS}" ] || [ ! -f "${ALIAS}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${ALIAS}")")" != "A" ] && continue;
+    [ -z "${ALIAS}" ] && continue;
 
-    typeset INPUT=$(echo $(basename "${ALIAS}") | awk '{print substr($0, 2, 2)}');
-
-    case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+    case $([ ! -z "$(echo "${ALIAS}" | egrep "^A([\d]{1,3})-[\w].*")" ] && echo "0") in
         0)
-            case "${ENABLE_VERBOSE}" in
-                "${_TRUE}")
-                    . ${ALIAS};
-                    ;;
-                *)
-                    . ${ALIAS} >| /dev/null 2>&1;
-                    ;;
-            esac
-            ;;
+	    case "${ENABLE_VERBOSE}" in
+	        "${_TRUE}")
+	            . ${ALIAS};
+	            ;;
+	        *)
+	            . ${ALIAS} >| /dev/null 2>&1;
+	            ;;
+	    esac
+	;;
     esac
 
-    [ ! -z "${INPUT}" ] && unset INPUT;
     [ ! -z "${ALIAS}" ] && unset ALIAS;
 done
 
-if [ -d "${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')" ]
+if [[ "$(uname)" != [Cc][Yy][Gg][Ww][Ii][Nn]* ]]
 then
-    typeset DISTRIBUTION_ALIASES="${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')";
+    if [ -d "${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')" ]
+    then
+        typeset DISTRIBUTION_ALIASES="${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')";
 
-    for ALIAS in ${DISTRIBUTION_ALIASES}/*
-    do
-        [ -z "${ALIAS}" ] || [ ! -f "${ALIAS}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${ALIAS}")")" != "A" ] && continue;
+        for ALIAS in ${DISTRIBUTION_ALIASES}/*
+        do
+            [ -z "${ALIAS}" ] || [ ! -f "${ALIAS}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${ALIAS}")")" != "A" ] && continue;
 
-        typeset INPUT=$(echo $(basename "${ALIAS}") | awk '{print substr($0, 2, 2)}');
+            typeset INPUT=$(echo $(basename "${ALIAS}") | awk '{print substr($0, 2, 2)}');
 
-        case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
-            0)
-                case "${ENABLE_VERBOSE}" in
-                    "${_TRUE}")
-                        . ${ALIAS};
-                        ;;
-                    *)
-                        . ${ALIAS} >| /dev/null 2>&1;
-                        ;;
-                esac
-                ;;
-        esac
+            case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+                0)
+                    case "${ENABLE_VERBOSE}" in
+                        "${_TRUE}")
+                            . ${ALIAS};
+                            ;;
+                        *)
+                            . ${ALIAS} >| /dev/null 2>&1;
+                            ;;
+                    esac
+                    ;;
+            esac
 
-        [ ! -z "${INPUT}" ] && unset INPUT;
-        [ ! -z "${ALIAS}" ] && unset ALIAS;
-    done
+            [ ! -z "${INPUT}" ] && unset INPUT;
+            [ ! -z "${ALIAS}" ] && unset ALIAS;
+        done
+    fi
 fi
 
 [ ! -z "${ALIAS}" ] && unset ALIAS;
