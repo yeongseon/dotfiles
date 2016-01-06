@@ -25,14 +25,27 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 export PATH                             ; PATH="${PATH}:${HOME}/.bin:${HOME}:/.bin/pickup:/usr/sbin/core_perl";
 export MANPATH                          ; MANPATH="/usr/man:/usr/local/man:/usr/share/man";
 
-[ -d "/opt/Apache/maven/current" ] && export PATH="${PATH}:/opt/Apache/maven/current/bin";
-[ -d "/opt/Apache/ant/current" ] && export PATH="${PATH}:/opt/Apache/ant/bin";
-
 ## libpath
 export LD_LIBRARY_PATH                  ; LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/lib:/lib64:/usr/lib:/usr/lib64:/usr/local/lib:/usr/local/lib64";
 export LIBPATH                          ; LIBPATH="${LD_LIBRARY_PATH}";
 export LIB_PATH                         ; LIB_PATH="${LD_LIBRARY_PATH}";
 export LD_RUN_PATH                      ; LD_RUN_PATH="${LD_LIBRARY_PATH}";
+
+for APP_PROFILE in ${HOME}/.profile.d/profiles/*
+do
+    [ -z "${APP_PROFILE}" ] && continue;
+
+    case "${ENABLE_VERBOSE}" in
+        "${_TRUE}")
+            . ${APP_PROFILE};
+            ;;
+        *)
+            . ${APP_PROFILE} >| /dev/null 2>&1;
+            ;;
+    esac
+
+    [ ! -z "${APP_PROFILE}" ] && unset -v APP_PROFILE;
+done
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
