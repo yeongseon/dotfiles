@@ -47,4 +47,5 @@ Host *
     User                        = khuntly
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
+    UseRoaming                  = no
  
