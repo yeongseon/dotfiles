@@ -60,3 +60,4 @@ Host *
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     IdentityFile                = ~/.ssh/id_dsa
+    UseRoaming                  = no
