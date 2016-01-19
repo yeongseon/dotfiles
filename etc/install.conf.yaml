@@ -38,3 +38,5 @@
     ~/.ssh/config: ssh/config
     ~/.ssh/config.d: ssh/config.d
     ~/.m2/settings.xml: m2/settings.xml
+- shell:
+    - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]
