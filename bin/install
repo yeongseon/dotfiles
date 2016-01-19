@@ -18,6 +18,8 @@
 
 trap 'set +v; set +x' INT TERM EXIT;
 
+typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
+
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
@@ -385,6 +387,12 @@ function installFiles
         [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
     done
 
+    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypair..." >&1;
+
+    cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa
+
+    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypair created." >&1;
+
     [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}" >&2;
@@ -437,8 +445,6 @@ then
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
             printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
-
-            exit 1;
         fi
     fi
 else
@@ -451,7 +457,5 @@ else
     if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
     then
         printf "%s %s %s %s %s\n" "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "One or more processes failed during manual installation. Please review logs." >&2;
-
-        exit 1;
     fi
 fi
