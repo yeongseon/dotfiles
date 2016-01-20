@@ -30,6 +30,7 @@
     ~/.etc/mail.properties: etc/mail.properties
     ~/.etc/logging.properties: etc/logging.properties
     ~/.etc/excludes: etc/excludes
+    ~/.config/curlrc: ~/.curlrc
     ~/.config/git: config/git
     ~/.config/systemd: config/systemd
     ~/.config/tmux: config/tmux
