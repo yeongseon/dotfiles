@@ -22,10 +22,11 @@
     ui = true
 
 [http]
-    proxy =
+    proxy = http://tdpokh2:FTOmruB9@proxy.prod.mtb.com:8080/
 
 [https]
-    proxy =
+    proxy = http://tdpokh2:FTOmruB9@proxy.prod.mtb.com:8080/
+    sslVerify = false
 
 [alias]
 

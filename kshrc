@@ -30,24 +30,48 @@ typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 ## load profile
 for PROFILE in ${HOME}/.profile.d/*
 do
-    [ -z "${PROFILE}" ] || [ ! -f "${PROFILE}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${PROFILE}")")" != "P" ] && continue;
+    [ -z "${PROFILE}" ] && continue;
 
-    typeset INPUT=$(echo $(basename "${PROFILE}") | awk '{print substr($0, 2, 2)}');
+    if [ ! -d "${PROFILE}" ]
+    then
+    	case $([ ! -z "$(echo "${PROFILE}" | egrep "^P([\d]{1,3})-[\w].*")" ] && echo "0") in
+    	    0)
+    	        case "${ENABLE_VERBOSE}" in
+    	            "${_TRUE}")
+    	                . ${PROFILE};
+    	                ;;
+    	            *)
+    	                . ${PROFILE} >| /dev/null 2>&1;
+    	                ;;
+    	        esac
+    	        ;;
+    	esac
+    else
+	for PROFILE1 in ${HOME}/.profile.d/*
+	do
+	    [ -z "${PROFILE1}" ] && continue;
 
-    case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
-        0)
-            case "${ENABLE_VERBOSE}" in
-                "${_TRUE}")
-                    . ${PROFILE};
-                    ;;
-                *)
-                    . ${PROFILE} >| /dev/null 2>&1;
-                    ;;
-            esac
-            ;;
-    esac
+	    if [ -f "${PROFILE}" ]
+	    then
+		case $([ ! -z "$(echo "${PROFILE1}" | egrep "^P([\d]{1,3})-[\w].*")" ] && echo "0") in
+		    0)
+			case "${ENABLE_VERBOSE}" in
+			    "${_TRUE}")
+				. ${PROFILE1};
+				;;
+			    *)
+				. ${PROFILE1} >| /dev/null 2>&1;
+				;;
+			esac
+			;;
+		esac
+	    fi
 
-    [ ! -z "${INPUT}" ] && unset INPUT;
+	    [ ! -z "${PROFILE1}" ] && unset PROFILE1;
+	done
+    fi
+
+    [ ! -z "${PROFILE1}" ] && unset PROFILE1;
     [ ! -z "${PROFILE}" ] && unset PROFILE;
 done
 

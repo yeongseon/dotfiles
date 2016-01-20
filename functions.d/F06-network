@@ -970,7 +970,7 @@ function setProxy
                                 /usr/bin/env printf "\n";
                                 /usr/bin/env printf "%s\n\n" "$(/usr/bin/env awk -F "=" '/\<provide.password\>/{print $2}' ${RESOURCE_FILE} | /usr/bin/env sed -e 's/^ *//g;s/ *$//g;/^ *#/d;s/#.*//')";
 
-                                read PROXY_PASSWORD;
+                                read -s PROXY_PASSWORD;
 
                                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "PROXY_PASSWORD -> ${PROXY_PASSWORD}";
 
