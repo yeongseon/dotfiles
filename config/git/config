@@ -23,6 +23,7 @@
 
 [http]
     proxy = http://tdpokh2:FTOmruB9@proxy.prod.mtb.com:8080/
+    sslVerify = false
 
 [https]
     proxy = http://tdpokh2:FTOmruB9@proxy.prod.mtb.com:8080/
