@@ -1,43 +1,51 @@
+#======  ANSIBLE  ============================================================
+#          NAME:  site.yml
+#   DESCRIPTION:  Entry point for playbook
+#==============================================================================
+---
 - clean: ['~']
+
 - shell:
-    - [git pull, Updating repository]
-    - [git submodule update --init --recursive, Installing submodules]
-    - [mkdir -p ~/.log/archive, Making log directories]
-    - [mkdir -p ~/.ssh/, Making SSH directory]
-    - [mkdir -p ~/.gnupg/, Making GPG directory]
-    - [mkdir -p ~/.etc, Making etc directory]
-    - [mkdir -p ~/.m2, Making maven directory]
-    - [mkdir -p ~/.config, Making configuration directory]
+  - [git pull, Updating repository]
+  - [git submodule update --init --recursive, Installing submodules]
+  - [mkdir -p ~/.log/archive, Making log directories]
+  - [mkdir -p ~/.ssh/, Making SSH directory]
+  - [mkdir -p ~/.gnupg/, Making GPG directory]
+  - [mkdir -p ~/.etc, Making etc directory]
+  - [mkdir -p ~/.m2, Making maven directory]
+  - [mkdir -p ~/.config, Making configuration directory]
+
 - link:
-    ~/.dotfiles: ''
-    ~/.screenrc: screenrc
-    ~/.digrc: digrc
-    ~/.profile: profile
-    ~/.kshrc: kshrc
-    ~/.alias: alias
-    ~/.functions: functions
-    ~/.bashrc: bashrc
-    ~/.bash_profile: bash_profile
-    ~/.alias.d: alias.d/
-    ~/.profile.d: profile.d/
-    ~/.vimrc: vimrc
-    ~/.bin: bin/
-    ~/.functions.d: functions.d/
-    ~/.lib: lib/
-    ~/.etc/SecurityService: etc/SecurityService
-    ~/.etc/eSolutionsCore: etc/eSolutionsCore
-    ~/.etc/resources: etc/resources
-    ~/.etc/mail.properties: etc/mail.properties
-    ~/.etc/logging.properties: etc/logging.properties
-    ~/.etc/excludes: etc/excludes
-    ~/.config/curlrc: ~/.curlrc
-    ~/.config/git: config/git
-    ~/.config/systemd: config/systemd
-    ~/.config/tmux: config/tmux
-    ~/.gnupg/gpg.conf: gnupg/gpg.conf
-    ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
-    ~/.ssh/config: ssh/config
-    ~/.ssh/config.d: ssh/config.d
-    ~/.m2/settings.xml: m2/settings.xml
+  ~/.dotfiles: ''
+  ~/.alias: alias
+  ~/.bashrc: bashrc
+  ~/.bash_profile: bash_profile
+  ~/.curlrc: etc/curlrc
+  ~/.digrc: digrc
+  ~/.kshrc: kshrc
+  ~/.profile: profile
+  ~/.screenrc: screenrc
+  ~/.vimrc: vimrc
+  ~/.functions: functions
+  ~/.alias.d: alias.d/
+  ~/.bin: bin/
+  ~/.functions.d: functions.d/
+  ~/.lib: lib/
+  ~/.profile.d: profile.d/
+  ~/.config/git: config/git
+  ~/.config/systemd: config/systemd
+  ~/.config/tmux: config/tmux
+  ~/.etc/SecurityService: etc/SecurityService
+  ~/.etc/eSolutionsCore: etc/eSolutionsCore
+  ~/.etc/resources: etc/resources
+  ~/.etc/mail.properties: etc/mail.properties
+  ~/.etc/logging.properties: etc/logging.properties
+  ~/.etc/excludes: etc/excludes
+  ~/.gnupg/gpg.conf: gnupg/gpg.conf
+  ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
+  ~/.m2/settings.xml: m2/settings.xml
+  ~/.ssh/config: ssh/config
+  ~/.ssh/config.d: ssh/config.d
+
 - shell:
-    - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]
+  - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]
