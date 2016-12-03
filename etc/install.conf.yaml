@@ -23,6 +23,7 @@
   ~/.curlrc: etc/curlrc
   ~/.digrc: digrc
   ~/.kshrc: kshrc
+  ~/.ldaprc: config/ldaprc
   ~/.profile: profile
   ~/.screenrc: screenrc
   ~/.vimrc: vimrc

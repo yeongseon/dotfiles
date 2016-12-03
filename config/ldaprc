@@ -1,0 +1,9 @@
+URI <ldap[si]://[name[:port]] ...>
+BASE <base>
+BINDDN <dn>
+NETWORK_TIMEOUT 10
+TIMELIMIT 15
+TIMEOUT 10
+TLS_CACERT ${HOME}/.etc/cacerts
+TLS_RANDFILE /dev/urandom
+TLS_REQCERT demand
