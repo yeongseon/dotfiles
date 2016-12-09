@@ -1,0 +1,365 @@
+#=====  FUNCTION  =============================================================
+#          NAME:  qipDeleteAddresses
+#   DESCRIPTION:  Removes an address, or list of addresses, from the QIP database
+#    PARAMETERS:  Address or path to file containing addresses
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function qipDeleteAddresses
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+    typeset -i ERROR_COUNT=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    if [ ${#} -ne 1 ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Deletes a provided list of addresses";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ (address|address list) ]
+                -> A single address to remove, or the full path to a list of addresses to remove.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset ADDRESSES="${1}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
+
+    case "$([ -f "${ADDRESSES}" ] && echo 0)"
+        0)
+            for ADDRESS in $(<${ADDRESSES})
+            do
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS} ...";
+
+                /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS};
+                typeset -i RETURN_CODE=${?};
+
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+
+                if [ ${RETURN_CODE} -ne 0 ]
+                then
+                    writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+
+                    (( ERROR_COUNT += 1 ));
+                fi
+
+                [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+            done
+            ;;
+        *)
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESSES}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS}; ...";
+
+            /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESSES};
+            typeset -i ERROR_COUNT=${?};
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+            ;;
+    esac
+
+    typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${ADDRESSES}" ] && unset -v ADDRESSES;
+    [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  =============================================================
+#          NAME:  addQIPObjectRecords
+#   DESCRIPTION:  Adds object-level resource records to QIP
+#    PARAMETERS:  Input file containing data
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function addQIPObjectRecords
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset ADD_RECORD_HOME="${HOME}/Changes/RecordAdds";
+    typeset -i RETURN_CODE=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    [ ${#} -eq 0 ] && typeset INPUTFILE="${ADD_OBJECT_HOME}/add-records.txt" || typeset INPUTFILE="${1}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INPUTFILE -> ${INPUTFILE}";
+
+    if [ -s "${INPUTFILE}" ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Add resource records to a provided object";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} ( filename )
+                 -> The file name containing the necessary data";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${ADD_RECORD_HOME}" ] && unset -v ADD_RECORD_HOME;
+        [ ! -z "${INPUTFILE}" ] && unset -v INPUTFILE;
+        [ ! -z "${RECORD_TEMPLATE}" ] && unset -v RECORD_TEMPLATE;
+        [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
+        [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
+        [ ! -z "${RESOURCE_ENTRY}" ] && unset -v RESOURCE_ENTRY;
+        [ ! -z "${ownerName}" ] && unset -v ownerName;
+        [ ! -z "${recordType}" ] && unset -v recordType;
+        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset RECORD_TEMPLATE="${ADD_RECORD_HOME}/record-template.xml";
+    typeset ADD_INPUT_FILE="${ADD_RECORD_HOME}/add-records.xml";
+    typeset CLI_LOG_FILE="${LOG_ROOT}/v4address-add.rejects";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RECORD_TEMPLATE -> ${RECORD_TEMPLATE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_INPUT_FILE -> ${ADD_INPUT_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CLI_LOG_FILE -> ${CLI_LOG_FILE}";
+
+    for RESOURCE_ENTRY in $(<${INPUTFILE})
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RESOURCE_ENTRY -> ${RESOURCE_ENTRY}";
+
+        ownerName="$(cut -d "," -f 1 <<< "${RESOURCE_ENTRY}")";
+        recordType="$(cut -d "," -f 2 <<< "${RESOURCE_ENTRY}")";
+        objectAddress="$(cut -d "," -f 3 <<< "${RESOURCE_ENTRY}")";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ownerName -> ${ownerName}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "recordType -> ${recordType}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "objectAddress -> ${objectAddress}";
+
+        sed -e "s/@ownerName/${ownerName}/g" -e "s/@recordType/${recordType}//g" -e "s/@objectAddress/${objectAddress}/g" "${RECORD_TEMPLATE}" >> "${ADD_INPUT_FILE}";
+
+        [ ! -z "${ownerName}" ] && unset -v ownerName;
+        [ ! -z "${recordType}" ] && unset -v recordType;
+        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${object}" ] && unset -v object;
+    done
+
+    [ -s "${CLI_LOG_FILE}" ] && cat /dev/null > "${CLI_LOG_FILE}";
+
+    /opt/qip/cli/qip-cli -c v4address,add --input "${ADD_INPUT_FILE}" -r "${CLI_LOG_FILE}" --addselected --format xml;
+    typeset RETURN_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ADD_RECORD_HOME}" ] && unset -v ADD_RECORD_HOME;
+    [ ! -z "${INPUTFILE}" ] && unset -v INPUTFILE;
+    [ ! -z "${RECORD_TEMPLATE}" ] && unset -v RECORD_TEMPLATE;
+    [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
+    [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
+    [ ! -z "${RESOURCE_ENTRY}" ] && unset -v RESOURCE_ENTRY;
+    [ ! -z "${ownerName}" ] && unset -v ownerName;
+    [ ! -z "${recordType}" ] && unset -v recordType;
+    [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  =============================================================
+#          NAME:  addQIPObjects
+#   DESCRIPTION:  Adds new objects to QIP
+#    PARAMETERS:  Input file containing data
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function addQIPObjects
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset ADD_OBJECT_HOME="${HOME}/Changes/ObjectAdds";
+    typeset -i RETURN_CODE=0;
+    typeset -i ERROR_COUNT=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    [ ${#} -eq 0 ] && typeset INPUTFILE="${ADD_OBJECT_HOME}/add-objects.txt" || typeset INPUTFILE="${1}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INPUTFILE -> ${INPUTFILE}";
+
+    if [ -s "${INPUTFILE}" ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Add new objects to QIP";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} ( filename )
+                 -> The file name containing the necessary data";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${ADD_OBJECT_HOME}" ] && unset -v ADD_OBJECT_HOME;
+        [ ! -z "${RETURN_CODE}" ] && unset -v RETURN_CODE;
+        [ ! -z "${INPUTFILE}" ] && unset -v INPUTFILE;
+        [ ! -z "${OBJECT_TEMPLATE}" ] && unset -v OBJECT_TEMPLATE;
+        [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
+        [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
+        [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+        [ ! -z "${ownerName}" ] && unset -v ownerName;
+        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${domainName}" ] && unset -v domainName;
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    typeset OBJECT_TEMPLATE="${ADD_OBJECT_HOME}/object-template.xml";
+    typeset ADD_TEMP_DIR="$(/usr/bin/env mktemp -p /var/tmp -d)";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_TEMPLATE -> ${OBJECT_TEMPLATE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_INPUT_FILE -> ${ADD_TEMP_DIR}";
+
+    for OBJECT_ENTRY in $(<${INPUTFILE})
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_ENTRY -> ${OBJECT_ENTRY}";
+
+        [[ "${OBJECT_ENTRY}" =~ ^#.* ]] && continue;
+
+        ownerName="$(cut -d "," -f 1 <<< "${OBJECT_ENTRY}")";
+        objectAddress="$(cut -d "," -f 2 <<< "${OBJECT_ENTRY}")";
+        domainName="$(cut -d "," -f 3 <<< "${OBJECT_ENTRY}")";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ownerName -> ${ownerName}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "objectAddress -> ${objectAddress}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "domainName -> ${domainName}";
+
+        [ -z "${domainName}" ] && domainName="prod.mtb.com";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "domainName -> ${domainName}";
+
+        sed -e "s/@ownerName/${ownerName}/g" -e "s/@objectAddress/${objectAddress}/g" -e "s/@domainName/${domainName}/g" "${OBJECT_TEMPLATE}" > "${ADD_TEMP_DIR}/${ownerName}.xml";
+
+        [ ! -z "${ownerName}" ] && unset -v ownerName;
+        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${domainName}" ] && unset -v domainName;
+        [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+    done
+
+    [ -s "${CLI_LOG_FILE}" ] && cat /dev/null > "${CLI_LOG_FILE}";
+
+    for XML_INPUT in ${ADD_TEMP_DIR}/*.xml
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "XML_INPUT -> ${XML_INPUT}";
+
+        if [ ${RETURN_CODE} -ne 0 ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Requested operation failed. Return code => ${RETURN_CODE}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Requested operation failed. Return code => ${RETURN_CODE}";
+
+            (( ERROR_COUNT += 1 ));
+        fi
+
+        [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
+        [ ! -z "${RETURN_CODE}" ] && unset -v RETURN_CODE;
+        [ ! -z "${XML_INPUT}" ] && unset -v XML_INPUT;
+    done
+
+    typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ADD_OBJECT_HOME}" ] && unset -v ADD_OBJECT_HOME;
+    [ ! -z "${RETURN_CODE}" ] && unset -v RETURN_CODE;
+    [ ! -z "${INPUTFILE}" ] && unset -v INPUTFILE;
+    [ ! -z "${OBJECT_TEMPLATE}" ] && unset -v OBJECT_TEMPLATE;
+    [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
+    [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
+    [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+    [ ! -z "${ownerName}" ] && unset -v ownerName;
+    [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+    [ ! -z "${domainName}" ] && unset -v domainName;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    return ${RETURN_CODE};
+}

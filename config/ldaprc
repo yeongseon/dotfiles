@@ -1,6 +1,6 @@
-URI <ldap[si]://[name[:port]] ...>
-BASE <base>
-BINDDN <dn>
+URI ldaps://ldap.caspersbox.com:10636/
+BASE dc=caspersbox,dc=com
+BINDDN uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
 NETWORK_TIMEOUT 10
 TIMELIMIT 15
 TIMEOUT 10
