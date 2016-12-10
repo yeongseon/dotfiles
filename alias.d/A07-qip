@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  A17-zimbra
-#         USAGE:  . A17-zimbra
-#   DESCRIPTION:  Sets application-wide functions
+#          FILE:  A07-qip
+#         USAGE:  . A07-qip
+#   DESCRIPTION:  Sets QIP related aliases
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
