@@ -20,7 +20,7 @@
   ~/.alias: alias
   ~/.bashrc: bashrc
   ~/.bash_profile: bash_profile
-  ~/.curlrc: curlrc
+  ~/.curlrc: etc/curlrc
   ~/.digrc: etc/digrc
   ~/.kshrc: kshrc
   ~/.ldaprc: etc/ldaprc
