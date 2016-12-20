@@ -77,14 +77,14 @@ function buildSshConfig
 
     case ${#} in
         1)
-            [ -f "${1}" ] && setArray HOSTLIST $(/usr/bin/env cat "${1}") || setArray HOSTLIST "${1}";
+            [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${1}";
             ;;
         2)
-            [ -f "${1}" ] && setArray HOSTLIST $(/usr/bin/env cat "${1}") || setArray HOSTLIST "${1}";
+            [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${1}";
             typeset USER_NAME="${2}";
             ;;
         3)
-            [ -f "${1}" ] && setArray HOSTLIST $(/usr/bin/env cat "${1}") || setArray HOSTLIST "${1}";
+            [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${1}";
             typeset USER_NAME="${2}";
             typeset SSH_CONFIG_FILE="${3}";
             ;;
@@ -411,7 +411,7 @@ function changeSshPassphrase
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     ## send an rndc reload to the server to make it active
-    /usr/bin/env expect -f changeSSHPassphrase.exp "${FILE_NAME}" "${CURRENT_PASSPHRASE}" "${NEW_PASSPHRASE}";
+    changeSSHPassphrase.exp "${FILE_NAME}" "${CURRENT_PASSPHRASE}" "${NEW_PASSPHRASE}";
     typeset -i RET_CODE=${?};
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
@@ -1746,11 +1746,11 @@ function fssh
         RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ command ] [ ssh config file ]
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ ssh config file ] [ command ]
             -> The username for access to the target server
             -> The hostname to ssh to
-            -> Any commands to execute against the target host, as necessary
-            -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
+            -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config
+            -> Any commands to execute against the target host, as necessary";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1763,6 +1763,8 @@ function fssh
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+        [ ! -z "${CONFIGD}" ] && unset -v CONFIGD;
+        [ ! -z "${MAIN_SSH_CONFIG}" ] && unset -v MAIN_SSH_CONFIG;
         [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -1774,18 +1776,30 @@ function fssh
     fi
 
     typeset USERNAME="${1}";
-    [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${1}") || setArray TARGET_HOSTS "${2}";
+    typeset CONFIGD="${HOME}/.ssh/config.d";
+    typeset MAIN_SSH_CONFIG="${HOME}/.ssh/config";
+    [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${2}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CONFIGD -> ${CONFIGD}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MAIN_SSH_CONFIG -> ${MAIN_SSH_CONFIG}";
 
     case ${#} in
         3)
-            typeset EXEC_COMMAND="${3}";
+            typeset SSH_CONFIG_FILE="$(mktemp)";
+
+            cat "${CONFIGD}/${3} ${MAIN_SSH_CONFIG}" > "${SSH_CONFIG_FILE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
             ;;
         4)
-            typeset EXEC_COMMAND="${3}";
-            [ -f "${4}" ] && typeset SSH_CONFIG_FILE="${4}" || typeset SSH_CONFIG_FILE="${HOME}/.ssh/config";
+            typeset SSH_CONFIG_FILE="$(mktemp)";
+            typeset EXEC_COMMAND="${4}";
+
+            cat "${CONFIGD}/${3} ${MAIN_SSH_CONFIG}" > "${SSH_CONFIG_FILE}";
+
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC_COMMAND -> ${EXEC_COMMAND}";
             ;;
         *)
             RETURN_CODE=3;
@@ -1808,6 +1822,8 @@ function fssh
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+            [ ! -z "${CONFIGD}" ] && unset -v CONFIGD;
+            [ ! -z "${MAIN_SSH_CONFIG}" ] && unset -v MAIN_SSH_CONFIG;
             [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -1896,14 +1912,14 @@ function fssh
             "")
                 [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
             *)
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND}\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND}\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
         esac
 
@@ -1919,6 +1935,8 @@ function fssh
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+    [ ! -z "${CONFIGD}" ] && unset -v CONFIGD;
+    [ ! -z "${MAIN_SSH_CONFIG}" ] && unset -v MAIN_SSH_CONFIG;
     [ ! -z "${TARGET_HOSTS[*]}" ] && unset -v TARGET_HOSTS;
     [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
     [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -1990,7 +2008,7 @@ function fscp
     fi
 
     typeset USERNAME="${1}";
-    [ -f "${2}" ] && setArray TARGET_HOSTS $(/usr/bin/env cat "${1}") || setArray TARGET_HOSTS "${2}";
+    [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${2}";
     typeset TRANSFER_TYPE="${3}";
     typeset SOURCE_COPY="${4}";
     typeset TARGET_COPY="${5}";
@@ -2132,7 +2150,7 @@ function fscp
                 esac
                 ;;
             *)
-                /usr/bin/env expect -f ${HOME}/.lib/scp.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${CFG_FILE} --type ${TRANSFER_TYPE} --source ${SOURCE_COPY} --dest ${TARGET_COPY} 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
+                ${HOME}/.lib/scp.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${CFG_FILE} --type ${TRANSFER_TYPE} --source ${SOURCE_COPY} --dest ${TARGET_COPY} 2>&1 | /usr/bin/env tee -a ${LOGNAME}-${REAL_USER}-$(date +%Y%m%d).log;
                 ;;
         esac
 
