@@ -584,6 +584,7 @@ function getSshKeys
         [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
         [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+        [ ! -z "${ENTRY}" ] && unset -v ENTRY;
         [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -654,6 +655,7 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                 [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                 [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -723,14 +725,13 @@ function getSshKeys
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
 
-            [ -f "${2}" ] && setArray HOSTLIST $(/usr/bin/env cat "${2}") || setArray HOSTLIST "${2}";
+            [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${2}";
 
             case ${#} in
                 3)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
 
                     [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
-                    [ "${3}" == "show" ] && typeset SHOW_KEYS="${_TRUE}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     ;;
@@ -738,18 +739,18 @@ function getSshKeys
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
                     [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
 
-                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
-                    [ "${3}" == "show" ] && typeset SHOW_KEYS="${_TRUE}" || typeset REPLACE_INVALID_KEYS="${_TRUE}";
+                    typeset KNOWN_HOSTS_FILE="${3}";
+                    typeset SHOW_KEYS="${_TRUE}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
                     ;;
                 5)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
                     [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
 
-                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
-                    typeset REPLACE_INVALID_KEYS="${4}";
+                    typeset KNOWN_HOSTS_FILE="${3}";
+                    typeset REPLACE_INVALID_KEYS="${_TRUE}";
                     typeset SHOW_KEYS="${_TRUE}";
 
                     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
@@ -777,6 +778,7 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                 [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                 [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -920,6 +922,7 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                 [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                 [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -996,6 +999,7 @@ function getSshKeys
                 [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                 [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                 [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                 [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -1452,6 +1456,7 @@ function getSshKeys
                     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                    [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                     [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -1542,6 +1547,7 @@ function getSshKeys
                     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
                     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+                    [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
                     [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
                     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -1612,6 +1618,7 @@ function getSshKeys
             [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
             [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+            [ ! -z "${ENTRY}" ] && unset -v ENTRY;
             [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
             [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
             [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -1665,6 +1672,7 @@ function getSshKeys
     [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
     [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
+    [ ! -z "${ENTRY}" ] && unset -v ENTRY;
     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
     [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
@@ -2163,4 +2171,3 @@ function fscp
 
     return ${RETURN_CODE};
 }
-
