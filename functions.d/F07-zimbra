@@ -457,16 +457,16 @@ function getZimbraConfig
 
         case "${CONFIGURATION_TYPE}" in
             [Lo][Oo][Cc][Aa][Ll])
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND} getLocalConfig\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND} getLocalConfig\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND} getLocalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND} getLocalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND} getLocalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND} getLocalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
             [Gg][Lo][Oo][Bb][Aa][Ll])
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND} getGlobalConfig\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND} getGlobalConfig\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
-                [ ! -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND} getGlobalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
-                [ -z "${SSH_CONFIG_FILE}" ] && /usr/bin/env expect -f ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND} getGlobalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND} getGlobalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
+                [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND} getGlobalConfig" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
         esac
 
