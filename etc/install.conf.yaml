@@ -22,6 +22,7 @@
   ~/.bashrc: bashrc
   ~/.bash_profile: bash_profile
   ~/.curlrc: etc/curlrc
+  ~/.wgetrc: etc/wgetrc
   ~/.digrc: etc/digrc
   ~/.kshrc: kshrc
   ~/.ldaprc: etc/ldaprc
