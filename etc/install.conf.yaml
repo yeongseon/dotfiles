@@ -20,13 +20,13 @@
   ~/.alias: alias
   ~/.bashrc: bashrc
   ~/.bash_profile: bash_profile
-  ~/.curlrc: etc/curlrc
-  ~/.digrc: digrc
+  ~/.curlrc: curlrc
+  ~/.digrc: etc/digrc
   ~/.kshrc: kshrc
-  ~/.ldaprc: config/ldaprc
+  ~/.ldaprc: etc/ldaprc
   ~/.profile: profile
-  ~/.screenrc: screenrc
-  ~/.vimrc: vimrc
+  ~/.screenrc: etc/screenrc
+  ~/.vimrc: etc/vimrc
   ~/.functions: functions
   ~/.alias.d: alias.d/
   ~/.bin: bin/
