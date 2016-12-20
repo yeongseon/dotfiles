@@ -1,6 +1,6 @@
-#======  ANSIBLE  ============================================================
-#          NAME:  site.yml
-#   DESCRIPTION:  Entry point for playbook
+#======  DOTBOT  ============================================================
+#          NAME:  install.conf.yaml
+#   DESCRIPTION:  Install config for dotbot
 #==============================================================================
 ---
 - clean: ['~']
