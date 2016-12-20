@@ -55,19 +55,20 @@ alias fortune='/usr/bin/env fortune -a -e -o';
 alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
 
 ## script tracing
-alias debug="[ ! -z \"${ENABLE_DEBUG}\" ] && [ \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
-alias verbose="[ ! -z \"${ENABLE_VERBOSE}\" ] && [ \"${ENABLE_VERBOSE}\" = \"${_TRUE}\" ] && export ENABLE_VERBOSE=\"${_FALSE}\" || export ENABLE_VERBOSE=\"${_TRUE}\"";
-alias trace="[ ! -z \"${ENABLE_TRACE}\" ] && [ \"${ENABLE_TRACE}\" = \"${_TRUE}\" ] && export ENABLE_TRACE=\"${_FALSE}\" || export ENABLE_TRACE=\"${_TRUE}\"";
-alias performance="[ ! -z \"${ENABLE_PERFORMANCE}\" ] && [ \"${ENABLE_PERFORMANCE}\" = \"${_TRUE}\" ] && export ENABLE_PERFORMANCE=\"${_FALSE}\" || export ENABLE_PERFORMANCE=\"${_TRUE}\"";
+alias debug="[[ ! -z \"${ENABLE_DEBUG}\" && \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ]] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
+alias verbose="[[ ! -z \"${ENABLE_VERBOSE}\" && \"${ENABLE_VERBOSE}\" = \"${_TRUE}\" ]] && export ENABLE_VERBOSE=\"${_FALSE}\" || export ENABLE_VERBOSE=\"${_TRUE}\"";
+alias trace="[[ ! -z \"${ENABLE_TRACE}\" && \"${ENABLE_TRACE}\" = \"${_TRUE}\" ]] && export ENABLE_TRACE=\"${_FALSE}\" || export ENABLE_TRACE=\"${_TRUE}\"";
+alias performance="[[ ! -z \"${ENABLE_PERFORMANCE}\" && \"${ENABLE_PERFORMANCE}\" = \"${_TRUE}\" ]] && export ENABLE_PERFORMANCE=\"${_FALSE}\" || export ENABLE_PERFORMANCE=\"${_TRUE}\"";
 
 ## expect
-alias scp.exp="/usr/bin/env expect -f ${HOME}/.lib/scp.exp";
-alias ssh.exp="/usr/bin/env expect -f ${HOME}/.lib/ssh.exp";
-alias ssh-copy-id.exp="/usr/bin/env expect -f ${HOME}/.lib/sshCopyIdentity.exp";
-alias sudo.exp="/usr/bin/env expect -f ${HOME}/.lib/sudo.exp";
-alias rsync.exp="/usr/bin/env expect -f ${HOME}/.lib/rsync.exp";
-alias gpg.exp="/usr/bin/env expect -f ${HOME}/.lib/gpg.exp";
-alias keychain.exp="/usr/bin/env expect -f ${HOME}/.lib/keychain.exp";
+alias scp.exp="${HOME}/.lib/scp.exp";
+alias ssh.exp="${HOME}/.lib/ssh.exp";
+alias ssh-copy-id.exp="${HOME}/.lib/sshCopyIdentity.exp";
+alias sudo.exp="${HOME}/.lib/sudo.exp";
+alias rsync.exp="${HOME}/.lib/rsync.exp";
+alias gpg.exp="${HOME}/.lib/gpg.exp";
+alias keychain.exp="${HOME}/.lib/keychain.exp";
+alias telnet.exp="${HOME}/.lib/telnet.exp";
 
 case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
