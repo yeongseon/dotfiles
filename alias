@@ -25,6 +25,7 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 for ALIAS in ${HOME}/.alias.d/*
 do
     [ -z "${ALIAS}" ] && continue;
+    [ -d "${ALIAS}" ] && continue;
 
     case $([ ! -z "$(gawk -F "/" '{print $NF}' <<< "${ALIAS}" | egrep "^A([0-9]{1,3})-.*")" ] && echo "0") in
         0)
