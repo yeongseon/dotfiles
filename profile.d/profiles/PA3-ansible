@@ -21,9 +21,11 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-[ -f /usr/local/bin/ansible/hacking/env-setup ] && . /usr/local/bin/ansible/hacking/env-setup;
-
-[ -f /usr/local/bin/ansible/hacking/env-setup ] && typeset -x ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
+if [ -f /usr/local/bin/ansible/hacking/env-setup ]
+then
+  . /usr/local/bin/ansible/hacking/env-setup;
+  typeset -x ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
+fi
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
