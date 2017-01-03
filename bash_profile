@@ -59,6 +59,21 @@ do
     [ ! -z "${PROFILE}" ] && unset PROFILE;
 done
 
+if [ -d "${HOME}/.profile.d/profiles" ]
+then
+    for PROFILE in ${HOME}/.profile.d/profiles/*
+    do
+        [ -z "${PROFILE}" ] && continue;
+
+        if [ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^PA([0-9]{1,3})-.*")" ]
+        then
+            [ "${ENABLE_VERBOSE}" ] && . ${PROFILE1} || . ${PROFILE} >| /dev/null 2>&1;
+        fi
+
+        [ ! -z "${PROFILE}" ] && unset PROFILE;
+    done
+done
+
 [ ! -z "${INPUT}" ] && unset INPUT;
 [ ! -z "${PROFILE}" ] && unset PROFILE;
 
