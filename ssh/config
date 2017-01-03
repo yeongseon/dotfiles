@@ -4,21 +4,6 @@ Host github.com
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_cws-khuntly
 
-Host caspersb-amq01 caspersb-amq01.caspersbox.com
-    HostName                    = 192.168.10.100
-
-Host caspersb-aws01 caspersb-aws01.caspersbox.com
-    HostName                    = 192.168.10.101
-
-Host caspersb-ldap01 caspersb-ldap01.caspersbox.com
-    HostName                    = 192.168.10.102
-
-Host caspersb-sql01 caspersb-sql01.caspersbox.com
-    HostName                    = 192.168.10.103
-
-Host caspersb-bld01 caspersb-bld01.caspersbox.com
-    HostName                    = 192.168.10.104
-
 Host *
     AddressFamily               = inet
     CheckHostIP                 = yes
