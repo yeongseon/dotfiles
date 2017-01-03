@@ -1,5 +1,0 @@
-Host github.com
-    HostName                    = github.com
-    User                        = git
-    IdentitiesOnly              = yes
-    IdentityFile                = ~/.ssh/id_cws-khuntly
