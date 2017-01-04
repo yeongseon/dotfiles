@@ -1,6 +1,6 @@
-#======  ANSIBLE  ============================================================
-#          NAME:  site.yml
-#   DESCRIPTION:  Entry point for playbook
+#======  DOTBOT  ============================================================
+#          NAME:  install.conf.yaml
+#   DESCRIPTION:  Install config for dotbot
 #==============================================================================
 ---
 - clean: ['~']
@@ -14,6 +14,7 @@
   - [mkdir -p ~/.etc, Making etc directory]
   - [mkdir -p ~/.m2, Making maven directory]
   - [mkdir -p ~/.config, Making configuration directory]
+  - [chmod 700 ~/.ssh, Changing permissions on .ssh directory]
 
 - link:
   ~/.dotfiles: ''
@@ -21,12 +22,13 @@
   ~/.bashrc: bashrc
   ~/.bash_profile: bash_profile
   ~/.curlrc: etc/curlrc
-  ~/.digrc: digrc
+  ~/.wgetrc: etc/wgetrc
+  ~/.digrc: etc/digrc
   ~/.kshrc: kshrc
-  ~/.ldaprc: config/ldaprc
+  ~/.ldaprc: etc/ldaprc
   ~/.profile: profile
-  ~/.screenrc: screenrc
-  ~/.vimrc: vimrc
+  ~/.screenrc: etc/screenrc
+  ~/.vimrc: etc/vimrc
   ~/.functions: functions
   ~/.alias.d: alias.d/
   ~/.bin: bin/
@@ -49,4 +51,12 @@
   ~/.ssh/config.d: ssh/config.d
 
 - shell:
+  - [cd ~/.dotbot && find . -type d -exec chmod 755, Ensuring file permissions are 755 on all directories]
+  - [cd ~/.dotbot && find . -type f -exec chmod 644, Ensuring file permissions are 644 on all files]
+  - [chmod 600 ~/.dotbot/etc/ldaprc, Ensuring file permissions are 600 on etc/ldaprc]
+  - [chmod 600 ~/.dotbot/etc/curlrc, Ensuring file permissions are 600 on etc/curlrc]
+  - [chmod 600 ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml, Ensuring file permissions are 600 on ~/.etc/SecurityService/config/ServiceConfig.xml]
+  - [chmod 600 ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml, Ensuring file permissions are 600 on ~/.etc/eSolutionsCore/config/ServiceConfig.xml]
+  - [chmod 755 ~/.dotbot/bin/*, Ensuring file permissions are 755 on ~/.bin/*]
+  - [chmod 755 ~/.dotbot/lib/*, Ensuring file permissions are 755 on ~/.lib/*]
   - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]

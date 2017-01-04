@@ -42,7 +42,7 @@ function reloadDotfiles
 
         if [ ! -d "${DIRECTORY_ENTRY}" ]
         then
-            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_ENTRY} doesn't currently exist. Creating.";
+            writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_ENTRY} does not currently exist. Creating.";
 
             mkdir -p ${DIRECTORY_ENTRY} 1>>/${HOME}/.log/mkdir.out 2>${HOME}/.log/mkdir.err;
 
@@ -106,7 +106,7 @@ function reloadDotfiles
     [ ${ERROR_COUNT} -ne 0 ] && typeset -i ERROR_COUNT=0;
     [ ! -z "${DOTFILES_HOME}" ] && unset -v DOTFILES_HOME;
     [ ! -z "${INSTALL_YAML}" ] && unset -v INSTALL_YAML;
-    [ ! -z "${CURR_IFS}" ] && unset -v CURR_IFS;    
+    [ ! -z "${CURR_IFS}" ] && unset -v CURR_IFS;
     [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
     [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
     [ ! -z "${LINK_TARGET}" ] && unset -v LINK_TARGET;
@@ -464,7 +464,7 @@ function setupNewServer
             fi
 
             ## copy profile
-            /usr/bin/env expect -f ${HOME}/.lib/rsync.exp "${TARGET_HOST}" "${USERNAME}" "local" "${HOME}/" "/home/${USERNAME}/" "${AUTH_DATA}";
+            ${HOME}/.lib/rsync.exp "${TARGET_HOST}" "${USERNAME}" "local" "${HOME}/" "/home/${USERNAME}/" "${AUTH_DATA}";
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";

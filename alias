@@ -25,53 +25,52 @@ trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 for ALIAS in ${HOME}/.alias.d/*
 do
     [ -z "${ALIAS}" ] && continue;
+    [ -d "${ALIAS}" ] && continue;
 
-    case $([ ! -z "$(awk -F "/" '{print $NF}' <<< "${ALIAS}" | egrep "^A([0-9]{1,3})-.*")" ] && echo "0") in
+    case $([ ! -z "$(gawk -F "/" '{print $NF}' <<< "${ALIAS}" | egrep "^A([0-9]{1,3})-.*")" ] && echo "0") in
         0)
-	    case "${ENABLE_VERBOSE}" in
-	        "${_TRUE}")
-	            . ${ALIAS};
-	            ;;
-	        *)
-	            . ${ALIAS} >| /dev/null 2>&1;
-	            ;;
-	    esac
-	;;
+            case "${ENABLE_VERBOSE}" in
+                "${_TRUE}")
+                    . ${ALIAS};
+                    ;;
+                *)
+                    . ${ALIAS} >| /dev/null 2>&1;
+                    ;;
+            esac
+            ;;
     esac
 
     [ ! -z "${ALIAS}" ] && unset ALIAS;
 done
 
-if [[ "$(uname)" != [Cc][Yy][Gg][Ww][Ii][Nn]* ]]
-then
-    if [ -d "${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')" ]
+## look for any directories that might contain specifics
+for ALIAS in ${HOME}/.alias.d/*
+do
+    [ -z "${ALIAS}" ] && continue;
+
+    if [ -d "${ALIAS}" ]
     then
-        typeset DISTRIBUTION_ALIASES="${HOME}/.alias.d/$(/usr/bin/env lsb_release -a | grep Distributor | awk '{print $NF}')";
-
-        for ALIAS in ${DISTRIBUTION_ALIASES}/*
+        for ALIAS1 in ${ALIAS}/*
         do
-            [ -z "${ALIAS}" ] || [ ! -f "${ALIAS}" ] || [ "$(awk '{print substr($0, 0, 1)}' <<< "$(basename "${ALIAS}")")" != "A" ] && continue;
-
-            typeset INPUT=$(echo $(basename "${ALIAS}") | awk '{print substr($0, 2, 2)}');
-
-            case $([ ! -z "$(echo "${INPUT}" | egrep "^[0-9]+$")" ] && echo "0") in
+            case $([ ! -z "$(gawk -F "/" '{print $NF}' <<< "${ALIAS1}" | egrep "^A([0-9]{1,3})-.*")" ] && echo "0") in
                 0)
                     case "${ENABLE_VERBOSE}" in
                         "${_TRUE}")
-                            . ${ALIAS};
+                            . ${ALIAS1};
                             ;;
                         *)
-                            . ${ALIAS} >| /dev/null 2>&1;
+                            . ${ALIAS1} >| /dev/null 2>&1;
                             ;;
                     esac
                     ;;
             esac
 
-            [ ! -z "${INPUT}" ] && unset INPUT;
-            [ ! -z "${ALIAS}" ] && unset ALIAS;
+            [ ! -z "${ALIAS1}" ] && unset -v ALIAS1;
         done
-    fi
-fi
+
+    [ ! -z "${ALIAS1}" ] && unset ALIAS1;
+    [ ! -z "${ALIAS}" ] && unset ALIAS;
+done
 
 [ ! -z "${ALIAS}" ] && unset ALIAS;
 [ ! -z "${INPUT}" ] && unset INPUT;

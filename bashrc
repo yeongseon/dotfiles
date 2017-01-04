@@ -32,31 +32,29 @@ for PROFILE in ${HOME}/.profile.d/*
 do
     [ -z "${PROFILE}" ] && continue;
 
-    if [ -d "${PROFILE}" ]
+    if [ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^P([0-9]{1,3})-.*")" ]
     then
-        for PROFILE1 in ${HOME}/${PROFILE}
-        do
-            if [ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^PA([0-9]{1,3})-.*")" ]
-            then
-    	        [ "${ENABLE_VERBOSE}" ] && . ${PROFILE1} || . ${PROFILE} >| /dev/null 2>&1;
-    	    fi
-
-            [ ! -z "${PROFILE1}" ] && unset -v PROFILE1;
-    	done
-
-        [ ! -z "${PROFILE}" ] && unset -v PROFILE;
-    else
-        if [ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^PA([0-9]{1,3})-.*")" ]
-        then
-    	    [ "${ENABLE_VERBOSE}" ] && . ${PROFILE1} || . ${PROFILE} >| /dev/null 2>&1;
-    	fi
-
-        [ ! -z "${PROFILE1}" ] && unset -v PROFILE1;
-        [ ! -z "${PROFILE}" ] && unset -v PROFILE;
+        [ "${ENABLE_VERBOSE}" ] && . ${PROFILE1} || . ${PROFILE} >| /dev/null 2>&1;
     fi
 
-    [ ! -z "${PROFILE1}" ] && unset PROFILE1;
+    [ ! -z "${PROFILE}" ] && unset -v PROFILE;
+
     [ ! -z "${PROFILE}" ] && unset PROFILE;
+done
+
+if [ -d "${HOME}/.profile.d/profiles" ]
+then
+    for PROFILE in ${HOME}/.profile.d/profiles/*
+    do
+        [ -z "${PROFILE}" ] && continue;
+
+        if [ ! -z "$(awk -F "/" '{print $NF}' <<< "${PROFILE1}" | egrep "^P([0-9]{1,3})-.*")" ]
+        then
+            [ "${ENABLE_VERBOSE}" ] && . ${PROFILE1} || . ${PROFILE} >| /dev/null 2>&1;
+        fi
+
+        [ ! -z "${PROFILE}" ] && unset PROFILE;
+    done
 done
 
 [ ! -z "${INPUT}" ] && unset INPUT;
