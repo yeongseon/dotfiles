@@ -67,6 +67,7 @@ do
 
             [ ! -z "${FUNCTION1}" ] && unset -v FUNCTION1;
         done
+    fi
 
     [ ! -z "${FUNCTION1}" ] && unset FUNCTION1;
     [ ! -z "${FUNCTION}" ] && unset FUNCTION;
