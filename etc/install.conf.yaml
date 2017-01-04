@@ -19,8 +19,8 @@
 - link:
   ~/.dotfiles: ''
   ~/.alias: alias
-  ~/.bashrc: bashrc
-  ~/.bash_profile: bash_profile
+  ~/.bashrc: bin/profile
+  ~/.bash_profile: bin/profile
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
   ~/.digrc: etc/digrc
