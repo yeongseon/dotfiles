@@ -1,7 +1,7 @@
 #==============================================================================
 #
-#          FILE:  bashrc
-#         USAGE:  . bashrc
+#          FILE:  bash_profile
+#         USAGE:  . bash_profile
 #   DESCRIPTION:  Sets application-wide functions
 #
 #       OPTIONS:  ---
