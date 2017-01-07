@@ -67,6 +67,7 @@ do
 
             [ ! -z "${ALIAS1}" ] && unset -v ALIAS1;
         done
+    fi
 
     [ ! -z "${ALIAS1}" ] && unset ALIAS1;
     [ ! -z "${ALIAS}" ] && unset ALIAS;

@@ -24,7 +24,7 @@
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
   ~/.digrc: etc/digrc
-  ~/.kshrc: kshrc
+  ~/.kshrc: bin/profile
   ~/.ldaprc: etc/ldaprc
   ~/.profile: profile
   ~/.screenrc: etc/screenrc

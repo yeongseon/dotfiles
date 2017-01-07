@@ -24,6 +24,8 @@ trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || se
 [ -d "/usr/java/latest" ] || [ -l "/usr/java/latest" ] && typeset -x JAVA_HOME="/usr/java/latest";
 [ -d "/usr/java/latest/jre" ] && typeset -x JRE_HOME="/usr/java/latest/jre";
 
+[ -z "${JAVA_HOME}" ] && return;
+
 [ ! -z "${JAVA_HOME}" ] && typeset -x JRE_HOME="/usr/java/latest/jre";
 [ ! -z "${JAVA_HOME}" ] && typeset -x CLASSPATH=".:${CLASSPATH}:${HOME}/.etc:${HOME}/.lib";
 [ ! -z "${JAVA_HOME}" ] && typeset -x JAVA_EXT_DIRS="${JAVA_EXT_DIRS}:${JRE_HOME}/lib/ext:${WAS_EXT_DIRS}";
