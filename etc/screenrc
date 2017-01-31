@@ -1,16 +1,37 @@
-# Set the default window name to empty string instead of the arbitrary "bash"
-# shelltitle ''
-#  
-#  # Set the window caption.
-#  # I use caption instead of hardstatus, so it is available per split window too
-#  # (hardstatus is only per complete screen).
-#  caption always "%{= KW}%-Lw%{= wb}%n %t %{= KW}%+Lw %-=| ${USER}@%H | %M%d %c%{-}"
-#  # Some decryption hints:
-#  # %{= KW}     background light black (aka dark gray) with foreground light white
-#  # %{= wb}     background dark white (ake light gray) with foreground dark blue
-#  # %-Lw        all windows before the current window.
-#  # %n%f %t     current window number, flags and title.
-#  # %+Lw        all windows after the current window.
-#  # %-=         pad remaining spaces.
-#  # %H          hostname.
-#  # %M%d %s     month and day (MmmDD) and current time (HH:MM).
+# GNU Screen - main configuration file
+# All other .screenrc files will source this file to inherit settings.
+# Author: Christian Wills - cwills.sys@gmail.com
+
+# Allow bold colors - necessary for some reason
+attrcolor b ".I"
+
+# Tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+# Enables use of shift-PgUp and shift-PgDn
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+
+# Erase background with current bg color
+defbce "on"
+
+# Enable 256 color term
+term xterm-256color
+
+# Cache 30000 lines for scroll back
+defscrollback 30000
+
+hardstatus alwayslastline
+
+# Very nice tabbed colored hardstatus line
+hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
+
+# change command character from ctrl-a to ctrl-b (emacs users may want this)
+#escape ^Bb
+
+# Hide hardstatus: ctrl-a f
+bind f eval "hardstatus ignore"
+
+# Show hardstatus: ctrl-a F
+bind F eval "hardstatus alwayslastline"
+
+password XAdwqb60rA2h6
