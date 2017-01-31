@@ -2116,7 +2116,7 @@ function sssh
         1)
             [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
 
-            typset USERNAME="${LOGNAME}";
+            typeset USERNAME="${LOGNAME}";
             typeset SSH_CONFIG_FILE="${SSH_CORE_CONFIG}";
 
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
