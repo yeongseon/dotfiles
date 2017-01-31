@@ -20,8 +20,8 @@ trap 'set +v; set +x' INT TERM EXIT;
 
 typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
+[[ ! -z "${ENABLE_VERBOSE}" && "${ENABLE_VERBOSE}" = "${_TRUE}" ]] && set -x;
+[[ ! -z "${ENABLE_TRACE}" && "${ENABLE_TRACE}" = "${_TRUE}" ]] && set -v;
 
 ## Application constants
 CNAME="$(/usr/bin/env basename "${0}")";
@@ -313,6 +313,16 @@ function installFiles
     typeset CURR_IFS="${IFS}";
     typeset IFS=$'\n'
 
+    ## clean up home directory first
+    for LINKED_ENTRY in $(/usr/bin/env find . -maxdepth 1 -type l)
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINKED_ENTRY -> ${LINKED_ENTRY}" >&2;
+
+        /usr/bin/env unlink ${LINKED_ENTRY};
+
+        [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
+    done
+
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DOTFILES_HOME -> ${DOTFILES_HOME}" >&2;
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "INSTALL_YAML -> ${INSTALL_YAML}" >&2;
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURR_IFS -> ${CURR_IFS}" >&2;
@@ -348,7 +358,7 @@ function installFiles
         [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
     done
 
-    for LINKED_ENTRY in $(cat "${INSTALL_YAML}" | grep "~/" | egrep -v "mkdir|dotfiles" | sed -e "s/^ *//g;s/ *$//g")
+    for LINKED_ENTRY in $(cat "${INSTALL_YAML}" | grep "~/" | egrep -v "mkdir|dotfiles|chmod|cd" | sed -e "s/^ *//g;s/ *$//g")
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINKED_ENTRY -> ${LINKED_ENTRY}" >&2;
 
@@ -386,6 +396,15 @@ function installFiles
         [ ! -z "${LINK_TARGET}" ] && unset -v LINK_TARGET;
         [ ! -z "${LINKED_ENTRY}" ] && unset -v LINKED_ENTRY;
     done
+
+    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Updating permissions..." >&1;
+
+    cd ~/.dotbot && find . -type d -exec chmod 755;
+    cd ~/.dotbot && find . -type f -exec chmod 644;
+    /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/screenrc ~/.dotbot/m2/settings.xml \
+        ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
+    /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
+    /usr/bin/env chmod 644 ~/.dotbot/bin/profile ~/.dotbot/ssh/config;
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypair..." >&1;
 
