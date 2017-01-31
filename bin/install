@@ -401,6 +401,7 @@ function installFiles
 
     cd ~/.dotbot && find . -type d -exec chmod 755;
     cd ~/.dotbot && find . -type f -exec chmod 644;
+    /usr/bin/env chmod 700 ~/ ~/.ssh;
     /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/screenrc ~/.dotbot/m2/settings.xml \
         ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
     /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
