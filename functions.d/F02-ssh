@@ -6,23 +6,23 @@
 #==============================================================================
 function buildSshConfig
 {
-    trap '[ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}"; \\
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}"; \\
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
 
     [ -z "$(type mktemp 2>/dev/null)" ] && . ${HOME}/.functions.d/F04-misc;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -36,15 +36,15 @@ function buildSshConfig
                 -> The ssh-config file to modify.
                     -> If not specified, ${HOME}/config is utilized";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
 
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${TARGET_HOST_NAME}" ] && unset -v TARGET_HOST_NAME;
@@ -63,8 +63,8 @@ function buildSshConfig
         [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
         [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         return ${RETURN_CODE};
     fi
@@ -72,8 +72,8 @@ function buildSshConfig
     typeset TEMPFILE="$(mktemp)";
     typeset SSH_CONFIG_TEMPLATE="${HOME}/.etc/ssh-config.template";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMPFILE -> ${TEMPFILE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_TEMPLATE -> ${SSH_CONFIG_TEMPLATE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMPFILE -> ${TEMPFILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_TEMPLATE -> ${SSH_CONFIG_TEMPLATE}";
 
     case ${#} in
         1)
@@ -90,33 +90,33 @@ function buildSshConfig
             ;;
     esac
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOSTLIST -> ${HOSTLIST[*]}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_NAME -> ${USER_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOSTLIST -> ${HOSTLIST[*]}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_NAME -> ${USER_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
 
     for TARGET_HOST in ${HOSTLIST[*]}
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
 
         typeset TARGET_HOST_NAME="$(/usr/bin/env awk -F ":" '{print $1}' <<< "${TARGET_HOST}")";
         typeset TARGET_USER_NAME="$(/usr/bin/env awk -F ":" '{print $2}' <<< "${TARGET_HOST}")";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST_NAME -> ${TARGET_HOST_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_USER_NAME -> ${TARGET_USER_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST_NAME -> ${TARGET_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_USER_NAME -> ${TARGET_USER_NAME}";
 
-        [ ! -z "${TARGET_USER_NAME}" ] && [ "${TARGET_USER_NAME}" != "${TARGET_HOST_NAME}" ] && typeset ADD_USER_NAME="${TARGET_USER_NAME}";
+        [ ! -z "${TARGET_USER_NAME}" -a "${TARGET_USER_NAME}" != "${TARGET_HOST_NAME}" ] && typeset ADD_USER_NAME="${TARGET_USER_NAME}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_USER_NAME -> ${ADD_USER_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_USER_NAME -> ${ADD_USER_NAME}";
 
         ## build management names
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env cut -d "." -f 2- <<< \"${TARGET_HOST_NAME}\" | sed -e \"s/ /./g\"";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env cut -d "." -f 1 <<< \"${TARGET_HOST_NAME}\" | sed -e \"s/ /./g\"";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env cut -d "." -f 2- <<< \"${TARGET_HOST_NAME}\" | sed -e \"s/ /./g\"";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env cut -d "." -f 1 <<< \"${TARGET_HOST_NAME}\" | sed -e \"s/ /./g\"";
 
         typeset HOST_DOMAIN_NAME="$(/usr/bin/env cut -d "." -f 2- <<< "${TARGET_HOST_NAME}" | sed -e "s/ /./g")"
         typeset SYSTEM_HOST_NAME="$(/usr/bin/env cut -d "." -f 1 <<< "${TARGET_HOST_NAME}" | sed -e "s/ /./g")"
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_HOST_NAME -> ${SYSTEM_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_HOST_NAME -> ${SYSTEM_HOST_NAME}";
 
         ## build management names
         typeset MGMT_FULL_HOST_NAME="$(sed -e "s/o\./s\./;s/o-/s-/;s/-crs/-mgt/" <<< ${SYSTEM_HOST_NAME}).${HOST_DOMAIN_NAME}";
@@ -124,17 +124,17 @@ function buildSshConfig
         typeset MGMT_IP_ADDRESS="$(/usr/bin/env dig +short +noidentify -t a "${MGMT_FULL_HOST_NAME}" 2>/dev/null | sed -e "s/\.$//" | tr '\n' ' ' | sed -e "s/\.$//")";
         [ "$(/usr/bin/env cut -d "-" -f 1 <<< "${MGMT_FULL_HOST_NAME}")" != "${MGMT_FULL_HOST_NAME}" ] && typeset MGMT_TERT_HOST_NAME="$(/usr/bin/env cut -d "-" -f 1 <<< "${MGMT_SHORT_HOST_NAME}")";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_FULL_HOST_NAME -> ${MGMT_FULL_HOST_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_SHORT_HOST_NAME -> ${MGMT_SHORT_HOST_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_IP_ADDRESS -> ${MGMT_IP_ADDRESS}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_TERT_HOST_NAME -> ${MGMT_TERT_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_FULL_HOST_NAME -> ${MGMT_FULL_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_SHORT_HOST_NAME -> ${MGMT_SHORT_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_IP_ADDRESS -> ${MGMT_IP_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_TERT_HOST_NAME -> ${MGMT_TERT_HOST_NAME}";
 
         [ ! -z "${MGMT_FULL_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${MGMT_FULL_HOST_NAME}";
         [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${MGMT_SHORT_HOST_NAME}";
         [ ! -z "${MGMT_TERT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${MGMT_TERT_HOST_NAME}";
         [ ! -z "${MGMT_IP_ADDRESS}" ] && setArray ADD_HOST_NAMES "${MGMT_IP_ADDRESS}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_HOST_NAMES -> ${ADD_HOST_NAMES[*]}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_HOST_NAMES -> ${ADD_HOST_NAMES[*]}";
 
         ## build operational names
         typeset OPER_FULL_HOST_NAME="$(sed -e "s/s\./o\./;s/s-/o-/;s/-mgt/-crs/" <<< ${SYSTEM_HOST_NAME}).${HOST_DOMAIN_NAME}";
@@ -142,17 +142,17 @@ function buildSshConfig
         typeset MGMT_IP_ADDRESS="$(/usr/bin/env dig +short +noidentify -t a "${OPER_FULL_HOST_NAME}" 2>/dev/null | sed -e "s/\.$//" | tr '\n' ' ' | sed -e "s/\.$//")";
         [ "$(/usr/bin/env cut -d "-" -f 1 <<< "${OPER_FULL_HOST_NAME}")" != "${OPER_FULL_HOST_NAME}" ] && typeset OPER_TERT_HOST_NAME="$(/usr/bin/env cut -d "-" -f 1 <<< "${OPER_SHORT_HOST_NAME}")";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_FULL_HOST_NAME -> ${OPER_FULL_HOST_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_SHORT_HOST_NAME -> ${OPER_SHORT_HOST_NAME}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_IP_ADDRESS -> ${OPER_IP_ADDRESS}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_TERT_HOST_NAME -> ${OPER_TERT_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_FULL_HOST_NAME -> ${OPER_FULL_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_SHORT_HOST_NAME -> ${OPER_SHORT_HOST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_IP_ADDRESS -> ${OPER_IP_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OPER_TERT_HOST_NAME -> ${OPER_TERT_HOST_NAME}";
 
-        [ ! -z "${OPER_FULL_HOST_NAME}" ] && [ "${OPER_FULL_HOST_NAME}" != "${MGMT_FULL_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_FULL_HOST_NAME}";
-        [ ! -z "${OPER_SHORT_HOST_NAME}" ] && [ "${OPER_SHORT_HOST_NAME}" != "${MGMT_SHORT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_SHORT_HOST_NAME}";
-        [ ! -z "${OPER_TERT_HOST_NAME}" ] && [ "${OPER_TERT_HOST_NAME}" != "${MGMT_TERT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_TERT_HOST_NAME}";
-        [ ! -z "${OPER_IP_ADDRESS}" ] && [ "${OPER_IP_ADDRESS}" != "${MGMT_IP_ADDRESS}" ] && setArray ADD_HOST_NAMES "${OPER_IP_ADDRESS}";
+        [ ! -z "${OPER_FULL_HOST_NAME}" -a "${OPER_FULL_HOST_NAME}" != "${MGMT_FULL_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_FULL_HOST_NAME}";
+        [ ! -z "${OPER_SHORT_HOST_NAME}" -a "${OPER_SHORT_HOST_NAME}" != "${MGMT_SHORT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_SHORT_HOST_NAME}";
+        [ ! -z "${OPER_TERT_HOST_NAME}" -a "${OPER_TERT_HOST_NAME}" != "${MGMT_TERT_HOST_NAME}" ] && setArray ADD_HOST_NAMES "${OPER_TERT_HOST_NAME}";
+        [ ! -z "${OPER_IP_ADDRESS}" -a "${OPER_IP_ADDRESS}" != "${MGMT_IP_ADDRESS}" ] && setArray ADD_HOST_NAMES "${OPER_IP_ADDRESS}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_HOST_NAMES -> ${ADD_HOST_NAMES[*]}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADD_HOST_NAMES -> ${ADD_HOST_NAMES[*]}";
 
         /usr/bin/env printf "Host %s\n" "${ADD_HOST_NAMES[*]}" >> "${TEMPFILE}";
         /usr/bin/env printf "    HostName                    = %s\n" "${MGMT_FULL_HOST_NAME}" >> "${TEMPFILE}";
@@ -177,15 +177,15 @@ function buildSshConfig
     ## combine and finalize
     /usr/bin/env cat "${TEMPFILE}" "${SSH_CONFIG_TEMPLATE}" | sed -e "s/%USERNAME%/${USER_NAME}/" >> "${SSH_CONFIG_FILE}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
-    [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
+    [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}";
 
     [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
     [ ! -z "${SSH_CONFIG_TEMPLATE}" ] && unset -v SSH_CONFIG_TEMPLATE;
@@ -208,8 +208,8 @@ function buildSshConfig
     [ ! -z "${ADD_HOST_NAMES[*]}" ] && unset -v ADD_HOST_NAMES;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     return ${RETURN_CODE};
 }
@@ -222,24 +222,24 @@ function buildSshConfig
 #==============================================================================
 function changeSshPassphrase
 {
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    trap '[ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}"; \\
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -f "${TEMPFILE}"; \\
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -249,15 +249,15 @@ function changeSshPassphrase
         writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ keyfile ]
                  -> The private keyfile to obtain a public key for";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -266,8 +266,8 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         return ${RETURN_CODE};
     fi
@@ -277,10 +277,10 @@ function changeSshPassphrase
     typeset CURRENT_PASSPHRASE="$(grep $(basename ${HOME}/.ssh/id_rsa) ${HOME}/.etc/passphrase | cut -d ":" -f 2)";
     typeset NEW_PASSPHRASE=$(returnRandomCharacters 64);
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_DIRECTORY -> ${ARCHIVE_DIRECTORY}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURRENT_PASSPHRASE -> ${CURRENT_PASSPHRASE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "NEW_PASSPHRASE -> ${NEW_PASSPHRASE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_DIRECTORY -> ${ARCHIVE_DIRECTORY}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURRENT_PASSPHRASE -> ${CURRENT_PASSPHRASE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "NEW_PASSPHRASE -> ${NEW_PASSPHRASE}";
 
     [ ! -d ${ARCHIVE_DIRECTORY} ] && mkdir ${ARCHIVE_DIRECTORY};
 
@@ -291,10 +291,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the provided file. Please try again.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -303,13 +303,13 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
@@ -321,10 +321,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the current passphrase. Please try again.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -333,13 +333,13 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
@@ -351,10 +351,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No new passphrase was generated. Please try again.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -363,13 +363,13 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
@@ -384,10 +384,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create a backup copy of the provided SSH key.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -396,26 +396,26 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
     ## send an rndc reload to the server to make it active
     changeSSHPassphrase.exp "${FILE_NAME}" "${CURRENT_PASSPHRASE}" "${NEW_PASSPHRASE}";
     typeset -i RET_CODE=${?};
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
@@ -429,10 +429,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -441,13 +441,13 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
@@ -462,10 +462,10 @@ function changeSshPassphrase
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase.";
         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+        [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
         [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -474,13 +474,13 @@ function changeSshPassphrase
         [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
         [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
@@ -488,7 +488,7 @@ function changeSshPassphrase
     ## success
     typeset TEMPFILE=$(mktemp);
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMPFILE -> ${TEMPFILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMPFILE -> ${TEMPFILE}";
 
     sed -e "s/${CURRENT_PASSPHRASE}/${NEW_PASSPHRASE}/" ${HOME}/.etc/passphrase > ${TEMPFILE};
 
@@ -514,10 +514,10 @@ function changeSshPassphrase
         writeLogEntry "STDERR" "KEYFILE: ${FILE_NAME}, NEW PASSPHRASE: ${NEW_PASSPHRASE}";
     fi
 
-    [ ! -z "${TEMPFILE}" ] && [ -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
+    [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${TEMPFILE}" ] && unset -v TEMPFILE;
     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -526,13 +526,13 @@ function changeSshPassphrase
     [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
     [ ! -z "${ARCHIVE_DIRECTORY}" ] && unset -v ARCHIVE_DIRECTORY;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     return ${RETURN_CODE};
 }
@@ -545,23 +545,23 @@ function changeSshPassphrase
 #==============================================================================
 function getSshKeys
 {
-    trap '[ ! -z "${TEMP_DELETE}" ] && [ -f "${TEMP_DELETE}" ] && rm -rf "${TEMP_DELETE}"; [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ -f "${TEMP_KNOWN_HOSTS}" ] && rm -rf "${TEMP_KNOWN_HOSTS}"; \\
-        [ ! -z "${TEMP_WRITE_FILE}" ] && [ -f "${TEMP_WRITE_FILE}" ] && rm -rf "${TEMP_WRITE_FILE}"; set +v; set +x; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${TEMP_DELETE}" -a -f "${TEMP_DELETE}" ] && rm -rf "${TEMP_DELETE}"; [ ! -z "${TEMP_KNOWN_HOSTS}" -a -f "${TEMP_KNOWN_HOSTS}" ] && rm -rf "${TEMP_KNOWN_HOSTS}"; \\
+        [ ! -z "${TEMP_WRITE_FILE}" -a -f "${TEMP_WRITE_FILE}" ] && rm -rf "${TEMP_WRITE_FILE}"; set +v; set +x; set -o noclobber' INT TERM EXIT;
 
     [ -z "$(type mktemp 2>/dev/null)" ] && . ${HOME}/.functions.d/F03-misc;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -579,12 +579,12 @@ function getSshKeys
                     -> Optional if key type is \"host\", defaults to ${_TRUE}
                 -> Show keys instead of saving them";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-        [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-        [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+        [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+        [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+        [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
         [ ! -z "${ENTRY}" ] && unset -v ENTRY;
         [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -623,27 +623,27 @@ function getSshKeys
         [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
         [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         return ${RETURN_CODE};
     fi
 
     typeset REQUEST_TYPE="${1}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REQUEST_TYPE -> ${REQUEST_TYPE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_HOST_NAMES -> ${HASH_HOST_NAMES}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REQUEST_TYPE -> ${REQUEST_TYPE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_HOST_NAMES -> ${HASH_HOST_NAMES}";
 
     case "${REQUEST_TYPE}" in
         [Pp][Uu][Bb]|[Pp][Uu][Bb]][Ll][Ii][Cc])
             [ -f "${2}" ] && typeset FILE_NAME="${2}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
 
             if [ -z "${FILE_NAME}" ] || [ ! -r "${FILE_NAME}" ]
             then
@@ -652,12 +652,12 @@ function getSshKeys
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the provided file. Please try again.";
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-                [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+                [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+                [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+                [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
                 [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -696,18 +696,18 @@ function getSshKeys
                 [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
                 [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
                 return ${RETURN_CODE};
             fi
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -y -f ${FILE_NAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -y -f ${FILE_NAME}";
 
             /usr/bin/env ssh-keygen -y -f "${FILE_NAME}";
             typeset -i RETURN_CODE=${?};
@@ -724,16 +724,16 @@ function getSshKeys
             typeset SHOW_KEYS="${_FALSE}";
             typeset HASH_KEYS="${_TRUE}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_DELETE -> ${TEMP_DELETE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_KNOWN_HOSTS -> "${TEMP_KNOWN_HOSTS}"";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_FILE -> ${TEMP_WRITE_FILE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_DIRECTORY -> ${ARCHIVE_DIRECTORY}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_FILE -> ${ARCHIVE_HOSTS_FILE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_DELETE -> ${TEMP_DELETE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_KNOWN_HOSTS -> "${TEMP_KNOWN_HOSTS}"";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_FILE -> ${TEMP_WRITE_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_DIRECTORY -> ${ARCHIVE_DIRECTORY}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_FILE -> ${ARCHIVE_HOSTS_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
 
             [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${2}";
 
@@ -743,7 +743,7 @@ function getSshKeys
 
                     [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     ;;
                 4)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
@@ -752,8 +752,8 @@ function getSshKeys
                     typeset KNOWN_HOSTS_FILE="${3}";
                     typeset REPLACE_INVALID_KEYS="${4}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
                     ;;
                 5)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
@@ -764,9 +764,9 @@ function getSshKeys
                     typeset REPLACE_INVALID_KEYS="${4}";
                     typeset HASH_KEYS="${5}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
                     ;;
                 6)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
@@ -779,19 +779,19 @@ function getSshKeys
                     typeset HASH_KEYS="${5}";
                     typeset SHOW_KEYS="${6}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
                     ;;
             esac
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOSTLIST -> ${HOSTLIST[*]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_HOST_NAMES -> ${HASH_HOST_NAMES}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOSTLIST -> ${HOSTLIST[*]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_HOST_NAMES -> ${HASH_HOST_NAMES}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HASH_KEYS -> ${HASH_KEYS}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHOW_KEYS -> ${SHOW_KEYS}";
 
             if [ -z "${HOSTLIST[*]}" ]
             then
@@ -800,12 +800,12 @@ function getSshKeys
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No host entries were provided. Please try again.";
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-                [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-                [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+                [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+                [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+                [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
                 [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                 [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -844,20 +844,20 @@ function getSshKeys
                 [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
                 [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
                 return ${RETURN_CODE};
             fi
 
             for KEY_HOSTNAME in ${HOSTLIST[*]}
             do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_HOSTNAME -> ${KEY_HOSTNAME}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_HOSTNAME -> ${KEY_HOSTNAME}";
 
                 [ ! -z "$(/usr/bin/env grep "\#" <<< "${KEY_HOSTNAME}")" ] && continue;
 
@@ -865,23 +865,23 @@ function getSshKeys
                 typeset HOST_DOMAIN_NAME="$(/usr/bin/env cut -d "." -f 2- <<< "${KEY_HOSTNAME}" | sed -e "s/ /./g")"
                 typeset MGMT_FULL_HOST_NAME="$(/usr/bin/env sed -e "s/o-/s-/;s/-crs.${HOST_DOMAIN_NAME}$/-mgt.${HOST_DOMAIN_NAME}/;s/o.${HOST_DOMAIN_NAME}$/s.${HOST_DOMAIN_NAME}/" <<< "${KEY_HOSTNAME}")";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_FULL_HOST_NAME -> ${MGMT_FULL_HOST_NAME}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MGMT_FULL_HOST_NAME -> ${MGMT_FULL_HOST_NAME}";
 
                 ## make sure its a valid host
-                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
                 validateServerAvailability "${MGMT_FULL_HOST_NAME}" 22;
                 typeset -i RET_CODE=${?};
 
-                [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-                [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
                 set +o noclobber;
                 typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                 if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
                 then
@@ -902,11 +902,11 @@ function getSshKeys
                 fi
 
                 ## make sure the host presents an ssh key, if not, skip it
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh-keyscan -t rsa \"${MGMT_FULL_HOST_NAME}\" 2>&1 | grep -v \"getaddrinfo\" | head -1";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh-keyscan -t rsa \"${MGMT_FULL_HOST_NAME}\" 2>&1 | grep -v \"getaddrinfo\" | head -1";
 
                 typeset SSH_HOST_ENTRY="$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>&1 | grep -v "getaddrinfo" | head -1)";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_HOST_ENTRY -> ${SSH_HOST_ENTRY}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_HOST_ENTRY -> ${SSH_HOST_ENTRY}";
 
                 if [ -z "${SSH_HOST_ENTRY}" ]
                 then
@@ -929,9 +929,9 @@ function getSshKeys
                     continue;
                 fi
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t dsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t ecdsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t dsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t ecdsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
 
                 case "${HASH_KEYS}" in
                     "${_TRUE}") typeset SSH_KEYSCAN="/usr/bin/env ssh-keyscan -Ht"; ;;
@@ -954,23 +954,23 @@ function getSshKeys
 
                 for KEYTYPE in "ssh-rsa" "ssh-dss" "ecdsa-sha2-nistp256"
                 do
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMP_KNOWN_HOSTS}\" -F \"${MGMT_FULL_HOST_NAME}\" | grep \"${KEYTYPE}\" | wc -l";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEYTYPE -> ${KEYTYPE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMP_KNOWN_HOSTS}\" -F \"${MGMT_FULL_HOST_NAME}\" | grep \"${KEYTYPE}\" | wc -l";
 
                     typeset -i KEY_COUNT=$(/usr/bin/env ssh-keygen -f "${TEMP_KNOWN_HOSTS}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | wc -l);
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
 
                     case ${KEY_COUNT} in
                         0)
                             ## just add them, they don't currently exist
                             [ -z "$(grep "${SSH_HOST_ENTRY}" "${TEMP_KNOWN_HOSTS}")" ] && /usr/bin/env printf "%s\n" "${SSH_HOST_ENTRY}" >> "${TEMP_KNOWN_HOSTS}";
 
-                            [ "${KEYTYPE}" == "ssh-rsa" ] && [ ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
-                            [ "${KEYTYPE}" == "ssh-dss" ] && [ ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
-                            [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" ] && [ ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
+                            [ "${KEYTYPE}" == "ssh-rsa" -a ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
+                            [ "${KEYTYPE}" == "ssh-dss" -a ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
+                            [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" -a ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
 
                             continue;
                             ;;
@@ -985,8 +985,8 @@ function getSshKeys
                                     then
                                         /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_RSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_RSA_KEY} ${TEMP_WRITE_FILE}";
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_RSA_KEY} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
                                         typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
@@ -1025,8 +1025,8 @@ function getSshKeys
                                     then
                                         /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_DSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_DSA_KEY} ${TEMP_WRITE_FILE}";
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_DSA_KEY} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
                                         typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
@@ -1065,8 +1065,8 @@ function getSshKeys
                                     then
                                         /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_ECDSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_ECSA_KEY} ${TEMP_WRITE_FILE}";
-                                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_ECSA_KEY} ${TEMP_WRITE_FILE}";
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
                                         typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
@@ -1103,8 +1103,8 @@ function getSshKeys
                             typeset -i TEMP_WRITE_CKSUM=$(/usr/bin/env awk '{print $1}' <<< $(/usr/bin/env cksum "${TEMP_WRITE_FILE}"));
                             typeset -i TEMP_HOSTS_CKSUM=$(/usr/bin/env awk '{print $1}' <<< $(/usr/bin/env cksum "${TEMP_KNOWN_HOSTS}"));
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_CKSUM -> ${TEMP_WRITE_CKSUM}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_CKSUM -> ${TEMP_WRITE_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
 
                             if [ ${TEMP_WRITE_CKSUM} -eq ${TEMP_HOSTS_CKSUM} ]
                             then
@@ -1128,8 +1128,8 @@ function getSshKeys
                             typeset -i TEMP_WRITE_CKSUM=$(/usr/bin/env awk '{print $1}' <<< $(/usr/bin/env cksum "${TEMP_WRITE_FILE}"));
                             typeset -i TEMP_HOSTS_CKSUM=$(/usr/bin/env awk '{print $1}' <<< $(/usr/bin/env cksum "${TEMP_KNOWN_HOSTS}"));
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_CKSUM -> ${TEMP_WRITE_CKSUM}";
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_WRITE_CKSUM -> ${TEMP_WRITE_CKSUM}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
 
                             if [ ${TEMP_WRITE_CKSUM} -ne ${TEMP_HOSTS_CKSUM} ]
                             then
@@ -1157,36 +1157,36 @@ function getSshKeys
                             ;;
                         *)
                             ## remove ALL keys associated with the entry and start new
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMPFILE}\" -R \"${MGMT_FULL_HOST_NAME}\"";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMPFILE}\" -R \"${MGMT_FULL_HOST_NAME}\"";
 
                             /usr/bin/env ssh-keygen -f "${TEMPFILE}" -R "${MGMT_FULL_HOST_NAME}";
 
                             ## now we're going to remove any lines that have the given RSA/DSA or ECDSA keys
                             ## sed doesnt work well for this because the delimiter cant be ^
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -v \"${ENTRY}\" \"${TEMP_KNOWN_HOSTS}\" > \"${TEMP_DELETE}\"";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env grep -v \"${ENTRY}\" \"${TEMP_KNOWN_HOSTS}\" > \"${TEMP_DELETE}\"";
 
                             /usr/bin/env grep -v "${ENTRY}" "${TEMP_KNOWN_HOSTS}" > "${TEMP_DELETE}";
 
                             typeset -i KEY_COUNT=$(/usr/bin/env egrep -c "^${ENTRY} ${KEYTYPE}" "${TEMP_DELETE}");
 
-                            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_COUNT -> ${KEY_COUNT}";
 
                             case ${KEY_COUNT} in
                                 0)
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env mv ${TEMP_DELETE} ${TEMP_KNOWN_HOSTS}";
+                                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env mv ${TEMP_DELETE} ${TEMP_KNOWN_HOSTS}";
 
                                     ## move it back
                                     /usr/bin/env mv "${TEMP_DELETE}" "${TEMP_KNOWN_HOSTS}";
 
                                     [ -z "$(grep "${SSH_HOST_ENTRY}" "${TEMP_KNOWN_HOSTS}")" ] && /usr/bin/env printf "%s\n" "${SSH_HOST_ENTRY}" >> "${TEMP_KNOWN_HOSTS}";
 
-                                    [ "${KEYTYPE}" == "ssh-rsa" ] && [ ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
-                                    [ "${KEYTYPE}" == "ssh-dss" ] && [ ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
-                                    [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" ] && [ ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    [ "${KEYTYPE}" == "ssh-rsa" -a ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    [ "${KEYTYPE}" == "ssh-dss" -a ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" -a ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
 
                                     typeset KEY_WRITTEN="${_TRUE}";
 
-                                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
+                                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
 
                                     continue;
                                     ;;
@@ -1224,7 +1224,7 @@ function getSshKeys
                     [ ! -z "${TEMP_HOSTS_CKSUM}" ] && unset -v TEMP_HOSTS_CKSUM;
                 done
 
-                [ ! -z "${KEY_WRITTEN}" ] && [ "${KEY_WRITTEN}" = "${_TRUE}" ] && /usr/bin/env printf "\n"  >> "${TEMP_KNOWN_HOSTS}";
+                [ ! -z "${KEY_WRITTEN}" -a "${KEY_WRITTEN}" = "${_TRUE}" ] && /usr/bin/env printf "\n"  >> "${TEMP_KNOWN_HOSTS}";
 
                 [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
                 [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
@@ -1238,30 +1238,30 @@ function getSshKeys
             done
 
             ## relocate the file
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${TEMP_KNOWN_HOSTS}" | /usr/bin/env awk '{print \$1}'";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${TEMP_KNOWN_HOSTS}" | /usr/bin/env awk '{print \$1}'";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
 
             typeset -i POST_TEMP_HOSTS_CKSUM=$(/usr/bin/env cksum "${TEMP_KNOWN_HOSTS}" | /usr/bin/env awk '{print $1}');
             typeset -i POST_KNOWN_HOSTS_CKSUM=$(/usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}');
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "POST_TEMP_HOSTS_CKSUM -> ${POST_TEMP_HOSTS_CKSUM}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "POST_KNOWN_HOSTS_CKSUM -> ${POST_KNOWN_HOSTS_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "POST_TEMP_HOSTS_CKSUM -> ${POST_TEMP_HOSTS_CKSUM}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "POST_KNOWN_HOSTS_CKSUM -> ${POST_KNOWN_HOSTS_CKSUM}";
 
             if [ ${POST_TEMP_HOSTS_CKSUM} != ${POST_KNOWN_HOSTS_CKSUM} ]
             then
                 ## all done - copy it over
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${KNOWN_HOSTS_FILE} ${ARCHIVE_HOSTS_FILE}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${KNOWN_HOSTS_FILE} ${ARCHIVE_HOSTS_FILE}";
 
                 /usr/bin/env cp "${KNOWN_HOSTS_FILE}" "${ARCHIVE_HOSTS_FILE}";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print \$1}'";
 
                 typeset -i KNOWN_HOSTS_CKSUM=$(/usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}');
                 typeset -i ARCHIVE_HOSTS_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_HOSTS_FILE}" | /usr/bin/env awk '{print $1}');
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_CKSUM -> ${ARCHIVE_HOSTS_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_CKSUM -> ${ARCHIVE_HOSTS_CKSUM}";
 
                 if [ ${KNOWN_HOSTS_CKSUM} -ne ${ARCHIVE_HOSTS_CKSUM} ]
                 then
@@ -1270,12 +1270,12 @@ function getSshKeys
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create backup copy of ${KNOWN_HOSTS_FILE}. Cannot continue.";
                     writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create backup copy of ${KNOWN_HOSTS_FILE}. Cannot continue.";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                    [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-                    [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+                    [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+                    [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+                    [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
                     [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -1314,30 +1314,30 @@ function getSshKeys
                     [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
                     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
                     return ${RETURN_CODE};
                 fi
 
                 ## copy the new one to the existing
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${TEMP_KNOWN_HOSTS} ${KNOWN_HOSTS_FILE}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${TEMP_KNOWN_HOSTS} ${KNOWN_HOSTS_FILE}";
 
                 /usr/bin/env cp "${TEMP_KNOWN_HOSTS}" "${KNOWN_HOSTS_FILE}";
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
 
                 typeset -i KNOWN_HOSTS_CKSUM=$(/usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}');
                 typeset -i TEMP_HOSTS_CKSUM=$(/usr/bin/env cksum "${TEMP_KNOWN_HOSTS}" | /usr/bin/env awk '{print $1}');
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TEMP_HOSTS_CKSUM -> ${TEMP_HOSTS_CKSUM}";
 
                 if [ ${KNOWN_HOSTS_CKSUM} -ne ${TEMP_HOSTS_CKSUM} ]
                 then
@@ -1347,18 +1347,18 @@ function getSshKeys
                     writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to copy new hosts file to ${KNOWN_HOSTS_FILE}. Cannot continue.";
 
                     ## undo it
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${ARCHIVE_HOSTS_FILE} ${KNOWN_HOSTS_FILE}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${ARCHIVE_HOSTS_FILE} ${KNOWN_HOSTS_FILE}";
 
                     /usr/bin/env cp "${ARCHIVE_HOSTS_FILE}" "${KNOWN_HOSTS_FILE}";
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${ARCHIVE_HOSTS_CKSUM}" | /usr/bin/env awk '{print $1}'";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}'";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cksum "${ARCHIVE_HOSTS_CKSUM}" | /usr/bin/env awk '{print $1}'";
 
                     typeset -i KNOWN_HOSTS_CKSUM=$(/usr/bin/env cksum "${KNOWN_HOSTS_FILE}" | /usr/bin/env awk '{print $1}');
                     typeset -i ARCHIVE_HOSTS_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_HOSTS_CKSUM}" | /usr/bin/env awk '{print $1}');
 
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
-                    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_CKSUM -> ${ARCHIVE_HOSTS_CKSUM}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "KNOWN_HOSTS_CKSUM -> ${KNOWN_HOSTS_CKSUM}";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ARCHIVE_HOSTS_CKSUM -> ${ARCHIVE_HOSTS_CKSUM}";
 
                     if [ ${KNOWN_HOSTS_CKSUM} -ne ${ARCHIVE_HOSTS_CKSUM} ]
                     then
@@ -1366,9 +1366,9 @@ function getSshKeys
                         writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Backout processing FAILED. Please process manually.";
                     fi
 
-                    [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-                    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-                    [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+                    [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+                    [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+                    [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
                     [ ! -z "${ENTRY}" ] && unset -v ENTRY;
                     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -1407,19 +1407,19 @@ function getSshKeys
                     [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
                     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-                    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
                     return ${RETURN_CODE};
                 fi
             fi
 
-            if [ ! -z "${ERROR_COUNT}" ] && [ ${ERROR_COUNT} -ne 0 ]
+            if [ ! -z "${ERROR_COUNT}" -a ${ERROR_COUNT} -ne 0 ]
             then
                 writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "One or more hosts failed during execution. Please review logs to determine cause of failure.";
 
@@ -1436,12 +1436,12 @@ function getSshKeys
                     -> Hash host names. 0 for no, 1 for yes.
                         -> Only valid if retrieval type is \"host\"";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-            [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-            [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+            [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+            [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+            [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
             [ ! -z "${ENTRY}" ] && unset -v ENTRY;
             [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -1480,24 +1480,24 @@ function getSshKeys
             [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
             [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             return ${RETURN_CODE};
         ;;
     esac
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${TEMP_DELETE}" ] && [ ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
-    [ ! -z "${TEMP_KNOWN_HOSTS}" ] && [ ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
-    [ ! -z "${TEMP_WRITE_FILE}" ] && [ ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
+    [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
+    [ ! -z "${TEMP_KNOWN_HOSTS}" -a ! -z "${TEMP_KNOWN_HOSTS}" ] && rm -f "${TEMP_KNOWN_HOSTS}";
+    [ ! -z "${TEMP_WRITE_FILE}" -a ! -z "${TEMP_WRITE_FILE}" ] && rm -f "${TEMP_WRITE_FILE}";
 
     [ ! -z "${ENTRY}" ] && unset -v ENTRY;
     [ ! -z "${REQUEST_TYPE}" ] && unset -v REQUEST_TYPE;
@@ -1536,13 +1536,13 @@ function getSshKeys
     [ ! -z "${ARCHIVE_HOSTS_CKSUM}" ] && unset -v ARCHIVE_HOSTS_CKSUM;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     return ${RETURN_CODE};
 }
@@ -1555,20 +1555,20 @@ function getSshKeys
 #==============================================================================
 function fssh
 {
-    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -1582,16 +1582,16 @@ function fssh
             -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config
             -> Any commands to execute against the target host, as necessary";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -1610,8 +1610,8 @@ function fssh
     typeset SSH_CORE_CONFIG="${HOME}/.ssh/config";
     typeset SSH_CONFIG_D="${HOME}/.ssh/config.d";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CORE_CONFIG -> ${SSH_CORE_CONFIG}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_D -> ${SSH_CONFIG_D}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CORE_CONFIG -> ${SSH_CORE_CONFIG}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_D -> ${SSH_CONFIG_D}";
 
     case ${#} in
         1)
@@ -1620,19 +1620,19 @@ function fssh
             typeset USERNAME="${LOGNAME}";
             typeset SSH_CONFIG_FILE="${SSH_CORE_CONFIG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
             ;;
         2)
-            [ "$(cut -d ":" -f 1 <<< "${1}")" == "user" ] && [ ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
+            [ "$(cut -d ":" -f 1 <<< "${1}")" == "user" -a ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
             [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${2}";
 
             typeset SSH_CONFIG_FILE="${SSH_CORE_CONFIG}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
             ;;
         3)
             [ ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
@@ -1640,9 +1640,9 @@ function fssh
 
             typeset SSHCONFIG="${SSH_CONFIG_D}/${3}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSHCONFIG -> ${SSHCONFIG}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSHCONFIG -> ${SSHCONFIG}";
             ;;
         4)
             [ ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
@@ -1655,10 +1655,10 @@ function fssh
 
             cat "${SSHCONFIG}" "${SSH_CORE_CONFIG}" > "${SSH_CONFIG_FILE}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSHCONFIG -> ${SSHCONFIG}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC_COMMAND -> ${EXEC_COMMAND}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSHCONFIG -> ${SSHCONFIG}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC_COMMAND -> ${EXEC_COMMAND}";
             ;;
         *)
             RETURN_CODE=3;
@@ -1670,16 +1670,16 @@ function fssh
                 -> Any commands to execute against the target host, as necessary
                 -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
             [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -1698,21 +1698,21 @@ function fssh
 
     for TARGET_HOST in ${TARGET_HOSTS[*]}
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         validateServerAvailability "${TARGET_HOST}" 22;
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
@@ -1721,16 +1721,16 @@ function fssh
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
             writeLogEntry "STDERR" "Target host does not appear to be available. Cannot continue."
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -1741,8 +1741,8 @@ function fssh
         getSshKeys host "${TARGET_HOST}";
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
@@ -1766,30 +1766,30 @@ function fssh
         ## rock the ssh
         case "${EXEC_COMMAND}" in
             "")
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> /usr/bin/env ssh -F ${SSH_CONFIG_FILE} -qaCkt -l ${USERNAME} ${TARGET_HOST} 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
                 [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
             *)
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND}\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RUN COMMAND -> ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec \"${EXEC_COMMAND}\" 2>&1 | /usr/bin/env tee -a \"${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log\"";
 
                 [ ! -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --cfgfile ${SSH_CONFIG_FILE} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 [ -z "${SSH_CONFIG_FILE}" ] && ${HOME}/.lib/ssh.exp --hostname ${TARGET_HOST} --username ${USERNAME} --exec "${EXEC_COMMAND}" 2>&1 | /usr/bin/env tee -a "${LOG_ROOT}/${LOGNAME}-$(date +%Y%m%d).log";
                 ;;
         esac
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
     done
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -1813,20 +1813,20 @@ function fssh
 #==============================================================================
 function fscp
 {
-    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -1842,16 +1842,16 @@ function fscp
                     -> The source file/directory
                     -> The target file/directory";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -1872,25 +1872,25 @@ function fscp
     typeset TARGET_COPY="${5}";
     [ ${#} -eq 6 ] && typeset CFG_FILE="${6}" || typeset CFG_FILE="${HOME}/.ssh/config";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[*]}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TRANSFER_TYPE -> ${TRANSFER_TYPE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SOURCE_COPY -> ${SOURCE_COPY}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_COPY -> ${TARGET_COPY}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CFG_FILE -> ${CFG_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[*]}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TRANSFER_TYPE -> ${TRANSFER_TYPE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SOURCE_COPY -> ${SOURCE_COPY}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_COPY -> ${TARGET_COPY}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CFG_FILE -> ${CFG_FILE}";
 
     for TARGET_HOST in ${TARGET_HOSTS[*]}
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         validateServerAvailability "${TARGET_HOST}" 22;
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
@@ -1902,13 +1902,13 @@ function fscp
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
             writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -1922,14 +1922,14 @@ function fscp
             return ${RETURN_CODE};
         fi
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         getSshKeys host "${TARGET_HOST}";
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
@@ -1941,13 +1941,13 @@ function fscp
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain SSH host keys for target.";
             writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -1983,16 +1983,16 @@ function fscp
                                 -> The source file/directory
                                 -> The target file/directory";
 
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-                        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+                        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+                        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+                        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
                         [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
                         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -2016,25 +2016,25 @@ function fscp
 
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ] && (( ERROR_COUNT += 1 ));
     done
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
 
     [ ${ERROR_COUNT} -ne 0 ] && typeset i RETURN_CODE=${ERROR_COUNT};
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     [ ! -z "${TRANSFER_TYPE}" ] && unset -v TRANSFER_TYPE;
     [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -2050,27 +2050,27 @@ function fscp
 
 #=====  FUNCTION  =============================================================
 #          NAME:  sssh
-#   DESCRIPTION:  SSH to a given server running screen on login
-#    PARAMETERS:  Username, Hostname, Commands (optional), SSH Config (optional)
+#   DESCRIPTION:  SSH to a given server running screen on login (screen -RR)
+#    PARAMETERS:  hostname, username, SSH Config (optional)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function sssh
 {
-    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+    trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
 
     if [ ${#} -eq 0 ]
     then
@@ -2082,16 +2082,16 @@ function sssh
             -> The username for access to the target server
             -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
         [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
 
@@ -2102,7 +2102,7 @@ function sssh
         [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
         [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
         [ ! -z "${ENTRY}" ] && unset -v ENTRY;
-        [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+        [ ! -z "${TARGET_HOSTS[@]}" ] && unset -v TARGET_HOSTS;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
         [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -2117,23 +2117,23 @@ function sssh
     typeset SSH_CORE_CONFIG="${HOME}/.ssh/config";
     typeset SSH_CONFIG_D="${HOME}/.ssh/config.d";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CORE_CONFIG -> ${SSH_CORE_CONFIG}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_D -> ${SSH_CONFIG_D}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CORE_CONFIG -> ${SSH_CORE_CONFIG}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_D -> ${SSH_CONFIG_D}";
 
     case ${#} in
         1)
             [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
             ;;
         2)
             [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
             typeset USERNAME="${2}";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
             ;;
         3)
             [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
@@ -2144,9 +2144,9 @@ function sssh
             /usr/bin/env cat "${SSH_CONFIG_D}/${3}" > ${TMP_SSH_CONFIG};
             /usr/bin/env cat "${SSH_CORE_CONFIG}" >> ${TMP_SSH_CONFIG};
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_SSH_CONFIG -> ${TMP_SSH_CONFIG}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_SSH_CONFIG -> ${TMP_SSH_CONFIG}";
             ;;
         *)
             RETURN_CODE=3;
@@ -2158,16 +2158,16 @@ function sssh
                 -> Any commands to execute against the target host, as necessary
                 -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
 
@@ -2178,7 +2178,7 @@ function sssh
             [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
             [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
             [ ! -z "${ENTRY}" ] && unset -v ENTRY;
-            [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+            [ ! -z "${TARGET_HOSTS[@]}" ] && unset -v TARGET_HOSTS;
             [ ! -z "${USERNAME}" ] && unset -v USERNAME;
             [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
@@ -2191,31 +2191,31 @@ function sssh
 
     for TARGET_HOST in ${TARGET_HOSTS[*]}
     do
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOST -> ${TARGET_HOST}";
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
         validateServerAvailability "${TARGET_HOST}" 22;
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
             writeLogEntry "STDERR" "Target host does not appear to be available. Cannot continue."
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             (( ERROR_COUNT += 1 ));
 
@@ -2228,8 +2228,8 @@ function sssh
         getSshKeys host "${TARGET_HOST}";
         typeset -i RET_CODE=${?};
 
-        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
         typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
@@ -2239,10 +2239,10 @@ function sssh
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
 
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             (( ERROR_COUNT += 1 ));
 
@@ -2258,20 +2258,20 @@ function sssh
         esac
     done
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
     typeset RETURN_CODE="${ERROR_COUNT}";
 
-    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 
     [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
 
@@ -2282,7 +2282,7 @@ function sssh
     [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
     [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
     [ ! -z "${ENTRY}" ] && unset -v ENTRY;
-    [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+    [ ! -z "${TARGET_HOSTS[@]}" ] && unset -v TARGET_HOSTS;
     [ ! -z "${USERNAME}" ] && unset -v USERNAME;
     [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
     [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
