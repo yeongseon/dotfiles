@@ -2064,6 +2064,7 @@ function sssh
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
+    typeset -i ERROR_COUNT=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
@@ -2076,10 +2077,9 @@ function sssh
         RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ ssh config file ]
-            -> The username for access to the target server
-                To use the currently logged in username, provide this argument as \"\"
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ ssh config file ]
             -> The hostname to ssh to
+            -> The username for access to the target server
             -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -2093,22 +2093,32 @@ function sssh
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
         [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+        [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
+
         [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
-        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-        [ ! -z "${SSHCONFIG}" ] && unset -v SSHCONFIG;
-        [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+        [ ! -z "${TMP_SSH_CONFIG}" ] && unset -v TMP_SSH_CONFIG;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-        [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+        [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
         [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
+        [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+        [ ! -z "${ENTRY}" ] && unset -v ENTRY;
+        [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+        [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+        [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+        [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
         [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         return ${RETURN_CODE};
     fi
 
+    typeset USERNAME="${LOGNAME}";
+    typeset SSH_CONFIG_FILE="${HOME}/.ssh/config";
     typeset SSH_CORE_CONFIG="${HOME}/.ssh/config";
     typeset SSH_CONFIG_D="${HOME}/.ssh/config.d";
 
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CORE_CONFIG -> ${SSH_CORE_CONFIG}";
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_D -> ${SSH_CONFIG_D}";
 
@@ -2116,32 +2126,27 @@ function sssh
         1)
             [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
 
-            typeset USERNAME="${LOGNAME}";
-            typeset SSH_CONFIG_FILE="${SSH_CORE_CONFIG}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
             ;;
         2)
-            [ "$(cut -d ":" -f 1 <<< "${1}")" == "user" ] && [ ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
-            [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${2}";
+            [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
+            typeset USERNAME="${2}";
 
-            typeset SSH_CONFIG_FILE="${SSH_CORE_CONFIG}";
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSH_CONFIG_FILE -> ${SSH_CONFIG_FILE}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
             ;;
         3)
-            [ ! -z "${1}" ] && typeset USERNAME="${1}" || typeset USERNAME="${LOGNAME}";
-            [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${2}";
+            [ -f "${1}" ] && for ENTRY in $(<"${1}"); do setArray TARGET_HOSTS "${ENTRY}"; done || setArray TARGET_HOSTS "${1}";
+            typeset USERNAME="${2}";
 
-            typeset SSHCONFIG="${SSH_CONFIG_D}/${3}";
+            typeset TMP_SSH_CONFIG="$(mktemp)";
+            /usr/bin/env cat "${3}" > ${TMP_SSH_CONFIG};
+            /usr/bin/env cat "${SSH_CONFIG_D}/${3}" > ${TMP_SSH_CONFIG};
+            /usr/bin/env cat "${SSH_CORE_CONFIG}" >> ${TMP_SSH_CONFIG};
 
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
             [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TARGET_HOSTS -> ${TARGET_HOSTS[@]}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SSHCONFIG -> ${SSHCONFIG}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USERNAME -> ${USERNAME}";
+            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_SSH_CONFIG -> ${TMP_SSH_CONFIG}";
             ;;
         *)
             RETURN_CODE=3;
@@ -2164,14 +2169,20 @@ function sssh
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+            [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
+
             [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
-            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-            [ ! -z "${SSHCONFIG}" ] && unset -v SSHCONFIG;
-            [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+            [ ! -z "${TMP_SSH_CONFIG}" ] && unset -v TMP_SSH_CONFIG;
             [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-            [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+            [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
             [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
+            [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+            [ ! -z "${ENTRY}" ] && unset -v ENTRY;
+            [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+            [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+            [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
             [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
             return ${RETURN_CODE};
@@ -2198,21 +2209,15 @@ function sssh
 
         if [ -z "${RET_CODE}" ] || [ ${RET_CODE} -ne 0 ]
         then
-            RETURN_CODE=1;
-
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
             writeLogEntry "STDERR" "Target host does not appear to be available. Cannot continue."
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-            [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-            [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
             [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+            (( ERROR_COUNT += 1 ));
 
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
@@ -2234,8 +2239,10 @@ function sssh
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
             writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
 
-            [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
             (( ERROR_COUNT += 1 ));
 
@@ -2245,12 +2252,14 @@ function sssh
             continue;
         fi
 
-        ## rock the ssh
-        /usr/bin/env ssh -qtl ${USERNAME} ${TARGET_HOST} screen -RR;
-
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+        case "${TMP_SSH_CONFIG}" in
+            "") /usr/bin/env ssh -qtl ${USERNAME} -F ${SSH_CONFIG_FILE} ${TARGET_HOST} screen -RR; ;;
+            *) /usr/bin/env ssh -qtl ${USERNAME} -F ${TMP_SSH_CONFIG} ${TARGET_HOST} screen -RR; ;;
+        esac
     done
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -2260,15 +2269,24 @@ function sssh
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+    typeset RETURN_CODE="${ERROR_COUNT}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+
+    [ -f "${TMP_SSH_CONFIG}" ] && rm -f "${TMP_SSH_CONFIG}";
+
     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
-    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
-    [ ! -z "${EXEC_COMMAND}" ] && unset -v EXEC_COMMAND;
-    [ ! -z "${SSHCONFIG}" ] && unset -v SSHCONFIG;
-    [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+    [ ! -z "${TMP_SSH_CONFIG}" ] && unset -v TMP_SSH_CONFIG;
     [ ! -z "${USERNAME}" ] && unset -v USERNAME;
-    [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+    [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
     [ ! -z "${SSH_CORE_CONFIG}" ] && unset -v SSH_CORE_CONFIG;
+    [ ! -z "${SSH_CONFIG_D}" ] && unset -v SSH_CONFIG_D;
+    [ ! -z "${ENTRY}" ] && unset -v ENTRY;
+    [ ! -z "${TARGET_HOSTS}" ] && unset -v TARGET_HOSTS;
+    [ ! -z "${USERNAME}" ] && unset -v USERNAME;
+    [ ! -z "${SSH_CONFIG_FILE}" ] && unset -v SSH_CONFIG_FILE;
+    [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
