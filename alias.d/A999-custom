@@ -16,10 +16,10 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
+trap "[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 ## customs
 alias lt='/usr/bin/env ls -ltrhpF --color=auto';
@@ -38,6 +38,7 @@ alias stamp='/usr/bin/env date "+%Y%m%d%a%H%M"';
 alias da='/usr/bin/env date "+%Y-%m-%d %A    %T %Z"';
 alias zero='/usr/bin/env cat /dev/null >|';
 alias netbackup="${NB_HOME}/bp";
+alias ssh='/usr/bin/env ssh -qt4AC'
 alias removeKey='/usr/bin/env ssh-keygen -R';
 alias win2unix="/usr/bin/env sed 's/$/\r/'";
 alias fixtty='/usr/bin/env stty sane';
@@ -46,13 +47,14 @@ alias pdftotext='/usr/bin/env pdftotext -enc UTF-8 -layout';
 alias ff='/usr/bin/env find . -type f';
 alias fd='/usr/bin/env find . -type d';
 alias clearScroll='/usr/bin/env printf "\033c"';
-alias cpuTimeSlice="/usr/bin/env sar -p | /usr/bin/env tail -11 | /usr/bin/env head -10 | /usr/bin/env awk '{print $NF}' | /usr/bin/env awk '{total += $1; count++} END {print total / count}'";
+alias cpuTimeSlice="/usr/bin/env sar -p | /usr/bin/env tail -11 | /usr/bin/env head -10 | /usr/bin/env gawk '{print $NF}' | /usr/bin/env gawk '{total += $1; count++} END {print total / count}'";
 alias icanhazip='/usr/bin/env dig +short @resolver1.opensdns.com myip.opendns.com';
 # dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | sed 's/"//g'
 alias sshd='/usr/bin/env ssh -F ~/.ssh/config.dev';
 alias scpd='/usr/bin/env scp -F ~/.ssh/config.dev';
 alias fortune='/usr/bin/env fortune -a -e -o';
 alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
+alias awk='/usr/bin/env gawk';
 
 ## script tracing
 alias debug="[[ ! -z \"${ENABLE_DEBUG}\" && \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ]] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
@@ -70,11 +72,11 @@ alias gpg.exp="${HOME}/.lib/gpg.exp";
 alias keychain.exp="${HOME}/.lib/keychain.exp";
 alias telnet.exp="${HOME}/.lib/telnet.exp";
 
-case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
+case "$(echo "${SHELL}" | gawk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
         alias reload='. ${HOME}/.kshrc';
         alias shell='selectProfile';
-        alias listFunctions="typeset -f | grep function | awk '{print \$NF}'";
+        alias listFunctions="typeset -f | grep function | gawk '{print \$NF}'";
         ;;
     [Bb][Aa][Ss][Hh])
         alias reload='. ${HOME}/.bash_profile';
@@ -83,5 +85,5 @@ case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
         ;;
 esac
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

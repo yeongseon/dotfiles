@@ -2,7 +2,7 @@
 #
 #          FILE:  A07-qip
 #         USAGE:  . A07-qip
-#   DESCRIPTION:  Sets QIP related aliases
+#   DESCRIPTION:  Sets aliases for the QIP command lines
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -16,16 +16,17 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-trap "[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
+trap "[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v;" INT TERM EXIT;
 
 [ ! -d /opt/qip ] && return;
 
 alias getDNSServerList="/opt/qip/cli/qip-getdnssvrlst -u tdpokh2 -p \"$(<~/.etc/qip.password)\"";
 alias getDHCPServerList="/opt/qip/cli/qip-getdhcpsvrlst -u tdpokh2 -p \"$(<~/.etc/qip.password)\"";
 alias qip-setdnszoneserver="/opt/qip/cli/qip-setdnszoneserver -u tdpokh2 -p \"$(<~/.etc/qip.password)\"";
+alias qip-cli='/opt/qip/cli/qip-cli -c';
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
