@@ -18,11 +18,7 @@
 
 [[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
 
-[ -z "${_TRUE}" ] && typeset _TRUE="true";
-[ -z "${_FALSE}" ] && typeset _FALSE="false";
-[ -z "${ENABLE_VERBOSE}" ] && typeset ENABLE_VERBOSE="${_FALSE}";
-[ -z "${ENABLE_DEBUG}" ] && typeset ENABLE_DEBUG="${_FALSE}";
-[ -z "${ENABLE_TRACE}" ] && typeset ENABLE_TRACE="${_FALSE}";
+[ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
 
 [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

@@ -1,5 +1,5 @@
 ## load logging !
-[ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
+
 [ ! -z "${LOG_ROOT}" ] && mkdir -p "${LOG_ROOT}";
 [ ! -z "${ARCHIVE_LOG_ROOT}" ] && mkdir -p "${ARCHIVE_LOG_ROOT}";
 
