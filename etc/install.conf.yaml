@@ -23,6 +23,7 @@
   ~/.bash_profile: bin/profile
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
+  ~/.netrc: etc/netrc
   ~/.digrc: etc/digrc
   ~/.kshrc: bin/profile
   ~/.ldaprc: etc/ldaprc
