@@ -1,6 +1,20 @@
-########################################################################
-# RSYNC EXCLUDES
-########################################################################
+#==============================================================================
+#
+#          FILE:  excludes
+#         USAGE:  n/a
+#   DESCRIPTION:  rsync exclusion list
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#==============================================================================
+
 
 ## exclude files that are relevant only locally
 .android
