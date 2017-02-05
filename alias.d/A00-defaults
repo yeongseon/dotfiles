@@ -36,9 +36,9 @@ alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delet
 alias mailx='/usr/bin/env mailx';
 alias du='/usr/bin/env du -sh';
 alias netstat='/usr/bin/env netstat -an';
-alias ldapsearch="/usr/bin/env ldapsearch -h ${LDAP_HOST} -p ${LDAP_PORT:389} -b "dc=caspersbox,dc=com" -D "uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" -W";
+alias ldapsearch="/usr/bin/env ldapsearch -W";
 alias ping="/usr/bin/env ping -c 4 -q -W ${THREAD_TIMEOUT}";
-alias mysql="/usr/bin/env mysql --protocol tcp -h localhost -u ${LOGNAME} -p";
+alias mysql="/usr/bin/env mysql --protocol tcp -u ${LOGNAME} -p";
 alias nc="/usr/bin/env nc -w ${THREAD_TIMEOUT}";
 alias jmap='/usr/bin/env jmap -dump:format=b,file=/var/tmp/dump.hprof';
 alias pssh="/usr/bin/env pssh -p 5 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 900 -P -l ${LOGNAME} -h ~/.etc/pssh/hosts";

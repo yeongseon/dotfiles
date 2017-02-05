@@ -54,7 +54,6 @@ alias sshd='/usr/bin/env ssh -F ~/.ssh/config.dev';
 alias scpd='/usr/bin/env scp -F ~/.ssh/config.dev';
 alias fortune='/usr/bin/env fortune -a -e -o';
 alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
-alias awk='/usr/bin/env gawk';
 
 ## script tracing
 alias debug="[[ ! -z \"${ENABLE_DEBUG}\" && \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ]] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
