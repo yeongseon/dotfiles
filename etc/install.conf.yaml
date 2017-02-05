@@ -56,6 +56,7 @@
   - [cd ~/.dotbot && find . -type f -exec chmod 644, Ensuring file permissions are 644 on all files]
   - [chmod 600 ~/.dotbot/etc/ldaprc, Ensuring file permissions are 600 on etc/ldaprc]
   - [chmod 600 ~/.dotbot/etc/curlrc, Ensuring file permissions are 600 on etc/curlrc]
+  - [chmod 600 ~/.dotbot/etc/curlrc, Ensuring file permissions are 600 on etc/curlrc]
   - [chmod 600 ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml, Ensuring file permissions are 600 on ~/.etc/SecurityService/config/ServiceConfig.xml]
   - [chmod 600 ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml, Ensuring file permissions are 600 on ~/.etc/eSolutionsCore/config/ServiceConfig.xml]
   - [chmod 755 ~/.dotbot/bin/*, Ensuring file permissions are 755 on ~/.bin/*]
