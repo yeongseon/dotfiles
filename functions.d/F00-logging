@@ -1,3 +1,8 @@
+## load logging !
+
+[ ! -z "${LOG_ROOT}" ] && mkdir -p "${LOG_ROOT}";
+[ ! -z "${ARCHIVE_LOG_ROOT}" ] && mkdir -p "${ARCHIVE_LOG_ROOT}";
+
 #======  FUNCTION  ============================================================
 #          NAME:  rotateLogsByTime
 #   DESCRIPTION:  Rotates log files based on size or time.
@@ -517,7 +522,7 @@ function writeLogEntry
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
-    if [ ${#} -eq 0 -a ${#} -ne 5 ]
+    if [ ${#} -eq 0 ]
     then
         typeset RETURN_CODE=3;
 
@@ -548,18 +553,47 @@ function writeLogEntry
     typeset LOG_LINE="${4}";
     typeset LOG_MESSAGE="${5}";
 
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Oo][Uu][Tt] ]] && printf "%s\n" "${LOG_MESSAGE}" >&1;
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Ee][Rr][Rr] ]] && printf "%s\n" "${LOG_MESSAGE}" >&2;
-    [[ ${LOG_LEVEL} =~ [Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp] ]] && typeset LOG_FILE="${PERF_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ff][Aa][Tt][Aa][Ll]|[Ff] ]] && typeset LOG_FILE="${FATAL_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ee][Rr][Rr][Oo][Rr]|[Ee] ]] && typeset LOG_FILE="${ERROR_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ww][Aa][Rr][Nn]|[Ww] ]] && typeset LOG_FILE="${WARN_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ii][Nn][Ff][Oo]|[Ii] ]] && typeset LOG_FILE="${INFO_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Aa][Uu][Dd][Ii][Tt]|[Aa] ]] && typeset LOG_FILE="${AUDIT_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Dd][Ee][Bb][Uu][Gg]|[Dd] ]] && typeset LOG_FILE="${DEBUG_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Mm][Oo][Nn][Ii][Tt][Oo][Rr]|[Mm] ]] && typeset LOG_FILE="${MONITOR_LOG_FILE}";
+    case "${LOG_LEVEL}" in
+        [Ss][Tt][Dd][Oo][Uu][Tt])
+            [ ${#} -eq 2 ] && printf "%s\n" "${LOG_METHOD}" >&1 || printf "%s\n" "${LOG_MESSAGE}" >&1;
 
-    [ ! -z "${LOG_FILE}" ] && printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
+            return ${RETURN_CODE};
+            ;;
+        [Ss][Tt][Dd][Ee][Rr][Rr])
+            [ ${#} -eq 2 ] && printf "%s\n" "${LOG_METHOD}" >&2 || printf "%s\n" "${LOG_MESSAGE}" >&2;
+
+            return ${RETURN_CODE};
+            ;;
+        [Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp])
+            typeset LOG_FILE="${PERF_LOG_FILE}";
+            ;;
+        [Ff][Aa][Tt][Aa][Ll]|[Ff])
+            typeset LOG_FILE="${FATAL_LOG_FILE}";
+            ;;
+        [Ee][Rr][Rr][Oo][Rr]|[Ee])
+            typeset LOG_FILE="${ERROR_LOG_FILE}";
+            ;;
+        [Ww][Aa][Rr][Nn]|[Ww])
+            typeset LOG_FILE="${WARN_LOG_FILE}";
+            ;;
+        [Ii][Nn][Ff][Oo]|[Ii])
+            typeset LOG_FILE="${INFO_LOG_FILE}";
+            ;;
+        [Aa][Uu][Dd][Ii][Tt]|[Aa])
+            typeset LOG_FILE="${AUDIT_LOG_FILE}";
+            ;;
+        [Dd][Ee][Bb][Uu][Gg]|[Dd])
+            typeset LOG_FILE="${DEBUG_LOG_FILE}";
+            ;;
+        [Mm][Oo][Nn][Ii][Tt][Oo][Rr]|[Mm])
+            typeset LOG_FILE="${MONITOR_LOG_FILE}";
+            ;;
+        *)
+            typeset LOG_FILE="${INFO_LOG_FILE}";
+            ;;
+    esac
+
+    printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
 
     [ ! -z "${LOG_DATE}" ] && unset -v LOG_DATE;
     [ ! -z "${LOG_LEVEL}" ] && unset -v LOG_LEVEL;
