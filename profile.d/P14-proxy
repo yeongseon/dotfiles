@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  set
-#         USAGE:  . set
-#   DESCRIPTION:  Sets shell environment options
+#          FILE:  proxy
+#         USAGE:  . proxy
+#   DESCRIPTION:  Sets proxy rules
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -21,22 +21,9 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-case "$(uname)" in
-    [Ll][Ii][Nn][Uu][Xx])
-        set -o ignoreeof;
-        set -o monitor;
-        set -o notify;
-        set -o noclobber;
-        set -b;
-        set bell-style visible;
-        set completion-ignore-case on;
-        ;;
-esac
-
-## debug/trace/errors/etc etc
-#set -o nounset;
-#set -o nolog;
-#set -o xtrace;
+typeset -x http_proxy="";
+typeset -x https_proxy="";
+typeset -x ftp_proxy="";
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

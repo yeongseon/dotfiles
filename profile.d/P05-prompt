@@ -16,16 +16,16 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v || set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
+trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-case "$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')" in
+case "$(/usr/bin/env who am i | /usr/bin/env gawk '{print $1}')" in
     "${LOGNAME}")
         ;;
     *)
-        typeset -x REAL_USER="$(/usr/bin/env who am i | /usr/bin/env awk '{print $1}')";
+        typeset -x REAL_USER="$(/usr/bin/env who am i | /usr/bin/env gawk '{print $1}')";
         ;;
 esac
 
@@ -34,7 +34,7 @@ typeset -x PS2="continue -> ";
 typeset -x PS3="Enter selection: ";
 typeset -x PS4="[ Line: ${LINENO} ] [ File: ${0} ] [ Function: ${FUNCNAME[0]:-${SHELL}} ] [ Level: TRACE ] - ";
 
-case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
+case "$(echo "${SHELL}" | gawk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
         PS1="";
 
@@ -49,10 +49,13 @@ case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
                 ;;
         esac
         ;;
-    [Bb][Aa][Ss][Hh]) typeset -x PROMPT_COMMAND=setPromptCommand;
+    [Bb][Aa][Ss][Hh])
+        typeset -x PROMPT_COMMAND=setPromptCommand;
+        ;;
+    *)
+        echo "NO SHELL FOUND!!!!";
         ;;
 esac
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
-
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

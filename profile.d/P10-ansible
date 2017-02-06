@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  set
-#         USAGE:  . set
-#   DESCRIPTION:  Sets shell environment options
+#          FILE:  ansible
+#         USAGE:  . ansible
+#   DESCRIPTION:  Loads keychain and adds available keys to it
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -21,22 +21,9 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-case "$(uname)" in
-    [Ll][Ii][Nn][Uu][Xx])
-        set -o ignoreeof;
-        set -o monitor;
-        set -o notify;
-        set -o noclobber;
-        set -b;
-        set bell-style visible;
-        set completion-ignore-case on;
-        ;;
-esac
+[ -f /usr/local/bin/ansible/hacking/env-setup ] && . /usr/local/bin/ansible/hacking/env-setup;
 
-## debug/trace/errors/etc etc
-#set -o nounset;
-#set -o nolog;
-#set -o xtrace;
+[ -f /usr/local/bin/ansible/hacking/env-setup ] && typeset -x ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
