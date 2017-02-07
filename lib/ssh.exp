@@ -95,14 +95,17 @@ if { [ expr { $argc < 2 } ] } {
 }
 
 if { [ info exists CFGFILE ] } {
-    if { [ string match -nocase $EXEC "shell" ] } {
-        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
+    if { [ info exists EXEC ] } {
+        if { [ string match -nocase $EXEC "shell" ] } {
+            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
+        } else {
+            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"bash --noprofile $EXEC\"";
+        }
     } else {
-        puts "$EXEC"
-        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"bash --noprofile $EXEC\"";
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME screen -RR";
     }
 } else {
-    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME";
+    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME screen -RR";
 }
 
 if { [ info exists env(NEW_PASSWD_FILE) ] } {
@@ -237,40 +240,44 @@ expect {
                 exp_continue;
             }
             $_LINE_TERMINATOR {
-                if { [ string compare $EXEC "shell" ] == 0 } {
-                    exp_send "\r";
-                    interact;
-                } else {
-                    if { [ string compare $EXEC "passwd" ] == 0 } {
-                        if { [ info exists _CHANGE_DATA ] } {
-                            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
-                        } else {
-                            set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
+                if { [ info exists EXEC ] } {
+                    if { [ string compare $EXEC "shell" ] == 0 } {
+                        interact;
+                    } else {
+                        if { [ string compare $EXEC "passwd" ] == 0 } {
+                            if { [ info exists _CHANGE_DATA ] } {
+                                set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+                            } else {
+                                set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
+                            }
+
+                            switch $_RETURN_VALUE {
+                                1 - 2 - 3 {
+                                    puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
+
+                                    exit 0;
+                                }
+                                default {
+                                    puts "$_RETURN_VALUE"
+                                    puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
+                                }
+                            }
                         }
 
-                        switch $_RETURN_VALUE {
-                            1 - 2 - 3 {
-                                puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
+                        append output $expect_out(buffer);
 
-                                exit 0;
-                            }
-                            default {
-                                puts "$_RETURN_VALUE"
-                                puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
-                            }
-                        }
+                        exp_continue;
                     }
-
+                } else {
+                    interact;
+                }
+            } else {
+                eof {
                     append output $expect_out(buffer);
-
-                    exp_continue;
+                    }
                 }
             }
-            eof {
-                append output $expect_out(buffer);
-            }
         }
-    }
     eof {
         append output $expect_out(buffer);
     }
