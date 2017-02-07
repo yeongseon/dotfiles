@@ -99,13 +99,21 @@ if { [ info exists CFGFILE ] } {
         if { [ string match -nocase $EXEC "shell" ] } {
             set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE";
         } else {
-            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"bash --noprofile $EXEC\"";
+            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME -F $CFGFILE $HOSTNAME \"$EXEC\"";
         }
     } else {
         set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME screen -RR";
     }
 } else {
-    set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME screen -RR";
+    if { [ info exists EXEC ] } {
+        if { [ string match -nocase $EXEC "shell" ] } {
+            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME";
+        } else {
+            set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME \"$EXEC\"";
+        }
+    } else {
+        set _SSH_COMMAND "/usr/bin/env ssh -qaCktl $USERNAME $HOSTNAME screen -RR";
+    }
 }
 
 if { [ info exists env(NEW_PASSWD_FILE) ] } {
@@ -115,12 +123,11 @@ if { [ info exists env(NEW_PASSWD_FILE) ] } {
 
 set i 0;
 
-eval spawn $_SSH_COMMAND
+eval spawn $_SSH_COMMAND;
 
 expect {
     "*(yes/no)? " {
         exp_send "yes\r";
-
         exp_continue;
     }
     "*id_?sa*" {
@@ -129,7 +136,6 @@ expect {
         }
 
         exp_send "\r";
-
         exp_continue;
     }
     "*Changing password for *$USERNAME*" {
@@ -185,99 +191,105 @@ expect {
         exp_continue;
     }
     $_LINE_TERMINATOR {
-        expect {
-            "*Changing password for *$USERNAME*" {
-                ## set up password change here
-                if { [ info exists _CHANGE_DATA ] } {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
-                } else {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
-                }
+		if { [ info exists EXEC ] } {
+			if { [ string compare $EXEC "shell" ] != 0 } {
+				append output $expect_out(buffer);
+			}
+		} else {
+			expect {
+				"*Changing password for *$USERNAME*" {
+					## set up password change here
+					if { [ info exists _CHANGE_DATA ] } {
+						set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+					} else {
+						set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
+					}
 
-                switch $_RETURN_VALUE {
-                    1 - 2 - 3 {
-                        puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
+					switch $_RETURN_VALUE {
+						1 - 2 - 3 {
+							puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
-                        exit 0;
-                    }
-                    default {
-                        puts "$_RETURN_VALUE"
-                        puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
-                    }
-                }
-            }
-            "*Changing password for user *$USERNAME*" {
-                ## set up password change here
-                if { [ info exists _CHANGE_DATA ] } {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
-                } else {
-                    set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
-                }
+							exit 0;
+						}
+						default {
+							puts "$_RETURN_VALUE"
+							puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
+						}
+					}
+				}
+				"*Changing password for user *$USERNAME*" {
+					## set up password change here
+					if { [ info exists _CHANGE_DATA ] } {
+						set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+					} else {
+						set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
+					}
 
-                switch $_RETURN_VALUE {
-                    1 - 2 - 3 {
-                        puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
+					switch $_RETURN_VALUE {
+						1 - 2 - 3 {
+							puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
-                        exit 0;
-                    }
-                    default {
-                        puts "$_RETURN_VALUE"
-                        puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
-                    }
-                }
-            }
-            "*?assword*" {
-                if { [ expr { $i == 1 } ] } {
-                    puts stderr "An invalid password was provided for user account $USERNAME on host $HOSTNAME";
+							exit 0;
+						}
+						default {
+							puts "$_RETURN_VALUE"
+							puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
+						}
+					}
+				}
+				"*?assword*" {
+					if { [ expr { $i == 1 } ] } {
+						puts stderr "An invalid password was provided for user account $USERNAME on host $HOSTNAME";
 
-                    exit 1;
-                }
+						exit 1;
+					}
 
-                set i [ expr { $i + 1 } ];
+					set i [ expr { $i + 1 } ];
 
-                exp_send "$_USER_PASSWD\r";
+					exp_send "$_USER_PASSWD\r";
+					exp_continue;
+				}
+				$_LINE_TERMINATOR {
+					if { [ info exists EXEC ] } {
+						if { [ string compare $EXEC "shell" ] == 0 } {
+							interact;
+						} else {
+							if { [ string compare $EXEC "passwd" ] == 0 } {
+								if { [ info exists _CHANGE_DATA ] } {
+									set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
+								} else {
+									set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
+								}
 
-                exp_continue;
-            }
-            $_LINE_TERMINATOR {
-                if { [ info exists EXEC ] } {
-                    if { [ string compare $EXEC "shell" ] == 0 } {
-                        interact;
-                    } else {
-                        if { [ string compare $EXEC "passwd" ] == 0 } {
-                            if { [ info exists _CHANGE_DATA ] } {
-                                set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "$_CHANGE_DATA" ];
-                            } else {
-                                set _RETURN_VALUE [ changeAccountPassword "account" "$USERNAME" "$_USER_PASSWD" "" ];
-                            }
+								switch $_RETURN_VALUE {
+									1 - 2 - 3 {
+										puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
 
-                            switch $_RETURN_VALUE {
-                                1 - 2 - 3 {
-                                    puts stderr "Unable to change password for provided user account $USERNAME on host $HOSTNAME";
+										exit 0;
+									}
+									default {
+										puts "$_RETURN_VALUE"
+										puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
+									}
+								}
+							} else {
+								exp_send "$EXEC\r";
+							}
 
-                                    exit 0;
-                                }
-                                default {
-                                    puts "$_RETURN_VALUE"
-                                    puts "Password successfully changed for user $USERNAME to $_RETURN_VALUE on host $HOSTNAME";
-                                }
-                            }
-                        }
+							append output $expect_out(buffer);
 
-                        append output $expect_out(buffer);
-
-                        exp_continue;
-                    }
-                } else {
-                    interact;
-                }
-            } else {
-                eof {
-                    append output $expect_out(buffer);
-                    }
-                }
-            }
+							exp_continue;
+						}
+					} else {
+						interact;
+					}
+				}
+				eof {
+					append output $expect_out(buffer);
+				}
+			}
         }
+	}
     eof {
         append output $expect_out(buffer);
     }
