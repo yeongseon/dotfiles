@@ -1,4 +1,4 @@
-# dotfiles
+# My dotfiles
 
 These are my dotfiles. They're here for everyone to steal if desired, I don't mind.
 
