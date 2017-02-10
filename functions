@@ -38,10 +38,10 @@ do
             ;;
     esac
 
-    [ ! -z "${FUNCTION}" ] && unset FUNCTION;
+    [ ! -z "${FUNCTION}" ] && unset -v FUNCTION;
 done
 
-[ ! -z "${FUNCTION}" ] && unset FUNCTION;
+[ ! -z "${FUNCTION}" ] && unset -v FUNCTION;
 
 ## look for any directories that might contain specifics
 for FUNCTION in ${HOME}/.functions.d/*
@@ -65,14 +65,14 @@ do
         [ ! -z "${FUNCTION1}" ] && unset -v FUNCTION1;
     done
 
-    [ ! -z "${FUNCTION1}" ] && unset FUNCTION1;
-    [ ! -z "${FUNCTION}" ] && unset FUNCTION;
+    [ ! -z "${FUNCTION1}" ] && unset -v FUNCTION1;
+    [ ! -z "${FUNCTION}" ] && unset -v FUNCTION;
 done
 
-[ ! -z "${FUNCTION}" ] && unset FUNCTION;
-[ ! -z "${INPUT}" ] && unset INPUT;
-[ ! -z "${FUNCTION_NAMES[*]}" ] && unset FUNCTION_NAMES;
-[ ! -z "${FUNCTION_NAME}" ] && unset FUNCTION_NAME;
+[ ! -z "${FUNCTION}" ] && unset -v FUNCTION;
+[ ! -z "${INPUT}" ] && unset -v INPUT;
+[ ! -z "${FUNCTION_NAMES[*]}" ] && unset -v FUNCTION_NAMES;
+[ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
