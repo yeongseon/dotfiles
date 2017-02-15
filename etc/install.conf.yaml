@@ -8,12 +8,12 @@
 - shell:
   - [git pull, Updating repository]
   - [git submodule update --init --recursive, Installing submodules]
-  - [mkdir -p ~/.log/archive, Making log directories]
-  - [mkdir -p ~/.ssh/, Making SSH directory]
-  - [mkdir -p ~/.gnupg/, Making GPG directory]
-  - [mkdir -p ~/.etc, Making etc directory]
-  - [mkdir -p ~/.m2, Making maven directory]
-  - [mkdir -p ~/.config, Making configuration directory]
+  - [mkdir -pv ~/.log/archive, Making log directories]
+  - [mkdir -pv ~/.ssh/config.d, Making SSH directories]
+  - [mkdir -pv ~/.gnupg/, Making GPG directory]
+  - [mkdir -pv ~/.etc, Making etc directory]
+  - [mkdir -pv ~/.m2, Making maven directory]
+  - [mkdir -pv ~/.config, Making configuration directory]
   - [chmod 700 ~/.ssh, Changing permissions on .ssh directory]
 
 - link:
@@ -49,7 +49,7 @@
   ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
   ~/.m2/settings.xml: m2/settings.xml
   ~/.ssh/config: ssh/config
-  ~/.ssh/config.d: ssh/config.d
+  ~/.ssh/config.d/cws: ssh/config.d/cws
 
 - shell:
   - [cd ~/.dotbot && find . -type d -exec chmod 755, Ensuring file permissions are 755 on all directories]
@@ -65,4 +65,7 @@
   - [chmod 600 ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml, Ensuring file permissions are 600 on ~/.etc/eSolutionsCore/config/ServiceConfig.xml]
   - [chmod 755 ~/.dotbot/bin/*, Ensuring file permissions are 755 on ~/.bin/*]
   - [chmod 755 ~/.dotbot/lib/*, Ensuring file permissions are 755 on ~/.lib/*]
+  - [chmod 644 ~/.ssh/config, Ensuring file permissions are 644 on ~/.ssh/config]
+  - [chmod 644 ~/.ssh/config/config.d/cws, Ensuring file permissions are 644 on ~/.ssh/config.d/cws]
   - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]
+  - [chmod 600 ~/.ssh/id_rsa, Ensuring file permissions are 600 on ~/.ssh/id_rsa]

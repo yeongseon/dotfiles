@@ -25,7 +25,7 @@ typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
 ## Application constants
 CNAME="$(/usr/bin/env basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(/usr/bin/env cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -35,7 +35,7 @@ METHOD_NAME="${CNAME}#startup";
 
 ## default variables
 typeset -i ERROR_COUNT=0;
-typeset BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)"
+typeset BASEDIR="$(/usr/bin/env cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)"
 typeset CONFIG="${BASEDIR}/etc/install.conf.yaml"
 typeset DOTBOT_DIR="dotbot"
 typeset DOTBOT_BIN="bin/dotbot"
@@ -45,7 +45,7 @@ typeset DOTBOT_BIN="bin/dotbot"
 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_DIR -> ${DOTBOT_DIR}" >&2;
 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DOTBOT_BIN -> ${DOTBOT_BIN}" >&2;
 
-[ ! -d ${HOME}/.log ] && mkdir -pv ${HOME}/.log;
+[ ! -d ${HOME}/.log ] && /usr/bin/env mkdir -pv ${HOME}/.log;
 
 #=====  FUNCTION  =============================================================
 #          NAME:  loadFilesToRemote
@@ -105,17 +105,17 @@ function loadFilesToRemote
     fi
 
     ## if there's an actual ssh_config (${HOME}/.ssh/config); then use that first
-    for TARGET_HOSTNAME in $(grep HostName ${HOME}/.ssh/config | awk '{print $NF}')
+    for TARGET_HOSTNAME in $(/usr/bin/env grep HostName ${HOME}/.ssh/config | /usr/bin/env awk '{print $NF}')
     do
         printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Processing node: ${TARGET_HOSTNAME}" >&1;
 
-        for SSH_KEYFILE in $(grep IdentityFile ${HOME}/.ssh/config | awk -F "=" '{print $2}' | sort | uniq)
+        for SSH_KEYFILE in $(/usr/bin/env grep IdentityFile ${HOME}/.ssh/config | /usr/bin/env awk -F "=" '{print $2}' | /usr/bin/env sort | /usr/bin/env uniq)
         do
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_KEYFILE -> ${SSH_KEYFILE}" >&2;
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Adding keyfile ${SSH_KEYFILE}.." >&2;
 
-            /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} khuntly@${TARGET_HOSTNAME} > /dev/null 2>&1;
+            /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} ${LOGNAME}@${TARGET_HOSTNAME} > /dev/null 2>&1;
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
@@ -128,7 +128,7 @@ function loadFilesToRemote
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to remove existing files.." >&2;
 
-        /usr/bin/env ssh -qtl ${USERNAME} -i ${HOME}/.ssh/id_rsa ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
+        /usr/bin/env ssh -qtl ${LOGNAME} -i ${HOME}/.ssh/id_rsa ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
             .pythonrc .profile.d .profile .my.cnf .mailrc .lib .kshrc .inputrc .gnupg .gitconfig .functions.d .functions .etc .digrc .curlrc .config .colordiffrc .bin .alias.d .mail .m2 \
             .ansible .dotfiles .viminfo .rnd .log" > /dev/null 2>&1;
         typeset -i RET_CODE=${?};
@@ -148,7 +148,7 @@ function loadFilesToRemote
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to install files..." >&2;
 
-        /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -i ${HOME}/.ssh/id_rsa -l ${USERNAME}" \
+        /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -i ${HOME}/.ssh/id_rsa -l ${LOGNAME}" \
             --temp-dir=/var/tmp --timeout=45 --no-motd --delete --delete-excluded --progress --exclude-from=${HOME}/.etc/excludes \
             --blocking-io --stats --progress --log-file=${HOME}/.log/rsync.log ~/.dotfiles ${TARGET_HOSTNAME}: >/dev/null 2>&1;
         typeset -i RET_CODE=${?};
@@ -177,7 +177,7 @@ function loadFilesToRemote
     done
 
     ## check if there are any config directories housing files
-    for SSH_CONFIG_DIRECTORY in $(find ${HOME}/.ssh -type d -name config.d)
+    for SSH_CONFIG_DIRECTORY in $(/usr/bin/env find ${HOME}/.ssh -type d -name config.d)
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_CONFIG_DIRECTORY -> ${SSH_CONFIG_DIRECTORY}" >&2;
 
@@ -185,13 +185,13 @@ function loadFilesToRemote
         do
             printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Processing node: ${TARGET_HOSTNAME}" >&1;
 
-            for SSH_KEYFILE in $(grep IdentityFile ${SSH_CONFIG_DIRECTORY} | awk -F "=" '{print $2}' | egrep -v "~/.ssh/id_rsa|~/.ssh/id_dsa|~/.ssh/id_ecdsa" | sort | uniq)
+            for SSH_KEYFILE in $(/usr/bin/env grep IdentityFile ${SSH_CONFIG_DIRECTORY} | /usr/bin/env awk -F "=" '{print $2}' | /usr/bin/env egrep -v "~/.ssh/id_rsa|~/.ssh/id_dsa|~/.ssh/id_ecdsa" | /usr/bin/env sort | /usr/bin/env uniq)
             do
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SSH_KEYFILE -> ${SSH_KEYFILE}" >&2;
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Adding keyfile ${SSH_KEYFILE}.." >&2;
 
-                /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} khuntly@${TARGET_HOSTNAME} > /dev/null 2>&1;
+                /usr/bin/env ssh-copy-id -i ${HOME}/.ssh/${SSH_KEYFILE} ${LOGNAME}@${TARGET_HOSTNAME} > /dev/null 2>&1;
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
@@ -204,7 +204,7 @@ function loadFilesToRemote
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to remove existing files.." >&2;
 
-            /usr/bin/env ssh -qtl khuntly -i ~/.ssh/cmh/admin/id_rsa ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
+            /usr/bin/env ssh -qtl ${LOGNAME} ${TARGET_HOSTNAME} "rm -rf * .dotfiles .zshrc .bashrc .bash_profile .bash_logout .alias .xlaunch .wgetrc .vimrc .tmux.conf .subversion .screenrc \
                 .pythonrc .profile.d .profile .my.cnf .mailrc .lib .kshrc .inputrc .gnupg .gitconfig .functions.d .functions .etc .digrc .curlrc .config .colordiffrc .bin .alias.d .mail .m2 \
                 .ansible .dotfiles .viminfo .rnd .log" > /dev/null 2>&1;
             typeset -i RET_CODE=${?};
@@ -224,7 +224,7 @@ function loadFilesToRemote
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to install files..." >&2;
 
-            /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -i ${HOME}/.ssh/cmh/admin/id_rsa -l khuntly" \
+            /usr/bin/env rsync -qCcarulKHpEAgtSihs -e "ssh -qaCk -E ${HOME}/.log/ssh.log -l ${LOGNAME}" \
                 --temp-dir=/var/tmp --timeout=45 --no-motd --delete --delete-excluded --progress --exclude-from=${HOME}/.etc/excludes \
                 --blocking-io --stats --progress --log-file=${HOME}/.log/rsync.log ~/.dotfiles ${TARGET_HOSTNAME}: >/dev/null 2>&1;
             typeset -i RET_CODE=${?};
@@ -244,7 +244,7 @@ function loadFilesToRemote
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Connecting to host to apply profile.." >&2;
 
-            /usr/bin/env ssh -qtl khuntly -i ~/.ssh/cmh/admin/id_rsa ${TARGET_HOSTNAME} ".dotfiles/bin/install";
+            /usr/bin/env ssh -qtl ${LOGNAME} ${TARGET_HOSTNAME} ".dotfiles/bin/install";
             typeset -i RET_CODE=${?};
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}" >&2;
@@ -328,11 +328,11 @@ function installFiles
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURR_IFS -> ${CURR_IFS}" >&2;
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "IFS -> ${IFS}" >&2;
 
-    for DIRECTORY_ENTRY in $(cat "${INSTALL_YAML}" | grep "mkdir" | cut -d "," -f 1 | cut -d "[" -f 2)
+    for DIRECTORY_ENTRY in $(/usr/bin/env cat "${INSTALL_YAML}" | /usr/bin/env grep "mkdir" | /usr/bin/env cut -d "," -f 1 | /usr/bin/env cut -d "[" -f 2)
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DIRECTORY_ENTRY -> ${DIRECTORY_ENTRY}" >&2;
 
-        typeset DIRECTORY_NAME="$(awk '{print $NF}' <<< "${DIRECTORY_ENTRY}" | sed -e "s^~/^^g")";
+        typeset DIRECTORY_NAME="$(/usr/bin/env awk '{print $NF}' <<< "${DIRECTORY_ENTRY}" | /usr/bin/env sed -e "s^~/^^g")";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DIRECTORY_NAME -> ${DIRECTORY_NAME}" >&2;
 
@@ -342,7 +342,7 @@ function installFiles
         then
             printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${DIRECTORY_NAME} doesn't currently exist. Creating." >&1;
 
-            mkdir -pv "${HOME}/${DIRECTORY_NAME}" 1>>/${HOME}/.log/mkdir.out 2>${HOME}/.log/mkdir.err;
+            /usr/bin/env mkdir -pv "${HOME}/${DIRECTORY_NAME}" 1>>/${HOME}/.log/mkdir.out 2>${HOME}/.log/mkdir.err;
 
             if [ -d "${HOME}/${DIRECTORY_NAME}" ]
             then
@@ -358,14 +358,14 @@ function installFiles
         [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
     done
 
-    for LINKED_ENTRY in $(cat "${INSTALL_YAML}" | grep "~/" | egrep -v "mkdir|dotfiles|chmod|cd" | sed -e "s/^ *//g;s/ *$//g")
+    for LINKED_ENTRY in $(/usr/bin/env cat "${INSTALL_YAML}" | /usr/bin/env grep "~/" | /usr/bin/env egrep -v "mkdir|dotfiles|chmod|cd" | /usr/bin/env sed -e "s/^ *//g;s/ *$//g")
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINKED_ENTRY -> ${LINKED_ENTRY}" >&2;
 
         [ -z "${LINKED_ENTRY}" ] && continue;
 
-        typeset LINK_TARGET="${HOME}/$(tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | cut -d ":" -f 1 | sed -e "s^~/^^g")";
-        typeset LINK_SOURCE="${DOTFILES_HOME}/$(tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | cut -d ":" -f 2 | sed -e "s^~/^^g")";
+        typeset LINK_TARGET="${HOME}/$(/usr/bin/env tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | /usr/bin/env cut -d ":" -f 1 | /usr/bin/env sed -e "s^~/^^g")";
+        typeset LINK_SOURCE="${DOTFILES_HOME}/$(/usr/bin/env tr -d '[[:space:]]' <<< "${LINKED_ENTRY}" | /usr/bin/env cut -d ":" -f 2 | /usr/bin/env sed -e "s^~/^^g")";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_TARGET -> ${LINK_TARGET}" >&2;
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINK_SOURCE -> ${LINK_SOURCE}" >&2;
@@ -380,7 +380,7 @@ function installFiles
         then
             printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating symbolic link for ${LINK_SOURCE} to ${LINK_TARGET}.." >&1;
 
-            ln -s ${LINK_SOURCE} ${LINK_TARGET} 1>>${HOME}/.log/link.out 2>>${HOME}/.log/link.err;
+            /usr/bin/env ln -s ${LINK_SOURCE} ${LINK_TARGET} 1>>${HOME}/.log/link.out 2>>${HOME}/.log/link.err;
 
             if [ -L "${LINK_TARGET}" ]
             then
@@ -399,19 +399,30 @@ function installFiles
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Updating permissions..." >&1;
 
-    cd ~/.dotbot && find . -type d -exec chmod 755;
-    cd ~/.dotbot && find . -type f -exec chmod 644;
+    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type d -exec /usr/bin/env chmod 755;
+    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type f -exec /usr/bin/env chmod 644;
     /usr/bin/env chmod 700 ~/ ~/.ssh;
     /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/screenrc ~/.dotbot/m2/settings.xml \
         ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
     /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
     /usr/bin/env chmod 644 ~/.dotbot/bin/profile ~/.dotbot/ssh/config;
 
-    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypair..." >&1;
+    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type d -exec /usr/bin/env chmod 755 {} \; ;
+    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type f -exec /usr/bin/env chmod 644 {} \; ;
+    /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/wgetrc ~/.dotbot/etc/netrc \
+        ~/.dotbot/config/subversion/servers ~/.dotbot/config/subversion/servers ~/.dotbot/m2/settings.xml \
+        ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
+    /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
+    /usr/bin/env chmod 644 ~/.ssh/config ~/.ssh/config/config.d/cws;
 
-    cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa
+    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypairs..." >&1;
 
-    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypair created." >&1;
+    /usr/bin/env cd ~/.ssh && [ -f id_rsa ] || /usr/bin/env ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa;
+    /usr/bin/env cd ~/.ssh && [ -f id_dsa ] || /usr/bin/env ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa;
+    /usr/bin/env cd ~/.ssh && [ -f id_ecdsa ] || /usr/bin/env ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_ecdsa;
+    /usr/bin/env chmod 600 ~/.ssh/id_rsa ~/.ssh/id_dsa ~/.ssh/id_ecdsa
+
+    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypairs created." >&1;
 
     [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=0;
 
@@ -443,7 +454,7 @@ function installFiles
     return ${RETURN_CODE};
 }
 
-cd "${BASEDIR}"
+/usr/bin/env cd "${BASEDIR}"
 /usr/bin/env git submodule update --init --recursive "${DOTBOT_DIR}" 2>/dev/null;
 typeset -i RET_CODE=${?};
 
