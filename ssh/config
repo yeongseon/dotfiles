@@ -47,7 +47,7 @@ Host *
     TCPKeepAlive                = yes
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
-    User                        = khuntly
+    User                        = tdpokh2
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     UseRoaming                  = no

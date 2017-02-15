@@ -436,8 +436,8 @@ function writeLogEntry
     typeset LOG_LINE="${4}";
     typeset LOG_MESSAGE="${5}";
 
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Oo][Uu][Tt] ]] && printf "%s\n" "${LOG_MESSAGE}" >&1;
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Ee][Rr][Rr] ]] && printf "%s\n" "${LOG_MESSAGE}" >&2;
+    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Oo][Uu][Tt] ]] && printf "%s\n" "${2}" >&1;
+    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Ee][Rr][Rr] ]] && printf "%s\n" "${2}" >&2;
     [[ ${LOG_LEVEL} =~ [Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp] ]] && typeset LOG_FILE="${PERF_LOG_FILE}";
     [[ ${LOG_LEVEL} =~ [Ff][Aa][Tt][Aa][Ll]|[Ff] ]] && typeset LOG_FILE="${FATAL_LOG_FILE}";
     [[ ${LOG_LEVEL} =~ [Ee][Rr][Rr][Oo][Rr]|[Ee] ]] && typeset LOG_FILE="${ERROR_LOG_FILE}";

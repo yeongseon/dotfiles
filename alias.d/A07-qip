@@ -54,6 +54,7 @@ alias qip-search='/opt/qip/cli/qip-search -u "${LOGNAME}" -p "$(<~/.etc/qip/pass
 alias qip-scope='/opt/qip/cli/qip-scope -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-getprimdnssvrlst='/opt/qip/cli/qip-getprimdnssvrlst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-dnsgen='/opt/qip/cli/qip-dnsgen -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
+alias qip-dnsupdate='/opt/qip/cli/qip-update -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-sitegen='/opt/qip/cli/qip-sitegen -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-getsnorgprof='/opt/qip/cli/qip-getsnorgprof -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-getobjectprof='/opt/qip/cli/qip-getobjectprof -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
