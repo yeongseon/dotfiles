@@ -108,6 +108,7 @@ function stringCrypt
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
+    typeset USE_GPG="${_FALSE}";
     typeset SALT_FILE="${HOME}/.etc/salt.properties";
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
@@ -117,9 +118,8 @@ function stringCrypt
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SALT_FILE -> ${SALT_FILE}";
 
-    if [ ${#} -ne 2 ]
+    if [ ${#} -le 2 ]
     then
-        echo "in if"
         RETURN_CODE=3;
 
         writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
@@ -131,6 +131,7 @@ function stringCrypt
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+        [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
         [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
         [ ! -z "${AUTH_STRING}" ] && unset -v AUTH_STRING;
         [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
@@ -157,10 +158,12 @@ function stringCrypt
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_STRING -> ${AUTH_STRING}";
             ;;
         3)
+            typeset USE_GPG="${_TRUE}"
             typeset AUTH_METHOD="${1}";
             typeset AUTH_STRING="${2}";
             typeset AUTH_RECIPIENTS="${3}";
 
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USE_GPG -> ${USE_GPG}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_METHOD -> ${AUTH_METHOD}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_STRING -> ${AUTH_STRING}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_RECIPIENTS -> ${AUTH_RECIPIENTS}";
@@ -177,6 +180,7 @@ function stringCrypt
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+            [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
             [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
             [ ! -z "${AUTH_STRING}" ] && unset -v AUTH_STRING;
             [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
@@ -199,8 +203,10 @@ function stringCrypt
 
     case ${AUTH_METHOD} in
         [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            if [ ! -z "$(/usr/bin/env gpg --version 2>/dev/null)" ]
+            if [ ! -z "${USE_GPG}" -a "${USE_GPG}" == "${_TRUE}" ]
             then
+                echo "${AUTH_STRING}" | /usr/bin/env gpg -a -r ${AUTH_RECIPIENTS} --encrypt --sign;
+            else
                 if [ -f ${SALT_FILE} ]
                 then
                     echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass pass:$(<${SALT_FILE});
@@ -210,13 +216,13 @@ function stringCrypt
 
                     echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass "$(<${SALT_FILE})";
                 fi
-            else
-                [ ! -z "$(/usr/bin/env gpg --version 2>/dev/null)" ] && echo "${AUTH_STRING}" | /usr/bin/env gpg -a -r ${AUTH_RECIPIENTS} --encrypt --sign;
             fi
             ;;
         [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            if [ ! -z "$(/usr/bin/env gpg --version 2>/dev/null)" ]
+            if [ ! -z "${USE_GPG}" -a "${USE_GPG}" == "${_TRUE}" ]
             then
+                echo "${AUTH_STRING}" | /usr/bin/env gpg --decrypt;
+            else
                 if [ -f ${SALT_FILE} ]
                 then
                     echo "${AUTH_STRING}" | /usr/bin/env openssl enc -d -aes-256-cbc -a -salt -pass pass:$(<${SALT_FILE});
@@ -257,12 +263,9 @@ function stringCrypt
                         esac
                     done
                 fi
-            else
-                [ ! -z "$(/usr/bin/env gpg --version 2>/dev/null)" ] && echo "${AUTH_STRING}" | /usr/bin/env gpg --decrypt;
             fi
             ;;
         *)
-            echo "in method"
             RETURN_CODE=3;
 
             writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
@@ -274,6 +277,7 @@ function stringCrypt
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+            [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
             [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
             [ ! -z "${AUTH_STRING}" ] && unset -v AUTH_STRING;
             [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
@@ -302,6 +306,7 @@ function stringCrypt
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
+    [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
     [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
     [ ! -z "${AUTH_STRING}" ] && unset -v AUTH_STRING;
     [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
@@ -324,7 +329,7 @@ function stringCrypt
 #=====  FUNCTION  =============================================================
 #          NAME:  fileCrypt
 #   DESCRIPTION:  Encrypts/decrypts a provided file
-#    PARAMETERS:  Operation type, file, recipients (if using PGP/GPG)
+#    PARAMETERS:  Operation type, string, recipients (if using PGP/GPG)
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
 function fileCrypt
@@ -337,31 +342,35 @@ function fileCrypt
     set +o noclobber;
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
+    typeset USE_GPG="${_FALSE}";
+    typeset SALT_FILE="${HOME}/.etc/salt.properties";
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SALT_FILE -> ${SALT_FILE}";
 
-    if [ ${#} -eq 0 ]
+    if [ ${#} -le 2 ]
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ file ] \( recipients \)
+        writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                  -> The desired method of operation: one of encrypt or decrypt
-                 -> The file to operate against
+                 -> The string to operate against
                  -> A list of recipients \(only valid if using PGP/GPG\)";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-        [ -z "${METHOD}" ] && unset -v METHOD;
-        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-        [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+        [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
+        [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
+        [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+        [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
+        [ ! -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+        [ ! -z "${SALT_FILE}" ] && unset -v SALT_FILE;
 
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -374,146 +383,43 @@ function fileCrypt
         return ${RETURN_CODE};
     fi
 
-    typeset METHOD="${1}";
-    typeset FILE_NAME="${2}";
-    typeset RECIPIENTS="${3}";
+    case "${#}" in
+        2)
+            typeset AUTH_METHOD="${1}";
+            typeset FILE_NAME="${2}";
 
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "METHOD -> ${METHOD}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RECIPIENTS -> ${RECIPIENTS}";
-
-    if [ ! -r ${FILE_NAME} ]
-    then
-        RETURN_CODE=3;
-
-        writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ file ] \( recipients \)
-                 -> The desired method of operation: one of encrypt or decrypt
-                 -> The file to operate against
-                 -> A list of recipients \(only valid if using PGP/GPG\)";
-
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-        [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-        [ -z "${METHOD}" ] && unset -v METHOD;
-        [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-        [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-        [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
-
-        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
-
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-        return ${RETURN_CODE};
-    fi
-
-    case ${METHOD} in
-        [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(type gpg2 2>/dev/null)" ]
-            then
-                while ${_TRUE}
-                do
-                    printf "Please provide a password to perform the encryption operation: ";
-
-                    read AUTHENTICATION;
-
-                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTHENTICATION -> ${AUTHENTICATION}";
-
-                    case ${AUTHENTICATION} in
-                        [Xx]|[Qq]|[Cc])
-                            ## user chose to quit, close us out
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                            [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-                            [ -z "${METHOD}" ] && unset -v METHOD;
-                            [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-                            [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-                            [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
-
-                            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
-
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-                            return ${RETURN_CODE};
-                            ;;
-                        *)
-                            [ -z "${AUTHENTICATION}" ] && continue || /usr/bin/env openssl enc -aes-256-cbc -a -salt -in ${FILE_NAME} -out ${FILE_NAME}.enc -pass ${AUTHENTICATION};
-                            ;;
-                    esac
-                done
-            else
-                [ -z "${RECIPIENTS}" ] && /usr/bin/env gpg2 -aes --output ${FILE_NAME}.asc ${FILE_NAME} || /usr/bin/env gpg2 -aes -r ${RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
-            fi
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_METHOD -> ${AUTH_METHOD}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
             ;;
-        [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
-            if [ -z "$(type gpg2 2>/dev/null)" ]
-            then
-                while ${_TRUE}
-                do
-                    printf "Please provide a password to perform the decryption operation: ";
+        3)
+            typeset USE_GPG="${_TRUE}"
+            typeset AUTH_METHOD="${1}";
+            typeset FILE_NAME="${2}";
+            typeset AUTH_RECIPIENTS="${3}";
 
-                    read AUTHENTICATION;
-
-                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTHENTICATION -> ${AUTHENTICATION}";
-
-                    case ${AUTHENTICATION} in
-                        [Xx]|[Qq]|[Cc])
-                            ## user chose to quit, close us out
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
-                            [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-                            [ -z "${METHOD}" ] && unset -v METHOD;
-                            [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-                            [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-                            [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
-
-                            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
-                            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
-
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
-                            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
-
-                            return ${RETURN_CODE};
-                            ;;
-                        *)
-                            [ -z "${AUTHENTICATION}" ] && continue || /usr/bin/env openssl enc -d -aes-256-cbc -a -in ${FILE_NAME} -pass ${AUTHENTICATION};
-                            ;;
-                    esac
-                done
-            else
-                /usr/bin/env gpg2 --decrypt ${FILE_NAME};
-            fi
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USE_GPG -> ${USE_GPG}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_METHOD -> ${AUTH_METHOD}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FILE_NAME -> ${FILE_NAME}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTH_RECIPIENTS -> ${AUTH_RECIPIENTS}";
             ;;
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided file";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ file ] \( recipients \)
+            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ filename ] \( recipients \)
                      -> The desired method of operation: one of encrypt or decrypt
-                     -> The file to operate against
+                     -> The filename to operate against
                      -> A list of recipients \(only valid if using PGP/GPG\)";
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-            [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-            [ -z "${METHOD}" ] && unset -v METHOD;
-            [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-            [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-            [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+            [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
+            [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
+            [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+            [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
+            [ ! -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+            [ ! -z "${SALT_FILE}" ] && unset -v SALT_FILE;
 
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -523,6 +429,106 @@ function fileCrypt
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+            return ${RETURN_CODE};
+            ;;
+    esac
+
+    case ${AUTH_METHOD} in
+        [Ee][Nn][Cc][Rr][Yy][Pp][Tt])
+            if [ ! -z "${USE_GPG}" -a "${USE_GPG}" == "${_TRUE}" ]
+            then
+                [ -z "${AUTH_RECIPIENTS}" ] && /usr/bin/env gpg -aes --output ${FILE_NAME}.asc ${FILE_NAME};
+                [ ! -z "${AUTH_RECIPIENTS}" ] && /usr/bin/env gpg -aes -r ${AUTH_RECIPIENTS} --output ${FILE_NAME}.asc ${FILE_NAME};
+            else
+                if [ -f ${SALT_FILE} ]
+                then
+                    echo "${FILE_NAME}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass file:${SALT_FILE};
+                else
+                    ## generate a salt file
+                    /usr/bin/env cat /dev/urandom | /usr/bin/env tr -dc 'a-zA-Z0-9' | /usr/bin/env fold -w 512 | /usr/bin/env head -n 1 > ${SALT_FILE};
+
+                    /usr/bin/env openssl enc -aes-256-cbc -a -salt -in ${FILE_NAME} -out ${FILE_NAME}.enc -pass file:${SALT_FILE};
+                fi
+            fi
+            ;;
+        [Dd][Ee][Cc][Rr][Yy][Pp][Tt])
+            if [ ! -z "${USE_GPG}" -a "${USE_GPG}" == "${_TRUE}" ]
+            then
+                /usr/bin/env gpg --decrypt ${FILE_NAME};
+            else
+                if [ -f ${SALT_FILE} ]
+                then
+                    /usr/bin/env openssl enc -d -aes-256-cbc -a -in ${FILE_NAME} -pass file:${SALT_FILE};
+                else
+                    while ${_TRUE}
+                    do
+                        printf "Please provide a password to perform the decryption operation: ";
+
+                        read AUTHENTICATION;
+
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "AUTHENTICATION -> ${AUTHENTICATION}";
+
+                        case ${AUTHENTICATION} in
+                            [Xx]|[Qq]|[Cc])
+                                ## user chose to quit, close us out
+                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+                                [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
+                                [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+                                [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
+                                [ ! -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+                                [ ! -z "${SALT_FILE}" ] && unset -v SALT_FILE;
+
+                                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+                                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+                                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+                                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+                                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+                                [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+                                return ${RETURN_CODE};
+                                ;;
+                            *)
+                                [ ! -z "${AUTHENTICATION}" ] && continue || /usr/bin/env openssl enc -d -aes-256-cbc -a -in ${FILE_NAME} -pass pass:${AUTHENTICATION};
+                                ;;
+                        esac
+                    done
+                fi
+            fi
+            ;;
+        *)
+            RETURN_CODE=3;
+
+            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+                     -> The desired method of operation: one of encrypt or decrypt
+                     -> The string to operate against
+                     -> A list of recipients \(only valid if using PGP/GPG\)";
+
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+            [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
+            [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
+            [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+            [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
+            [ ! -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+            [ ! -z "${SALT_FILE}" ] && unset -v SALT_FILE;
+
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+            [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
             return ${RETURN_CODE};
             ;;
     esac
@@ -530,16 +536,17 @@ function fileCrypt
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-    [ -z "${RET_CODE}" ] && RETURN_CODE=1 || RETURN_CODE=${RET_CODE};
+    [ ! -z "${RET_CODE}" ] && RETURN_CODE=1 || RETURN_CODE=${RET_CODE};
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
-    [ -z "${RET_CODE}" ] && unset -v RET_CODE;
-    [ -z "${METHOD}" ] && unset -v METHOD;
-    [ -z "${RECIPIENTS}" ] && unset -v RECIPIENTS;
-    [ -z "${FILE_NAME}" ] && unset -v FILE_NAME;
-    [ -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+    [ ! -z "${USE_GPG}" ] && unset -v USE_GPG;
+    [ ! -z "${AUTH_METHOD}" ] && unset -v AUTH_METHOD;
+    [ ! -z "${FILE_NAME}" ] && unset -v FILE_NAME;
+    [ ! -z "${AUTH_RECIPIENTS}" ] && unset -v AUTH_RECIPIENTS;
+    [ ! -z "${AUTHENTICATION}" ] && unset -v AUTHENTICATION;
+    [ ! -z "${SALT_FILE}" ] && unset -v SALT_FILE;
 
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -548,6 +555,8 @@ function fileCrypt
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     return ${RETURN_CODE};
 }
@@ -598,13 +607,18 @@ function signFile
         return ${RETURN_CODE};
     fi
 
-    [ ${#} -eq 0 ] && echo "A filename MUST be provided." && return 1;
+    if [ ${#} -eq 0 ]
+    then
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "A filename MUST be provided.";
+        writeLogEntry "STDERR" "A filename MUST be provided.";
+
+        return 1;
+    fi
 
     /usr/bin/env gpg --output $(basename ${1}).sig --detach-sig ${1};
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
-
 
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
