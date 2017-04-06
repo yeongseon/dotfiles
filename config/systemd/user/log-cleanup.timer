@@ -1,9 +1,9 @@
 #==============================================================================
 #
-#          FILE:  VirtualBox.service
-#         USAGE:  systemctl --user enable VirtualBox.service;
-#                 systemctl --user start VirtualBox.service
-#   DESCRIPTION:  Loads the VirtualBox systemd service
+#          FILE:  log-cleanup.timer
+#         USAGE:  systemctl --user enable log-cleanup.timer;
+#                 systemctl --user start log-cleanup.timer
+#   DESCRIPTION:  Loads the log-cleanup service
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -18,12 +18,13 @@
 #==============================================================================
 
 [Unit]
-Description=Start VirtualBox platform
+Description=Clean logfiles
 
-[Service]
-Type=forking
-ExecStart=%u/.bin/startVirtualBox start
-ExecStop=%u/.bin/startVirtualBox stop
+[Timer]
+OnBootSec=10min
+OnCalendar=*:0/60
+Persistent=true
+Unit=log-cleanup.service
 
 [Install]
-WantedBy=default.target
+WantedBy=timers.target

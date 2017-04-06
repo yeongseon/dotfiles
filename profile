@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  ansible
-#         USAGE:  . ansible
-#   DESCRIPTION:  Loads keychain and adds available keys to it
+#          FILE:  profile
+#         USAGE:  . profile
+#   DESCRIPTION:  Sets application-wide functions
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -21,11 +21,7 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-if [ -f /opt/software/ansible-devel ]
-then
-  source /opt/software/ansible-devel;
-  typeset -x ANSIBLE_HOSTS="${HOME}/.etc/ansible/hosts";
-fi
+typeset -x ENV=${HOME}/.bin/profile;
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

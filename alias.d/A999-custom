@@ -47,7 +47,7 @@ alias pdftotext='/usr/bin/env pdftotext -enc UTF-8 -layout';
 alias ff='/usr/bin/env find . -type f';
 alias fd='/usr/bin/env find . -type d';
 alias clearScroll='/usr/bin/env printf "\033c"';
-alias cpuTimeSlice="/usr/bin/env sar -p | /usr/bin/env tail -11 | /usr/bin/env head -10 | /usr/bin/env gawk '{print $NF}' | /usr/bin/env gawk '{total += $1; count++} END {print total / count}'";
+alias cpuTimeSlice="/usr/bin/env sar -p | /usr/bin/env tail -11 | /usr/bin/env head -10 | /usr/bin/env awk '{print $NF}' | /usr/bin/env awk '{total += $1; count++} END {print total / count}'";
 alias icanhazip='/usr/bin/env dig +short @resolver1.opensdns.com myip.opendns.com';
 # dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | sed 's/"//g'
 alias sshd='/usr/bin/env ssh -F ~/.ssh/config.dev';
@@ -71,11 +71,11 @@ alias gpg.exp="${HOME}/.lib/gpg.exp";
 alias keychain.exp="${HOME}/.lib/keychain.exp";
 alias telnet.exp="${HOME}/.lib/telnet.exp";
 
-case "$(echo "${SHELL}" | gawk -F "/" '{print $NF}')" in
+case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Kk][Ss][Hh])
         alias reload='. ${HOME}/.kshrc';
         alias shell='selectProfile';
-        alias listFunctions="typeset -f | grep function | gawk '{print \$NF}'";
+        alias listFunctions="typeset -f | grep function | awk '{print \$NF}'";
         ;;
     [Bb][Aa][Ss][Hh])
         alias reload='. ${HOME}/.bash_profile';

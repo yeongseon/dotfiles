@@ -193,7 +193,7 @@ function createBackup
     return ${RETURN_CODE};
 }
 
-#=====  FUNCTION  ===============================================================
+#=====  FUNCTION  =============================================================
 #          NAME:  restoreBackup
 #   DESCRIPTION:  Restores a backup via rsync
 #    PARAMETERS:  hostname, username, source and target

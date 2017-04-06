@@ -21,7 +21,7 @@
 
 trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
 
-case "$(echo "${SHELL}" | gawk -F "/" '{print $NF}')" in
+case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Bb][Aa][Ss][Hh])
         shopt -s expand_aliases 2>/dev/null;
         shopt -s huponexit 2>/dev/null;

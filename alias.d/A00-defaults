@@ -47,6 +47,8 @@ alias recode='/usr/bin/env recode -qt';
 alias sshfs="/usr/bin/env sshfs -o sshfs_sync,reconnect,no_readahead,idmap=user,umask=644,uid=$(/usr/bin/env id -u),gid=$(/usr/bin/env id -g)";
 alias vi='/usr/bin/env vim';
 alias apg='/usr/bin/env apg -M SNCL';
+alias curl='/usr/bin/env curl --dump-header ${HOME}/.log/curl-headers';
+alias xlaunch='nohup /usr/bin/env xlaunch -run ${HOME}/.etc/config.xlaunch &';
 
 case $(uname) in
     [Ss][Uu][Nn][Oo][Ss]|[Ss][Oo]][Ll][Aa][Rr][Ii][Ss])

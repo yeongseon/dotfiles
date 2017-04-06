@@ -1,3 +1,21 @@
+#==============================================================================
+#
+#          FILE:  config
+#         USAGE:  n/a
+#   DESCRIPTION:  ssh client configuration file
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
 Host github.com
     HostName                    = github.com
     User                        = git
@@ -29,7 +47,7 @@ Host *
     TCPKeepAlive                = yes
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
-    User                        = khuntly
+    User                        = tdpokh2
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     UseRoaming                  = no

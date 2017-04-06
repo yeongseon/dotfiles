@@ -3,7 +3,7 @@
 #
 #          FILE:  rsync
 #         USAGE:  ./rsync
-#   DESCRIPTION:  Executes an scp connection to a pre-defined server
+#   DESCRIPTION:  Executes an rsync connection to a pre-defined server
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---

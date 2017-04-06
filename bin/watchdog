@@ -74,9 +74,9 @@ function usage
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${TIMEOUT}" ] && unset TIMEOUT;
-    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
-    [ ! -z "${DELAY}" ] && unset DELAY;
+    [ ! -z "${TIMEOUT}" ] && unset -v TIMEOUT;
+    [ ! -z "${INTERVAL}" ] && unset -v INTERVAL;
+    [ ! -z "${DELAY}" ] && unset -v DELAY;
 
     exit ${RETURN_CODE};
 }
@@ -118,9 +118,9 @@ function timeoutHandler
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${TIMEOUT}" ] && unset TIMEOUT;
-    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
-    [ ! -z "${DELAY}" ] && unset DELAY;
+    [ ! -z "${TIMEOUT}" ] && unset -v TIMEOUT;
+    [ ! -z "${INTERVAL}" ] && unset -v INTERVAL;
+    [ ! -z "${DELAY}" ] && unset -v DELAY;
 
     exit ${TIMEOUT_RETURN};
 }
@@ -223,11 +223,11 @@ typeset -i WATCH_PID=${$}
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    [ ! -z "${TIMEOUT}" ] && unset TIMEOUT;
-    [ ! -z "${INTERVAL}" ] && unset INTERVAL;
-    [ ! -z "${DELAY}" ] && unset DELAY;
-    [ ! -z "${TERMINATED}" ] && unset TERMINATED;
-    [ ! -z "${ELAPSED}" ] && unset ELAPSED;
+    [ ! -z "${TIMEOUT}" ] && unset -v TIMEOUT;
+    [ ! -z "${INTERVAL}" ] && unset -v INTERVAL;
+    [ ! -z "${DELAY}" ] && unset -v DELAY;
+    [ ! -z "${TERMINATED}" ] && unset -v TERMINATED;
+    [ ! -z "${ELAPSED}" ] && unset -v ELAPSED;
 
     return ${RETURN_CODE};
 ) 2>/dev/null &

@@ -1,9 +1,8 @@
 #==============================================================================
 #
-#          FILE:  VirtualBox.service
-#         USAGE:  systemctl --user enable VirtualBox.service;
-#                 systemctl --user start VirtualBox.service
-#   DESCRIPTION:  Loads the VirtualBox systemd service
+#          FILE:  log-cleanup.service
+#         USAGE:  n/a - called by timer
+#   DESCRIPTION:  Loads the gpg-agent systemd service
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -18,12 +17,15 @@
 #==============================================================================
 
 [Unit]
-Description=Start VirtualBox platform
+Description=Log rotation service
+IgnoreOnIsolate=true
 
 [Service]
-Type=forking
-ExecStart=%u/.bin/startVirtualBox start
-ExecStop=%u/.bin/startVirtualBox stop
+Type=simple
+ExecStartPre=source %u/.etc/logging.properties
+ExecStartPre=source %u/.functions.d/F00-logging
+ExecStart=rotateLogsBySize
+ExecStart=rotateLogsByTime
 
 [Install]
 WantedBy=default.target
