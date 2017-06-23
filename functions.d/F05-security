@@ -25,8 +25,8 @@ function returnRandomCharacters
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Return a random string of characters of the specified length";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ length ] [ special ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Return a random string of characters of the specified length";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ length ] [ special ]
                  -> The length of the string to generate
                  -> Special characters
                     -> 0: Don't include special characters
@@ -72,7 +72,7 @@ function returnRandomCharacters
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURNED_CHARACTERS -> ${RETURNED_CHARACTERS}";
 
-    writeLogEntry "STDOUT" "${RETURNED_CHARACTERS}";
+    writeLogEntry "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "${RETURNED_CHARACTERS}";
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";

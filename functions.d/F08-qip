@@ -45,43 +45,30 @@ function qipDeleteAddresses
         return ${RETURN_CODE};
     fi
 
-    typeset ADDRESSES="${1}";
+    [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
 
-    case "$([ -f "${ADDRESSES}" ] && echo 0)"
-        0)
-            for ADDRESS in $(<${ADDRESSES})
-            do
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS} ...";
+    for ADDRESS in ${ADDRESSES[@]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS} ...";
 
-                /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS};
-                typeset -i RETURN_CODE=${?};
+        /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS};
+        typeset -i RETURN_CODE=${?};
 
-                [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 
-                if [ ${RETURN_CODE} -ne 0 ]
-                then
-                    writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
-                    writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+        if [ ${RETURN_CODE} -ne 0 ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
 
-                    (( ERROR_COUNT += 1 ));
-                fi
+            (( ERROR_COUNT += 1 ));
+        fi
 
-                [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
-            done
-            ;;
-        *)
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESSES}";
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS}; ...";
-
-            /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESSES};
-            typeset -i ERROR_COUNT=${?};
-
-            [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
-            ;;
-    esac
+        [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+    done
 
     typeset -i RETURN_CODE=${ERROR_COUNT};
 
@@ -456,6 +443,132 @@ function pushDNS
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  =============================================================
+#          NAME:  fixPrinterRecords
+#   DESCRIPTION:  Fixes printer A records removed by printer DDNS updates
+#    PARAMETERS:  Address or path to file containing addresses
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function fixPrinterRecords
+{
+    trap '[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v; set -o noclobber' INT TERM EXIT;
+
+    [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    set +o noclobber;
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset -i RETURN_CODE=0;
+    typeset -i ERROR_COUNT=0;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+
+    if [ ${#} -ne 1 ]
+    then
+        RETURN_CODE=3;
+
+        writeLogEntry "STDERR" "${METHOD_NAME} - Performs a DNS generation against DNS servers to re-populate removed records of printers";
+        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ (address|address list) ]
+                -> A single address to remove, or the full path to a list of address(es) to re-populate.";
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+        [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+        [ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+        return ${RETURN_CODE};
+    fi
+
+    [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
+
+    for ADDRESS in ${ADDRESSES[@]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command qip-getobjectprof -a ${ADDRESS} | grep SubnetAddress | cut -d \"=\" -f 2 ...";
+
+        typset SUBNET=$(qip-getobjectprof -a ${ADDRESS} | grep SubnetAddress | cut -d "=" -f 2);
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "SUBNET -> ${SUBNET}";
+
+        if [ -z "${SUBNET}" ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        typeset DNSSVR=$(qip-getsubnetprof -a ${SUBNET} | grep DNSServers | cut -d "=" -f 2 | awk '{print $1});
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNSSVR -> ${DNSSVR}";
+
+        if [ -z "${DNSSVR}" ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        qip-dnsgen -n "${DNSSVR}";
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        if [ -z "${RET_CODE}" || ${RET_CODE} != 0 ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
+
+            (( ERROR_COUNT += 1 ));
+
+            continue;
+        fi
+
+        [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+        [ ! -z "${DNSSVR}" ] && unset -v DNSSVR;
+        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+        [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+    done
+
+    typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" ] && [ "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${ADDRESSES}" ] && unset -v ADDRESSES;
+    [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;

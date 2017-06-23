@@ -19,15 +19,15 @@
 - link:
   ~/.dotfiles: ''
   ~/.alias: alias
-  ~/.bashrc: bin/profile
-  ~/.bash_profile: bin/profile
+  ~/.bashrc: bin/login
+  ~/.bash_profile: bin/login
+  ~/.bash_logout: bin/logout
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
   ~/.netrc: etc/netrc
   ~/.digrc: etc/digrc
   ~/.kshrc: bin/profile
   ~/.ldaprc: etc/ldaprc
-  ~/.profile: profile
   ~/.screenrc: etc/screenrc
   ~/.vimrc: etc/vimrc
   ~/.functions: functions
