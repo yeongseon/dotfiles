@@ -48,7 +48,7 @@ Host *
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
     User                        = tdpokh2
-    IntitiesOnly              = yes
+    IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     UseRoaming                  = no
- 
+

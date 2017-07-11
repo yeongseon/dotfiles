@@ -20,7 +20,7 @@
 
     <mail-config>
         <mailFrom>kmhuntly@gmail.com</mailFrom>
-        <propertyFile>C:/home/35033355/.etc/eSolutionsCore/config/mail/MailConfig.properties</propertyFile>
+        <propertyFile>${HOME]/.etc/eSolutionsCore/config/mail/MailConfig.properties</propertyFile>
     </mail-config>
 
     <!-- how do we talk to the agent? -->
@@ -29,15 +29,15 @@
     <!-- do we need a proxy for internet access? -->
     <proxy-config>
         <proxyServiceRequired>true</proxyServiceRequired>
-        <proxyServerName>chibcarray.us.hsbc</proxyServerName>
+        <proxyServerName>proxy.caspersbox.com</proxyServerName>
         <proxyServerPort>8080</proxyServerPort>
         <proxyAuthRequired>true</proxyAuthRequired>
         <proxyAuthType>NTLM</proxyAuthType>
-        <proxyAuthDomain>HNAH</proxyAuthDomain>
-        <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
-        <proxyUserId>35033355</proxyUserId>
-        <proxyPwdSalt>BfHYgAfRkqtR74G32LBSOpRo312AvyatD6onfc8RCoUzizk1jN2zgeyuTlvN4l7L</proxyPwdSalt>
-        <proxyPassword>a+BNXGJd/MuOnvM/xxIkJD8ewdoxdd3+Zz132RoRoOqryyQ2Ln8OGr6BIwKTZUlD1fRcOOKRRFGVo0dii1RzB6FrlNAF/8dKLioVqUotoc+navuW/4doetGtH/D8VoZI</proxyPassword>
+        <proxyAuthDomain>CaspersBox</proxyAuthDomain>
+        <proxyServerRealm>CWS</proxyServerRealm>
+        <proxyUserId>kmhuntly</proxyUserId>
+        <proxyPwdSalt />
+        <proxyPassword />
     </proxy-config>
 
     <http-config>
@@ -63,15 +63,15 @@
     <ssh-config>
         <timeout>15</timeout> <!-- connect timeout in seconds (defaults to 10 if not set here) -->
         <sshProperties>/opt/cws/eSolutions/.ssh/config</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
-        <sshAccount>u35033355</sshAccount> <!-- username to use for authentication -->
-        <sshKey>C:/home/35033355/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
-        <sshSalt>JRvVrz4lYK2GmzFRHg7wJe4Ge55eE41793JcbXfR3ZAxiKjpOrHI4RzyIs0viC7VN545eRZzSJnghk0ZRKTMW7AffeZ8cBTf</sshSalt>
-        <sshPassword>EVl1mT4VLEjHeGc9DHewVUN3dyY5uwC9xUHThrpPV6smNwcCYtssJW2cVrhTBiwNIcKP+hyykij0+3rQi+37ogxcFzgRoPbUOApXFEzeQzgMPtuvbZFhwzUAFEGUN6lXfQtv6YYO5GLQYuoLy7oyOKTAWHwkrUQfblZoU5t8IXVV5xlgiwUsQBYXlE8JVm4+p4/J2M2Uxw9AKa3dzHngXx7P8fDH25KQKPcVwhHTX78=</sshPassword>
+        <sshAccount>kmhuntly</sshAccount> <!-- username to use for authentication -->
+        <sshKey>${HOME}/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
+        <sshSalt />
+        <sshPassword />
     </ssh-config>
 
     <ftp-config>
         <timeout>15</timeout> <!-- connect timeout in seconds (defaults to 10 if not set here) -->
-        <ftpAccount>kh05451</ftpAccount> <!-- username to use for authentication -->
+        <ftpAccount>kmhuntly</ftpAccount> <!-- username to use for authentication -->
         <ftpSalt />
         <ftpPassword />
     </ftp-config>

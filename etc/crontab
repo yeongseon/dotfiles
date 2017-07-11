@@ -9,4 +9,3 @@ SHELL=/bin/bash
 ## | | | | |
 ## | | | | |
 ## * * * * *  command to execute
-* * * * * source ${HOME}/.etc/logging.properties && source ${HOME}/.functions.d/F00-logging && rotateLogsByTime && rotateLogsBySize

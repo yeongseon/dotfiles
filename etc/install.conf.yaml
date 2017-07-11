@@ -28,8 +28,8 @@
   ~/.digrc: etc/digrc
   ~/.kshrc: bin/profile
   ~/.ldaprc: etc/ldaprc
+  ~/.profile: bin/profile
   ~/.screenrc: etc/screenrc
-  ~/.vimrc: etc/vimrc
   ~/.functions: functions
   ~/.alias.d: alias.d/
   ~/.bin: bin/
@@ -67,5 +67,6 @@
   - [chmod 755 ~/.dotbot/lib/*, Ensuring file permissions are 755 on ~/.lib/*]
   - [chmod 644 ~/.ssh/config, Ensuring file permissions are 644 on ~/.ssh/config]
   - [chmod 644 ~/.ssh/config/config.d/cws, Ensuring file permissions are 644 on ~/.ssh/config.d/cws]
-  - [cd ~/.ssh && [ -f id_rsa ] || ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH keypair]
+  - [ ! -f ~/.ssh/id_rsa ] && ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH RSA Keypair ]
+  - [ ! -f ~/.ssh/id_dsa ] && ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH DSA Keypair ]
   - [chmod 600 ~/.ssh/id_rsa, Ensuring file permissions are 600 on ~/.ssh/id_rsa]
