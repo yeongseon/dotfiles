@@ -20,12 +20,12 @@ trap 'set +v; set +x' INT TERM EXIT;
 
 typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 
-[[ ! -z "${ENABLE_VERBOSE}" && "${ENABLE_VERBOSE}" = "${_TRUE}" ]] && set -x;
-[[ ! -z "${ENABLE_TRACE}" && "${ENABLE_TRACE}" = "${_TRUE}" ]] && set -v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v;
 
 ## Application constants
 CNAME="$(/usr/bin/env basename "${0}")";
-SCRIPT_ABSOLUTE_PATH="$(/usr/bin/env cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
+SCRIPT_ABSOLUTE_PATH="$(cd "${0%/*}" 2>/dev/null; echo "${PWD}/${0##*/}")";
 SCRIPT_ROOT="$(/usr/bin/env dirname "${SCRIPT_ABSOLUTE_PATH}")";
 METHOD_NAME="${CNAME}#startup";
 
@@ -35,10 +35,12 @@ METHOD_NAME="${CNAME}#startup";
 
 ## default variables
 typeset -i ERROR_COUNT=0;
-typeset BASEDIR="$(/usr/bin/env cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)"
+typeset BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/../ && pwd)"
 typeset CONFIG="${BASEDIR}/etc/install.conf.yaml"
 typeset DOTBOT_DIR="dotbot"
 typeset DOTBOT_BIN="bin/dotbot"
+
+[ ! -d ${HOME}/.log ] && mkdir -pv ${HOME}/.log;
 
 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "BASEDIR -> ${BASEDIR}" >&2;
 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "CONFIG -> ${CONFIG}" >&2;
@@ -358,7 +360,7 @@ function installFiles
         [ ! -z "${DIRECTORY_ENTRY}" ] && unset -v DIRECTORY_ENTRY;
     done
 
-    for LINKED_ENTRY in $(/usr/bin/env cat "${INSTALL_YAML}" | /usr/bin/env grep "~/" | /usr/bin/env egrep -v "mkdir|dotfiles|chmod|cd" | /usr/bin/env sed -e "s/^ *//g;s/ *$//g")
+    for LINKED_ENTRY in $(/usr/bin/env cat "${INSTALL_YAML}" | /usr/bin/env grep "~/" | /usr/bin/env egrep -v "mkdir|dotfiles|chmod|cd|ssh-keygen" | /usr/bin/env sed -e "s/^ *//g;s/ *$//g")
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && printf "%s %s %s %s %s\n" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINKED_ENTRY -> ${LINKED_ENTRY}" >&2;
 
@@ -399,27 +401,27 @@ function installFiles
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Updating permissions..." >&1;
 
-    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type d -exec /usr/bin/env chmod 755;
-    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type f -exec /usr/bin/env chmod 644;
+    cd ~/.dotfiles; /usr/bin/env find . -type d -exec /usr/bin/env chmod 755;
+    cd ~/.dotfiles; /usr/bin/env find . -type f -exec /usr/bin/env chmod 644;
     /usr/bin/env chmod 700 ~/ ~/.ssh;
-    /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/screenrc ~/.dotbot/m2/settings.xml \
-        ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
-    /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
-    /usr/bin/env chmod 644 ~/.dotbot/bin/profile ~/.dotbot/ssh/config;
+    /usr/bin/env chmod 600 ~/.dotfiles/etc/ldaprc ~/.dotfiles/etc/curlrc ~/.dotfiles/etc/screenrc ~/.dotfiles/m2/settings.xml \
+        ~/.dotfiles/etc/SecurityService/config/ServiceConfig.xml ~/.dotfiles/etc/eSolutionsCore/config/ServiceConfig.xml;
+    /usr/bin/env chmod 755 ~/.dotfiles/bin/* ~/.dotfiles/lib/*;
+    /usr/bin/env chmod 644 ~/.dotfiles/bin/profile ~/.dotfiles/ssh/config;
 
-    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type d -exec /usr/bin/env chmod 755 {} \; ;
-    /usr/bin/env cd ~/.dotbot && /usr/bin/env find . -type f -exec /usr/bin/env chmod 644 {} \; ;
-    /usr/bin/env chmod 600 ~/.dotbot/etc/ldaprc ~/.dotbot/etc/curlrc ~/.dotbot/etc/wgetrc ~/.dotbot/etc/netrc \
-        ~/.dotbot/config/subversion/servers ~/.dotbot/config/subversion/servers ~/.dotbot/m2/settings.xml \
-        ~/.dotbot/etc/SecurityService/config/ServiceConfig.xml ~/.dotbot/etc/eSolutionsCore/config/ServiceConfig.xml;
-    /usr/bin/env chmod 755 ~/.dotbot/bin/* ~/.dotbot/lib/*;
+    cd ~/.dotfiles; /usr/bin/env find . -type d -exec /usr/bin/env chmod 755 {} \; ;
+    cd ~/.dotfiles; /usr/bin/env find . -type f -exec /usr/bin/env chmod 644 {} \; ;
+    /usr/bin/env chmod 600 ~/.dotfiles/etc/ldaprc ~/.dotfiles/etc/curlrc ~/.dotfiles/etc/wgetrc ~/.dotfiles/etc/netrc \
+        ~/.dotfiles/config/subversion/servers ~/.dotfiles/config/subversion/servers ~/.dotfiles/m2/settings.xml \
+        ~/.dotfiles/etc/SecurityService/config/ServiceConfig.xml ~/.dotfiles/etc/eSolutionsCore/config/ServiceConfig.xml;
+    /usr/bin/env chmod 755 ~/.dotfiles/bin/* ~/.dotfiles/lib/*;
     /usr/bin/env chmod 644 ~/.ssh/config ~/.ssh/config/config.d/cws;
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypairs..." >&1;
 
-    /usr/bin/env cd ~/.ssh && [ -f id_rsa ] || /usr/bin/env ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa;
-    /usr/bin/env cd ~/.ssh && [ -f id_dsa ] || /usr/bin/env ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa;
-    /usr/bin/env cd ~/.ssh && [ -f id_ecdsa ] || /usr/bin/env ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_ecdsa;
+    cd ~/.ssh; [ ! -f id_rsa ] && /usr/bin/env ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa;
+    cd ~/.ssh; [ ! -f id_dsa ] && /usr/bin/env ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa;
+    cd ~/.ssh; [ ! -f id_ecdsa ] && /usr/bin/env ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_ecdsa;
     /usr/bin/env chmod 600 ~/.ssh/id_rsa ~/.ssh/id_dsa ~/.ssh/id_ecdsa
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypairs created." >&1;
@@ -454,7 +456,7 @@ function installFiles
     return ${RETURN_CODE};
 }
 
-/usr/bin/env cd "${BASEDIR}"
+cd "${BASEDIR}"
 /usr/bin/env git submodule update --init --recursive "${DOTBOT_DIR}" 2>/dev/null;
 typeset -i RET_CODE=${?};
 

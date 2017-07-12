@@ -19,8 +19,6 @@
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-trap '[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] || set +x; [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] set +v; set -o noclobber' INT TERM EXIT;
-
 [ -z "${LOGNAME}" ] && typeset -x LOGNAME="$(/usr/bin/env whoami)";
 
 typeset -x LANG="en_US.UTF-8";
@@ -34,8 +32,7 @@ typeset -x PAGER="/usr/bin/env less";
 typeset -x EDITOR="/usr/bin/env vim";
 typeset -x FCEDIT="/usr/bin/env vim";
 typeset -x VISUAL="/usr/bin/env vim";
-#typeset -x DISPLAY=":0.0";
-typeset -x GZIP="-8v --name";
+typeset -x DISPLAY=":0.0";
 typeset -x _TRUE="true";
 typeset -x _FALSE="false";
 typeset -ix THREAD_TIMEOUT=10;
