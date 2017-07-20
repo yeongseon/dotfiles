@@ -1,0 +1,12 @@
+[Unit]
+Description=Numlockx service - turn NumLock ON (display %i)
+After=xorg.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+Environment=DISPLAY=%i
+ExecStart=/usr/bin/numlockx on
+
+[Install]
+WantedBy=default.target

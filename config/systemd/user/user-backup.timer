@@ -1,0 +1,29 @@
+#==============================================================================
+#
+#          FILE:  user-backup.timer
+#         USAGE:  systemctl --user enable user-backup.timer;
+#                 systemctl --user start user-backup.timer
+#   DESCRIPTION:  Loads the user-backup systemd timer
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[Unit]
+Description=Synchronize profile
+
+[Timer]
+OnBootSec=5min
+OnCalendar=*-*-* 00:00:00 ## run every day
+Unit=user-backup.target
+
+[Install]
+WantedBy=basic.target

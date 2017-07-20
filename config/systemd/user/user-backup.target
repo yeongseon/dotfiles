@@ -1,0 +1,22 @@
+#==============================================================================
+#
+#          FILE:  user-backup.target
+#         USAGE:  systemctl --user enable user-backup.target;
+#                 systemctl --user start user-backup.target
+#   DESCRIPTION:  Loads the user-backup systemd target
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[Unit]
+Description=Back up user profile
+StopWhenUnneeded=yes
