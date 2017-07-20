@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+# use strict;
+use warnings;
+no warnings 'uninitialized';
+#use MIME::Lite;
+
+# Convert network IP to numeric for arithmetic comparison
+sub ip2num ($) { return(unpack("N",pack("C4",split(/\./,$_[0])))); }
+sub num2ip ($) { return(join(".",unpack("C4",pack("N",$_[0])))); }  
+sub ipsort { ip2num($a) <=> ip2num($b); }
+
+my $outfile = "/var/tmp/showtree.txt" ;
+open(BRANCH,">$outfile") or die "Cannot open output $outfile\n" ;
+ 
+# my (%Networks,%netname,%Subnets,%icon,%SubnetOrgs,%subneticon,$outfile);
+# @subneticon{qw(Y N S P)} = qw(subnets subunused subsched subplanned);
+my (%Networks,%netname,$subnet);
+
+# Build a hash of eligible subnets IPs in %netname hash
+my %filters = ("branch"  => ["10.116.8.0","10.147.255.0"]) ;
+my ($key,$value,$filter,%arg);
+$filter = 'branch' ;	
+for (my $net = ip2num($filters{branch}[0]), my $last = ip2num($filters{branch}[1]); $net <= $last; $net += 1024) {
+	$netname{num2ip($net)} = num2ip($net) ;
+	my $ip = num2ip($net) ;
+}
+# foreach $key ( sort keys %netname ) { print "Key=$key Value=$netname{$key}\n" ; }
+ 
+# Execute the CLI as a DOS command using backticks; store result in $list
+$list = system('bash', '-i', '-c', 'qip-getsubnetlst -t corp >/dev/null 2>&1');
+sleep 5 ;
+
+# Push the CLI subnets onto %Networks hash
+@rows = split (/\n/,$list) ;
+foreach $in ( @rows ) {
+	@array   = split (/"/,$in) ;
+	$subname = $array[1] ;
+	$subnet  = $array[3] ;
+	# $usage   = $array[5] ;
+	$netname = $array[7] ;
+	$network = $array[9] ;
+	# $suborg  = $array[11] ;
+	# $ospfarea = $array[13] ;
+	# $netmask = $array[15] ;
+	my $netaddr = ip2num($network);
+	# Bypass networks not in the eligible range
+	next if (($netaddr < ip2num($filters{$filter}[0])) || ($netaddr >= ip2num($filters{$filter}[1])));
+	$subname =~ s/'/\\'/g;
+ 	$netname =~ s/'/\\'/g;
+	push(@{$Networks{$network}},$subnet);
+	# if ($netname) then $netname{$network} = "$network ($netname)" else $netname{$network} = $network 
+  	$netname{$network} = ($netname) ? "$network ($netname)" : "$network";
+  	# $Subnets{$subnet} = ($subname) ? "$subnet ($subname)" : "$subnet";
+  	# $icon{$subnet} = $subneticon{$usage};
+}
+
+# Compare CLI output in %netname against possible networks in %Networks
+# If there is no match, then the network is available
+foreach my $net (sort ipsort keys(%netname)) {
+	if (exists($Networks{$net})) {
+		# print BRANCH "In Use\t$net\n" ;
+	} else {
+		print BRANCH "Free\t$net\n" ;
+	}
+}
+
+close BRANCH;
+

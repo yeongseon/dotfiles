@@ -6,7 +6,7 @@
 #==============================================================================
 function reloadDotfiles
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -121,7 +121,7 @@ function reloadDotfiles
 #==============================================================================
 function setPromptCommand
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -174,7 +174,7 @@ function setPromptCommand
 #==============================================================================
 function logoutUser
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset SHELL_NAME="$(/usr/bin/env ps -ef | /usr/bin/env grep "${PPID}" | /usr/bin/env head -1 | /usr/bin/env awk '{print $NF}' | /usr/bin/env cut -d "-" -f 2)";
 
@@ -296,7 +296,7 @@ function logoutUser
 #==============================================================================
 function setupNewServer
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -312,8 +312,8 @@ function setupNewServer
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Configure access to a newly provisioned host";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Configure access to a newly provisioned host";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ]
                 -> The hostname to provision against
                 -> The username for access to the target server";
 
@@ -373,14 +373,14 @@ function setupNewServer
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${ADD_HOST_NAME} does not appear to be available.";
-            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
 
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
@@ -402,14 +402,14 @@ function setupNewServer
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${ADD_HOST_NAME} does not appear to have SSH host keys available.";
-            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
 
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
@@ -432,14 +432,14 @@ function setupNewServer
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to modify password for account ${USER_NAME} on target host ${TARGET_HOST}";
-            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
 
             [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
             [ ! -z "${ADD_HOST_NAME}" ] && unset -v ADD_HOST_NAME;
@@ -460,7 +460,7 @@ function setupNewServer
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-            typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+            typeset METHOD_NAME="${FUNCNAME[0]}";
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -483,7 +483,7 @@ function setupNewServer
                 RETURN_CODE=1;
 
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to add account profile to the target host.";
-                writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
             fi
         fi
 

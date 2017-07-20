@@ -18,24 +18,23 @@
 
 - link:
   ~/.dotfiles: ''
+  ~/.bin: bin/
   ~/.alias: alias
+  ~/.alias.d: alias.d/
+  ~/.functions: functions
+  ~/.functions.d: functions.d/
+  ~/.profile.d: profile.d/
   ~/.bashrc: bin/profile
   ~/.bash_profile: bin/profile
+  ~/.kshrc: bin/kshrc
+  ~/.profile: bin/kshrc
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
   ~/.netrc: etc/netrc
   ~/.digrc: etc/digrc
-  ~/.kshrc: bin/kshrc
-  ~/.profile: bin/kshrc
   ~/.ldaprc: etc/ldaprc
-  ~/.profile: bin/kshrc
   ~/.screenrc: etc/screenrc
-  ~/.functions: functions
-  ~/.alias.d: alias.d/
-  ~/.bin: bin/
-  ~/.functions.d: functions.d/
   ~/.lib: lib/
-  ~/.profile.d: profile.d/
   ~/.config/git: config/git
   ~/.config/systemd: config/systemd
   ~/.config/tmux: config/tmux
@@ -48,8 +47,7 @@
   ~/.gnupg/gpg.conf: gnupg/gpg.conf
   ~/.gnupg/gpg-agent.conf: gnupg/gpg-agent.conf
   ~/.m2/settings.xml: m2/settings.xml
-  ~/.ssh/config: ssh/config
-  ~/.ssh/config.d/cws: ssh/config.d/cws
+  ~/.ssh/config: ssh/config.d/config
 
 - shell:
   - [cd ~/.dotbot && find . -type d -exec chmod 755, Ensuring file permissions are 755 on all directories]
@@ -66,7 +64,7 @@
   - [chmod 755 ~/.dotbot/bin/*, Ensuring file permissions are 755 on ~/.bin/*]
   - [chmod 755 ~/.dotbot/lib/*, Ensuring file permissions are 755 on ~/.lib/*]
   - [chmod 644 ~/.ssh/config, Ensuring file permissions are 644 on ~/.ssh/config]
-  - [chmod 644 ~/.ssh/config/config.d/cws, Ensuring file permissions are 644 on ~/.ssh/config.d/cws]
+  - [chmod 644 ~/.ssh/config.d/config, Ensuring file permissions are 644 on ~/.ssh/config.d/config]
   - [ ! -f ~/.ssh/id_rsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH RSA Keypair ]
   - [ ! -f ~/.ssh/id_dsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH DSA Keypair ]
   - [ ! -f ~/.ssh/id_ecdsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH ECDSA Keypair ]

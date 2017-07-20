@@ -66,7 +66,7 @@ function usage
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Provided arguments: ${*}";
 
     writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${CNAME} - Watchdog for process execution";
-    writeLogEntry "STDERR" "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] [ -c <command> ] [ -a <command arguments> ]";
+    writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Usage: ${CNAME} [ -t <timeout> ] [ -i <interval> ] [ -d <delay> ] [ -c <command> ] [ -a <command arguments> ]";
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "${METHOD_NAME} -> exit";

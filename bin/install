@@ -76,8 +76,8 @@ function loadFilesToRemote
     then
         typeset -i RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Transfer and apply dotfiles";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ]
+        writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Transfer and apply dotfiles";
+        writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ username ]
                 -> The type of key to retrieve - host or public
                 -> If the type of key is \"keyfile\", this should be the private key. If the type of key is \"host\", this should be the system hostname.
                 -> The known_hosts file to utilize.

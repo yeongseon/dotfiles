@@ -1,9 +1,8 @@
 #==============================================================================
 #
-#          FILE:  unclutter.service
-#         USAGE:  systemctl --user enable unclutter.service;
-#                 systemctl --user start unclutter.service
-#   DESCRIPTION:  Loads the unclutter systemd service
+#          FILE:  kshrc
+#         USAGE:  . kshrc
+#   DESCRIPTION:  Sets application-wide functions
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -17,13 +16,4 @@
 #
 #==============================================================================
 
-[Unit]
-Description=unclutter daemon to hide mouse pointer
-
-[Service]
-Type=simple
-ExecStart=/bin/unclutter -idle 2 -jitter 3
-Restart=always
-
-[Install]
-WantedBy=default.target
+/usr/bin/env bash --login -i

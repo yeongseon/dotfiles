@@ -6,7 +6,7 @@
 #==============================================================================
 function netinfo
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -60,7 +60,7 @@ function netinfo
 #==============================================================================
 function wake
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -76,8 +76,8 @@ function wake
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Wake a provided server with wake-on-LAN enabled";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ address ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Wake a provided server with wake-on-LAN enabled";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ address ]
                  -> The MAC address of the machine to wake";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -127,8 +127,9 @@ function wake
 #==============================================================================
 function validateServerAvailability
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
+    typeset -i ERROR_COUNT=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
@@ -185,19 +186,32 @@ function validateServerAvailability
                 1)
                     case "$(uname)" in
                         [Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
+
                             /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
                             ;;
                         *)
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1";
+
                             /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
                             ;;
                     esac
                     ;;
                 2)
-                    if [ ! -z "$(type nc 2>/dev/null)" ]
+                    if [ ! -z "$(type nc 2>/dev/null | grep -v alias)" ]
                     then
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env nc -w 10 ${VALIDATE_HOSTNAME} ${VALIDATE_PORT} < /dev/null > /dev/null 2>&1";
+
                         /usr/bin/env nc -w 10 ${VALIDATE_HOSTNAME} ${VALIDATE_PORT} < /dev/null > /dev/null 2>&1;
                     else
-                        printf "quit\n" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1 &";
+
+                        /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} > /dev/null 2>&1 &
+                        typeset -i TELNET_PID=${!};
+
+                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TELNET_PID -> ${TELNET_PID}";
+
+                        [ $(/usr/bin/env kill -0 "${TELNET_PID}" > /dev/null 2>&1; echo ${?}) -eq 1 ] && (( ERROR_COUNT += 1 )) || /usr/bin/env kill -9 ${TELNET_PID} > /dev/null 2>&1;
                     fi
                     ;;
             esac
@@ -221,11 +235,15 @@ function validateServerAvailability
                             1)
                                 case "$(uname)" in
                                     [Ss][Oo][Ll][Aa][Rr][Ii][Ss])
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env ping \"${VALIDATE_HOSTNAME}\" 1 > /dev/null 2>&1";
+
                                         /usr/bin/env ping "${VALIDATE_HOSTNAME}" 1 > /dev/null 2>&1;
 
                                         break;
                                         ;;
                                     *)
+                                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1";
+
                                         /usr/bin/env ping -c 1 -q -W ${THREAD_TIMEOUT} "${VALIDATE_HOSTNAME}" > /dev/null 2>&1;
 
                                         break;
@@ -233,7 +251,14 @@ function validateServerAvailability
                                 esac
                                 ;;
                             2)
-                                printf "quit\n" | /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} >/dev/null 2>&1;
+                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXEC: /usr/bin/env telnet \"${VALIDATE_HOSTNAME}\" ${VALIDATE_PORT} >/dev/null 2>&1 &";
+
+                                /usr/bin/env telnet "${VALIDATE_HOSTNAME}" ${VALIDATE_PORT} > /dev/null 2>&1 &
+                                typeset -i TELNET_PID=${!};
+
+                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TELNET_PID -> ${TELNET_PID}";
+
+                                [ $(/usr/bin/env kill -0 "${TELNET_PID}" > /dev/null 2>&1; echo ${?}) -eq 1 ] && (( ERROR_COUNT += 1 )) || /usr/bin/env kill -9 ${TELNET_PID} > /dev/null 2>&1;
 
                                 break;
                                 ;;
@@ -275,7 +300,7 @@ function validateServerAvailability
             ;;
     esac
 
-    RETURN_CODE=${?};
+    [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -288,6 +313,7 @@ function validateServerAvailability
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
 
+    [ ! -z "${TELNET_PID}" ] && unset -v TELNET_PID;
     [ ! -z "${RET_CODE}" ] && typeset -i RET_CODE=0;
     [ ! -z "${ERROR_COUNT}" ] && typeset -i ERROR_COUNT=0;
     [ ! -z "${SEARCH_ENTRY}" ] && unset -v SEARCH_ENTRY;
@@ -306,7 +332,7 @@ function validateServerAvailability
 #==============================================================================
 function sendNotification
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset OPTIND=OPTIONS;
     typeset -i RETURN_CODE=0;
 
@@ -323,8 +349,8 @@ function sendNotification
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Generates notification email to send to a selected audience.";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -h|-? ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generates notification email to send to a selected audience.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -h|-? ]
                 -> The message template to utilize.
                 -> If the content of a file should be applied to the message, the file should be specified here.
                 -> The target audience for the email
@@ -477,8 +503,8 @@ function sendNotification
             *)
                 typeset -i RETURN_CODE=3;
 
-                writeLogEntry "STDERR" "${METHOD_NAME} - Generates notification email to send to a selected audience.";
-                writeLogEntry "STDERR" "Usage: ${THIS_CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -h|-? ]
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generates notification email to send to a selected audience.";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${THIS_CNAME} [ -m <message template> ] [ -f <file> ] [ -t <send to> ] [ -a ] [ -e ] [ -h|-? ]
                         -> The message template to utilize.
                         -> If the content of a file should be applied to the message, the file should be specified here.
                         -> The target audience for the email
@@ -525,7 +551,7 @@ function sendNotification
         typeset -i RETURN_CODE=4;
 
         writeLogEntry "ERROR" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "The mail configuration file was not found. Please create the mail configuration file, or re-locate it to /ftp/ftpnm01/nmondata/.profile/.etc, named \"mail.properties\"";
-        writeLogEntry "STDERR" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "The mail configuration file was not found. Please create the mail configuration file, or re-locate it to /ftp/ftpnm01/nmondata/.profile/.etc, named \"mail.properties\"";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "The mail configuration file was not found. Please create the mail configuration file, or re-locate it to /ftp/ftpnm01/nmondata/.profile/.etc, named \"mail.properties\"";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -597,7 +623,7 @@ function sendNotification
             if [ -z "$(env "${REPLACEMENT_ITEM}" 2>/dev/null)" ]
             then
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to find a suitable environment entry for ${REPLACEMENT_ITEM}.";
-                writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to find a suitable environment entry for ${REPLACEMENT_ITEM}.";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to find a suitable environment entry for ${REPLACEMENT_ITEM}.";
 
                 continue;
             fi
@@ -804,7 +830,7 @@ function sendNotification
 #==============================================================================
 function setProxy
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset RESOURCE_FILE="${HOME}/.etc/resources/${FUNCNAME[0]}";
     typeset -i DEFAULT_PORT=3128;
     typeset -i RETURN_CODE=0;
@@ -1137,7 +1163,7 @@ function setProxy
 #==============================================================================
 function checkSslExpiry
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1153,8 +1179,8 @@ function checkSslExpiry
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Configure access to a newly provisioned host";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ website:port ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Configure access to a newly provisioned host";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ website:port ]
                 -> The website and port number to verify. Format: site name:port number";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1209,7 +1235,7 @@ function checkSslExpiry
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -1318,7 +1344,7 @@ function checkSslExpiry
 #==============================================================================
 function vpnc
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";

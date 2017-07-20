@@ -6,7 +6,7 @@
 #==============================================================================
 function zMoveMailboxes
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -22,8 +22,8 @@ function zMoveMailboxes
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Moves a given number of users to the provided maildrop";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ min size ] [ user count ] [ target maildrop ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Moves a given number of users to the provided maildrop";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ min size ] [ user count ] [ target maildrop ]
                 -> The minimum mailbox size to move
                 -> The number of users to move
                 -> The target maildrop to move to";
@@ -84,7 +84,7 @@ function zMoveMailboxes
 #==============================================================================
 function econsole
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -100,8 +100,8 @@ function econsole
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Presents a command to the eCelerity console for processing";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ command ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Presents a command to the eCelerity console for processing";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ command ]
                 -> The commands to execute";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -146,7 +146,7 @@ function econsole
 #==============================================================================
 function getZimbraGlobalConfig
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -162,8 +162,8 @@ function getZimbraGlobalConfig
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Provides an interface to the Zimbra global configuration stack";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Provides an interface to the Zimbra global configuration stack";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ]
                 -> The hostname to obtain configuration against";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -213,7 +213,7 @@ function getZimbraGlobalConfig
 #==============================================================================
 function getZimbraLocalConfig
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -229,8 +229,8 @@ function getZimbraLocalConfig
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Provides an interface to the Zimbra local configuration stack";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME}";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Provides an interface to the Zimbra local configuration stack";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -274,7 +274,7 @@ function getZimbraLocalConfig
 #==============================================================================
 function getZimbraConfig
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -290,8 +290,8 @@ function getZimbraConfig
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Obtain and review Zimbra configuration";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname | file ] [ configuration type ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Obtain and review Zimbra configuration";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname | file ] [ configuration type ]
             -> The hostname to obtain configuration for.
                 -> If an SSH configuration file is provided, it must be prefaced with ssh: to ensure proper parsing.
             -> The configuration type to load. One of global or local.";
@@ -379,7 +379,7 @@ function getZimbraConfig
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -388,7 +388,7 @@ function getZimbraConfig
             (( ERROR_COUNT += 1 ));
 
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
-            writeLogEntry "STDERR" "Target host does not appear to be available. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available. Cannot continue."
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> continuing";
@@ -414,14 +414,14 @@ function getZimbraConfig
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
         set +o noclobber;
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             (( ERROR_COUNT += 1 ));
 
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available via SSH.";
-            writeLogEntry "STDERR" "Target host does not appear to be available via SSH. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available via SSH. Cannot continue."
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> continuing";

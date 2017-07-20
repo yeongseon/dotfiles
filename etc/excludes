@@ -33,7 +33,6 @@
 .dbshell
 .dbus
 .dmrc
-.dotfiles
 .dropbox*
 .dsh
 .eclipse
@@ -113,43 +112,10 @@
 .xsession*
 .yubico
 
-## exclude everything housed in git
-.digrc
-.screenrc
-.profile.d
-.lib
-.functions.d
-.functions
-.curlrc
-.bin
-.bashrc
-.bash_profile
-.alias.d
-.alias
-.wgetrc
-.kshrc
-.dotfiles
-.etc/eSolutionsCore
-.etc/resources
-.etc/SecurityService
-.etc/mail.properties
-.etc/ansible
-.etc/templates
-.etc/excludes
-.etc/logging.properties
-.config/tmux
-.config/systemd
-.config/git
-.config/subversion
-
 ## exclude certain files from .ssh
 .ssh/known_hosts
 .ssh/id_*
 .ssh/config.d/
-.ssh/aga/
-.ssh/cmh/
-.ssh/dfw/
-.ssh/yyz/
 
 ## exclude password files
 .etc/salt.properties

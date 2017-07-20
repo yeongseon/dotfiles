@@ -6,7 +6,7 @@
 #==============================================================================
 function createBackup
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -22,8 +22,8 @@ function createBackup
     then
         typeset RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Perform an rsync backup of a filesystem";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ source ] [ destination ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Perform an rsync backup of a filesystem";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ source ] [ destination ]
                  -> The target host to obtain the source from
                  -> The username to execute the rsync as.
                  -> The source file/directory to obtain
@@ -73,14 +73,14 @@ function createBackup
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
     then
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to set up ${TARGET_HOST} for user ${USERNAME}. Server does not appear to be available.";
-        writeLogEntry "STDERR" "Failed to configure new host.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to configure new host.";
 
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -108,14 +108,14 @@ function createBackup
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
     then
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to obtain SSH host keys for provided host.";
-        writeLogEntry "STDERR" "Failed to configure new host.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to configure new host.";
 
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -137,7 +137,7 @@ function createBackup
     ${HOME}/.lib/rsync.exp ${USERNAME} ${TARGET_HOST} local ${SOURCE_FS} ${DEST_FS};
     typeset -i RET_CODE=${?};
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -146,7 +146,7 @@ function createBackup
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "rsync operation has failed.";
-        writeLogEntry "STDERR" "Failed to configure new host.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to configure new host.";
 
         [ ! -z "${TARGET_HOST}" ] && unset -v TARGET_HOST;
         [ ! -z "${USERNAME}" ] && unset -v USERNAME;
@@ -195,7 +195,7 @@ function createBackup
 #==============================================================================
 function restoreBackup
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -211,8 +211,8 @@ function restoreBackup
     then
         typeset RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Perform an rsync restore of a filesystem";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ source ] [ destination ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Perform an rsync restore of a filesystem";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ source ] [ destination ]
                  -> The target host to obtain the source from
                  -> The username to execute the rsync as.
                  -> The source file/directory to obtain
@@ -263,7 +263,7 @@ function restoreBackup
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
     then
@@ -301,7 +301,7 @@ function restoreBackup
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
     then
@@ -333,7 +333,7 @@ function restoreBackup
     ${HOME}/.lib/rsync.exp ${USERNAME} ${TARGET_HOST} remote ${SOURCE_FS} ${DEST_FS};
     typeset -i RET_CODE=${?};
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 

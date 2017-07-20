@@ -35,8 +35,9 @@ case $(/usr/bin/env type keychain > /dev/null 2>&1; echo ${?}) in
         /usr/bin/env ssh-agent > ~/.ssh/ssh-agent.env;
         source ~/.ssh/ssh-agent.env;
 
-        /usr/bin/env gpg-agent --daemon;;
+        /usr/bin/env gpg-agent --daemon;
         ;;
+esac
 
 case "$(echo "${SHELL}" | awk -F "/" '{print $NF}')" in
     [Ff][Ii][Ss][Hh])

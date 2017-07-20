@@ -6,7 +6,7 @@
 #==============================================================================
 function setArray
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -22,8 +22,8 @@ function setArray
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Creates or updates an array with the given information";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ array name ] [ new value ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Creates or updates an array with the given information";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ array name ] [ new value ]
                 -> The variable name for the given array
                 -> The value to add to the array";
 
@@ -92,7 +92,7 @@ function setArray
 #==============================================================================
 function contains
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -108,8 +108,8 @@ function contains
     then
         typeset RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Validate that the provided string is contained in the given array";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ array ] [ string ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Validate that the provided string is contained in the given array";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ array ] [ string ]
                  -> The array to search against
                  -> The string to search for";
 
@@ -175,7 +175,7 @@ function contains
 #==============================================================================
 function shred
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -191,8 +191,8 @@ function shred
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Securely erase a provided file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Securely erase a provided file";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                  -> The file to securely erase";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -267,7 +267,7 @@ function shred
 #==============================================================================
 function corename
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -283,8 +283,8 @@ function corename
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Get program that created corefile";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Get program that created corefile";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                  -> The corefile to obtain information for";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -398,7 +398,7 @@ function corename
 #==============================================================================
 function mktemp
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -456,7 +456,7 @@ function mktemp
 #==============================================================================
 function up
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -472,8 +472,8 @@ function up
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Move up a provided number of directories";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ level ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Move up a provided number of directories";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ level ]
                  -> The number of levels to go up";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -556,7 +556,7 @@ function up
 #==============================================================================
 function tree
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -596,7 +596,7 @@ function tree
 #==============================================================================
 function trace
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -642,7 +642,7 @@ function trace
 #==============================================================================
 function spinner
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -658,8 +658,8 @@ function spinner
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Daemonize a given application or script";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ process ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Daemonize a given application or script";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ process ]
                  -> The process name to provide progress for";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -739,7 +739,7 @@ function spinner
 #==============================================================================
 function mkcd
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -755,8 +755,8 @@ function mkcd
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Make a directory and change into it";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ directory ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Make a directory and change into it";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ directory ]
                  -> The name of the directory to create";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -808,7 +808,7 @@ function mkcd
 #==============================================================================
 function killProc
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -824,8 +824,8 @@ function killProc
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Kill a process by name";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ process name ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Kill a process by name";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ process name ]
                  -> The process name to kill";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -844,7 +844,7 @@ function killProc
         return ${RETURN_CODE};
     fi
 
-    [ -z ${1} ] && writeLogEntry "STDERR" "Unable to kill process - no process name provided." && return 1;
+    [ -z ${1} ] && writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to kill process - no process name provided." && return 1;
 
     /usr/bin/env kill -9 $(ps -ef | grep ${1} | grep -v grep | awk '{echo $2}');
 
@@ -872,7 +872,7 @@ function killProc
 #==============================================================================
 function isNaN
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -888,8 +888,8 @@ function isNaN
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Validate that the provided string is numeric";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ string ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Validate that the provided string is numeric";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ string ]
                  -> The string to validate";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -934,7 +934,7 @@ function isNaN
 #==============================================================================
 function daemonize
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -950,8 +950,8 @@ function daemonize
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Daemonize a given application or script";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Daemonize a given application or script";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                  -> The application/script to daemonize";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1026,7 +1026,7 @@ function daemonize
 #==============================================================================
 function findpid
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1042,8 +1042,8 @@ function findpid
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Finds the PID for a given process name";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ process ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Finds the PID for a given process name";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ process ]
             -> The process to search for. Provide as much as possible for exact matching.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1099,7 +1099,7 @@ function findpid
 #==============================================================================
 function mktar
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1115,8 +1115,8 @@ function mktar
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Make a tar archive from a given directory";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ directory ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Make a tar archive from a given directory";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ directory ]
                  -> The directory to create a tar archive from";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1223,7 +1223,7 @@ function mktar
 #==============================================================================
 function lsz
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1239,8 +1239,8 @@ function lsz
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - List contents of an archived file, such as a zip or jar";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - List contents of an archived file, such as a zip or jar";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
             -> The full path to the compressed file to view";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1274,8 +1274,8 @@ function lsz
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - List contents of an archived file, such as a zip or jar";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - List contents of an archived file, such as a zip or jar";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                 -> The full path to the compressed file to view";
 
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1321,7 +1321,7 @@ function lsz
 #==============================================================================
 function extract
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1337,8 +1337,8 @@ function extract
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Uncompress a provided file, such as a zip or jar";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ] [ (target) ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Uncompress a provided file, such as a zip or jar";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ] [ (target) ]
             -> The full path to the file to uncompress";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1374,8 +1374,8 @@ function extract
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "extract - Uncompress a provided file, such as a zip or jar";
-            writeLogEntry "STDERR" "Usage: extract [ file ] [ (target) ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "extract - Uncompress a provided file, such as a zip or jar";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: extract [ file ] [ (target) ]
                      -> The full path to the file to uncompress
                      -> The target to extract to (optional)";
 
@@ -1426,7 +1426,7 @@ function extract
 #==============================================================================
 function teeOutput
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1442,8 +1442,8 @@ function teeOutput
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Tee the output of an executing command";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ command ] [ output file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Tee the output of an executing command";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ command ] [ output file ]
                 -> The command to execute and watch
                 -> The file to write to";
 
@@ -1488,8 +1488,8 @@ function teeOutput
             *)
                 RETURN_CODE=3;
 
-                writeLogEntry "STDERR" "${METHOD_NAME} - Tee the output of an executing command";
-                writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ command ] [ output file ]
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Tee the output of an executing command";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ command ] [ output file ]
                         -> The command to execute and watch
                         -> The file to write to";
 
@@ -1550,7 +1550,7 @@ function teeOutput
 #==============================================================================
 function cronCommand
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1566,8 +1566,8 @@ function cronCommand
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Execute a command on a schedule without using cron/at";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ period ] [ command ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Execute a command on a schedule without using cron/at";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ period ] [ command ]
                  -> The period to run the command, e.g. every 10 minutes
                  -> The command to execute";
 
@@ -1624,7 +1624,7 @@ function cronCommand
 #==============================================================================
 function getFileStat
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1640,8 +1640,8 @@ function getFileStat
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Obtain statistics for a given file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Obtain statistics for a given file";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                  -> The full path to the file to obtain statistics for";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1712,7 +1712,7 @@ function getFileStat
 #==============================================================================
 function listProcessForPort
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1728,8 +1728,8 @@ function listProcessForPort
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Find the process using a particular port";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ <port number> ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Find the process using a particular port";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ <port number> ]
                  -> The port number to locate";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -1804,7 +1804,7 @@ function listProcessForPort
 #==============================================================================
 function returnEpochTime
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1820,8 +1820,8 @@ function returnEpochTime
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Generates and returns the Unix epoch for a provided date (or date range)";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ <date to convert> ] [ <future date> ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generates and returns the Unix epoch for a provided date (or date range)";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ <date to convert> ] [ <future date> ]
                  -> Required arguments: The date to convert in form YYYY MM DD, quoted. (if provided, MUST be qouted)
                  -> Optional arguments: A number of days to calculate a future epoch, for example, 45.";
 
@@ -1899,8 +1899,8 @@ function returnEpochTime
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Generates and returns the Unix epoch for a provided date (or date range)";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ <date to convert> ] [ <future date> ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generates and returns the Unix epoch for a provided date (or date range)";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ <date to convert> ] [ <future date> ]
                      -> Required arguments: The date to convert in form YYYY MM DD, quoted. (if provided, MUST be qouted)
                      -> Optional arguments: A number of days to calculate a future epoch, for example, 45.";
 
@@ -1958,7 +1958,7 @@ function returnEpochTime
 #==============================================================================
 function lockProcess
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i COUNTER=0;
     typeset -i RETURN_CODE=0;
 
@@ -1975,8 +1975,8 @@ function lockProcess
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Generates and applies a lock for a provided process";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ <lock file> ] [ <process> ] [ <wait time> ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generates and applies a lock for a provided process";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ <lock file> ] [ <process> ] [ <wait time> ]
                 -> The lock file to generate and utilize
                 -> The process to lock
                 -> How long to wait to acquire a lock, after this threshold exceeds the request fails.\n";

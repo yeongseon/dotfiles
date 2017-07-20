@@ -6,7 +6,7 @@
 #==============================================================================
 function returnRandomCharacters
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -22,8 +22,8 @@ function returnRandomCharacters
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Return a random string of characters of the specified length";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ length ] [ special ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Return a random string of characters of the specified length";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ length ] [ special ]
                  -> The length of the string to generate
                  -> Special characters
                     -> 0: Don't include special characters
@@ -97,7 +97,7 @@ function returnRandomCharacters
 #==============================================================================
 function stringCrypt
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -119,8 +119,8 @@ function stringCrypt
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                  -> The desired method of operation: one of encrypt or decrypt
                  -> The string to operate against
                  -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -168,8 +168,8 @@ function stringCrypt
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                      -> The desired method of operation: one of encrypt or decrypt
                      -> The string to operate against
                      -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -265,8 +265,8 @@ function stringCrypt
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                      -> The desired method of operation: one of encrypt or decrypt
                      -> The string to operate against
                      -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -331,7 +331,7 @@ function stringCrypt
 #==============================================================================
 function fileCrypt
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -353,8 +353,8 @@ function fileCrypt
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                  -> The desired method of operation: one of encrypt or decrypt
                  -> The string to operate against
                  -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -402,8 +402,8 @@ function fileCrypt
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ filename ] \( recipients \)
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ filename ] \( recipients \)
                      -> The desired method of operation: one of encrypt or decrypt
                      -> The filename to operate against
                      -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -500,8 +500,8 @@ function fileCrypt
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Encrypt/Decrypt a provided string";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ method ] [ string ] \( recipients \)
                      -> The desired method of operation: one of encrypt or decrypt
                      -> The string to operate against
                      -> A list of recipients \(only valid if using PGP/GPG\)";
@@ -566,7 +566,7 @@ function fileCrypt
 #==============================================================================
 function signFile
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -582,8 +582,8 @@ function signFile
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Sign a provided file using GPG";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Sign a provided file using GPG";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ]
                  -> The file to sign using GPG";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -604,7 +604,7 @@ function signFile
     if [ ${#} -eq 0 ]
     then
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "A filename MUST be provided.";
-        writeLogEntry "STDERR" "A filename MUST be provided.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "A filename MUST be provided.";
 
         return 1;
     fi
@@ -633,7 +633,7 @@ function signFile
 #==============================================================================
 function generateEntropyFile
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -746,7 +746,7 @@ function generateEntropyFile
 #==============================================================================
 function modifyAccountPassword
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
 
@@ -763,8 +763,8 @@ function modifyAccountPassword
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Change user account password on a given system"
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Change user account password on a given system"
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ]
                 -> The hostname to provision against
                     -> This can be formatted as either a file with multiple hosts on each line or a single hostname
                 -> The user name to modify. If no username is provided, the currently logged in user is utilized.";
@@ -829,7 +829,7 @@ function modifyAccountPassword
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-            typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+            typeset METHOD_NAME="${FUNCNAME[0]}";
 
             if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
             then
@@ -875,7 +875,7 @@ function modifyAccountPassword
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-            typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+            typeset METHOD_NAME="${FUNCNAME[0]}";
 
             if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
             then
@@ -1104,14 +1104,14 @@ function modifyAccountPassword
                 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
                 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-                typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+                typeset METHOD_NAME="${FUNCNAME[0]}";
                 ;;
         esac
 
         wait;
 
         typeset -i RET_CODE=${?};
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
@@ -1329,7 +1329,7 @@ function modifyAccountPassword
 #==============================================================================
 function chmod1
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1345,8 +1345,8 @@ function chmod1
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Change the permissions on a target file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ permissions ] [ file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Change the permissions on a target file";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ permissions ] [ file ]
                  -> The permissions to apply
                  -> The file to apply permissions to";
 
@@ -1446,7 +1446,7 @@ function chmod1
 #==============================================================================
 function passwordRepository
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1462,8 +1462,8 @@ function passwordRepository
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Store a password in a secured file";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Store a password in a secured file";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
             -> Option: one of 'encrypt' or 'decrypt'
                 -> If option is 'encrypt':
                     -> entry: The name of the entry to add
@@ -1570,8 +1570,8 @@ function passwordRepository
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Store a password in a secured file";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Store a password in a secured file";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ option ] [ entry ] [ username ] [ password ]
                 -> Option: one of 'encrypt' or 'decrypt'
                     -> If option is 'encrypt':
                         -> entry: The name of the entry to add
@@ -1647,7 +1647,7 @@ function passwordRepository
 #==============================================================================
 function generateKeyPair
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1663,8 +1663,8 @@ function generateKeyPair
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Generate an RSA public/private keypair via OpenSSL";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ file ] [ keysize ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Generate an RSA public/private keypair via OpenSSL";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ file ] [ keysize ]
             -> The filename in which to save the generated keypair
             -> The size of the keypair to generate.
                 -> If not specified, 4096 is utilized.

@@ -8,7 +8,7 @@ function buildSshConfig
 {
     [ -z "$(type mktemp 2>/dev/null)" ] && . ${HOME}/.functions.d/F04-misc;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -24,8 +24,8 @@ function buildSshConfig
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Change user account password on a given system"
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ config file ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Change user account password on a given system"
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ config file ]
                 -> The hostname to provision against
                     -> This can be formatted as either a file with multiple hosts on each line or a single hostname
                 -> The user name to modify. If no username is provided, the currently logged in user is utilized.
@@ -218,7 +218,7 @@ function buildSshConfig
 #==============================================================================
 function changeSshPassphrase
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -234,8 +234,8 @@ function changeSshPassphrase
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Change the passphrase for a provided SSH user key";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ keyfile ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Change the passphrase for a provided SSH user key";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ keyfile ]
                  -> The private keyfile to obtain a public key for";
 
         [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
@@ -278,7 +278,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the provided file. Please try again.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
 
@@ -308,7 +308,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the current passphrase. Please try again.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -338,7 +338,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No new passphrase was generated. Please try again.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -371,7 +371,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create a backup copy of the provided SSH key.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -406,7 +406,7 @@ function changeSshPassphrase
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
     then
@@ -415,7 +415,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -448,7 +448,7 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -487,8 +487,8 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file. Please update manually:";
-        writeLogEntry "STDERR" "KEYFILE: ${FILE_NAME}, NEW PASSPHRASE: ${NEW_PASSPHRASE}";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file. Please update manually:";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "KEYFILE: ${FILE_NAME}, NEW PASSPHRASE: ${NEW_PASSPHRASE}";
     fi
 
     mv "${TEMPFILE}" "${HOME}/.etc/passphrase";
@@ -498,8 +498,8 @@ function changeSshPassphrase
         RETURN_CODE=1;
 
         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file.";
-        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file. Please update manually:";
-        writeLogEntry "STDERR" "KEYFILE: ${FILE_NAME}, NEW PASSPHRASE: ${NEW_PASSPHRASE}";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to change the SSH key passphrase configuration file. Please update manually:";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "KEYFILE: ${FILE_NAME}, NEW PASSPHRASE: ${NEW_PASSPHRASE}";
     fi
 
     [ ! -z "${TEMPFILE}" -a -f "${TEMPFILE}" ] && rm -rf "${TEMPFILE}";
@@ -535,7 +535,7 @@ function getSshKeys
 {
     [ -z "$(type mktemp 2>/dev/null)" ] && . ${HOME}/.functions.d/F03-misc;
 
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -551,8 +551,8 @@ function getSshKeys
     then
         typeset -i RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Get the public key for a provided private key";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ host | pub ] [ keyfile | hostname ] [ known_hosts file ] [ <replace keys> ] [ <hash host keys> ] [ <show keys> ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Get the public key for a provided private key";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ host | pub ] [ keyfile | hostname ] [ known_hosts file ] [ <replace keys> ] [ <hash host keys> ] [ <show keys> ]
                 -> The type of key to retrieve - host or public
                 -> If the type of key is \"keyfile\", this should be the private key. If the type of key is \"host\", this should be the system hostname.
                 -> The known_hosts file to utilize.
@@ -634,7 +634,7 @@ function getSshKeys
                 RETURN_CODE=1;
 
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Unable to read the provided file. Please try again.";
-                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -782,7 +782,7 @@ function getSshKeys
                 RETURN_CODE=1;
 
                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No host entries were provided. Please try again.";
-                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute the requested command. Please try again.";
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -862,14 +862,14 @@ function getSshKeys
                 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
                 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-                typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+                typeset METHOD_NAME="${FUNCNAME[0]}";
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
                 if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
                 then
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
-                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
 
                     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
                     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
@@ -894,7 +894,7 @@ function getSshKeys
                 if [ -z "${SSH_HOST_ENTRY}" ]
                 then
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "No SSH entry was found for ${MGMT_FULL_HOST_NAME}. Skipping.";
-                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "No SSH entry was found for ${MGMT_FULL_HOST_NAME}. Skipping.";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "No SSH entry was found for ${MGMT_FULL_HOST_NAME}. Skipping.";
 
                     typeset -x IFS="${CURR_IFS}";
 
@@ -976,7 +976,7 @@ function getSshKeys
                                         if [ "${REPLACED_KEY}" != "${HOST_RSA_KEY}" ]
                                         then
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
-                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
+                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
                                             [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                             [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -989,7 +989,7 @@ function getSshKeys
                                         fi
                                     else
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
-                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
+                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
                                         [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                         [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1016,7 +1016,7 @@ function getSshKeys
                                         if [ "${REPLACED_KEY}" != "${HOST_DSA_KEY}" ]
                                         then
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
-                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
+                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
                                             [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                             [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1029,7 +1029,7 @@ function getSshKeys
                                         fi
                                     else
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
-                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
+                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
                                         [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                         [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1056,7 +1056,7 @@ function getSshKeys
                                         if [ "${REPLACED_KEY}" != "${HOST_ECDSA_KEY}" ]
                                         then
                                             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
-                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
+                                            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the ${KEYTYPE} host key for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
                                             [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                             [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1069,7 +1069,7 @@ function getSshKeys
                                         fi
                                     else
                                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
-                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
+                                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Host key located for ${KEY_HOSTNAME} with key type ${KEYTYPE} is invalid, but REPLACE_INVALID_KEYS is ${REPLACE_INVALID_KEYS}. No action taken!";
 
                                         [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                         [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1092,7 +1092,7 @@ function getSshKeys
                             if [ ${TEMP_WRITE_CKSUM} -eq ${TEMP_HOSTS_CKSUM} ]
                             then
                                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
-                                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
+                                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
                                 [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                 [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1117,7 +1117,7 @@ function getSshKeys
                             if [ ${TEMP_WRITE_CKSUM} -ne ${TEMP_HOSTS_CKSUM} ]
                             then
                                 writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
-                                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
+                                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "An error occurred replacing the host keys for host ${KEY_HOSTNAME} from the ${KNOWN_HOSTS} file. SSH connections may continue, but may not work properly.";
 
                                 [ ! -z "${REPLACED_KEY}" ] && unset -v REPLACED_KEY;
                                 [ ! -z "${CURRENT_KEY}" ] && unset -v CURRENT_KEY;
@@ -1175,7 +1175,7 @@ function getSshKeys
                                     ;;
                                 *)
                                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "Failed to remove extra ${KEYTYPE} keys from the ${KNOWN_HOSTS} for entry ${ENTRY} file. Please remove manually.";
-                                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "Failed to remove extra ${KEYTYPE} keys from the ${KNOWN_HOSTS} for entry ${ENTRY} file. Please remove manually.";
+                                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "Failed to remove extra ${KEYTYPE} keys from the ${KNOWN_HOSTS} for entry ${ENTRY} file. Please remove manually.";
 
                                     [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
                                     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
@@ -1250,7 +1250,7 @@ function getSshKeys
                     typeset -i RETURN_CODE=1;
 
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create backup copy of ${KNOWN_HOSTS_FILE}. Cannot continue.";
-                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create backup copy of ${KNOWN_HOSTS_FILE}. Cannot continue.";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to create backup copy of ${KNOWN_HOSTS_FILE}. Cannot continue.";
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -1326,7 +1326,7 @@ function getSshKeys
                     typeset -i RETURN_CODE=1;
 
                     writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to copy new hosts file to ${KNOWN_HOSTS_FILE}. Cannot continue.";
-                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to copy new hosts file to ${KNOWN_HOSTS_FILE}. Cannot continue.";
+                    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to copy new hosts file to ${KNOWN_HOSTS_FILE}. Cannot continue.";
 
                     ## undo it
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "RUN COMMAND -> /usr/bin/env cp ${ARCHIVE_HOSTS_FILE} ${KNOWN_HOSTS_FILE}";
@@ -1345,7 +1345,7 @@ function getSshKeys
                     if [ ${KNOWN_HOSTS_CKSUM} -ne ${ARCHIVE_HOSTS_CKSUM} ]
                     then
                         writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Backout processing FAILED. Please process manually.";
-                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Backout processing FAILED. Please process manually.";
+                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Backout processing FAILED. Please process manually.";
                     fi
 
                     [ ! -z "${TEMP_DELETE}" -a ! -z "${TEMP_DELETE}" ] && rm -f "${TEMP_DELETE}";
@@ -1403,7 +1403,7 @@ function getSshKeys
 
             if [ ! -z "${ERROR_COUNT}" -a ${ERROR_COUNT} -ne 0 ]
             then
-                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "One or more hosts failed during execution. Please review logs to determine cause of failure.";
+                writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "One or more hosts failed during execution. Please review logs to determine cause of failure.";
 
                 typeset -i RETURN_CODE=1;
             fi
@@ -1411,8 +1411,8 @@ function getSshKeys
         *)
             typeset -i RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Get the public key for a provided private key";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ host | pub ] [ keyfile ] [ <hash host names> ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Get the public key for a provided private key";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ host | pub ] [ keyfile ] [ <hash host names> ]
                     -> The type of key to retrieve - host or public
                     -> The private keyfile to obtain a public key for
                     -> Hash host names. 0 for no, 1 for yes.
@@ -1537,7 +1537,7 @@ function getSshKeys
 #==============================================================================
 function fssh
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
     typeset USERNAME="${LOGNAME}";
@@ -1562,8 +1562,8 @@ function fssh
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ ssh config file ] [ (command) ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Log an SSH session";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ ssh config file ] [ (command) ]
             -> The hostname to ssh to
             -> The username for access to the target server
             -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config
@@ -1650,8 +1650,8 @@ function fssh
         *)
             RETURN_CODE=3;
 
-            writeLogEntry "STDERR" "${METHOD_NAME} - Log an SSH session";
-            writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ ssh config file ] [ (command) ]
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Log an SSH session";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ hostname ] [ username ] [ ssh config file ] [ (command) ]
                 -> The hostname to ssh to
                 -> The username for access to the target server
                 -> The SSH configuration file to utilize, if necessary. Defaults to ~/.ssh/config
@@ -1702,14 +1702,14 @@ function fssh
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
-            writeLogEntry "STDERR" "Target host does not appear to be available. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available. Cannot continue."
 
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
@@ -1730,12 +1730,12 @@ function fssh
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to have SSH host keys available.";
 
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
             [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
@@ -1803,7 +1803,7 @@ function fssh
 #==============================================================================
 function fscp
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -1819,8 +1819,8 @@ function fscp
     then
         typeset RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ type ] [ source ] [ target ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Perform an SCP to a target host";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ username ] [ hostname ] [ type ] [ source ] [ target ]
                     -> The username to perform the SCP against
                     -> The target host to perform the SCP against
                     -> The type of transfer to perform
@@ -1879,14 +1879,14 @@ function fscp
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             RETURN_CODE=1;
 
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Target host does not appear to be available.";
-            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
 
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1917,14 +1917,14 @@ function fscp
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-        typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+        typeset METHOD_NAME="${FUNCNAME[0]}";
 
         if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
             RETURN_CODE=1;
 
             writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain SSH host keys for target.";
-            writeLogEntry "STDERR" "Failed to execute command. Cannot continue."
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to execute command. Cannot continue."
 
             [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
             [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
@@ -1958,8 +1958,8 @@ function fscp
                     *)
                         typeset RETURN_CODE=3;
 
-                        writeLogEntry "STDERR" "${METHOD_NAME} - Perform an SCP to a target host";
-                        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
+                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Perform an SCP to a target host";
+                        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ type ] [ hostname ] [ username ] [ source ] [ target ]
                                 -> The type of transfer to perform
                                     -> local: A typeset copy to the remote system
                                     -> remote: A remote copy to the typeset system

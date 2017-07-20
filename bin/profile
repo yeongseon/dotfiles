@@ -1,0 +1,178 @@
+#==============================================================================
+#
+#          FILE:  bash_profile
+#         USAGE:  . bash_profile
+#   DESCRIPTION:  Sets application-wide functions
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <kmhuntly@gmail.com>
+#       COMPANY:  ---
+#       VERSION:  1.0
+#       CREATED:  ---
+#      REVISION:  ---
+#
+#==============================================================================
+
+[[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
+
+[ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
+
+typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+typeset -i RETURN_CODE=0;
+
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
+
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
+
+## load profile
+for PROFILE in ${HOME}/.profile.d/*
+do
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE -> ${PROFILE}";
+
+    [ -z "${PROFILE}" ] && continue;
+    [ -d "${PROFILE}" ] && continue;
+
+    case "${ENABLE_VERBOSE}" in
+        "${_TRUE}")
+            [ -f ${PROFILE} ] && . ${PROFILE} 2>&1 | tee -a .log/load-profile.log;
+
+            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+            ;;
+        *)
+            . ${PROFILE} >| /dev/null 2>&1;
+            ;;
+    esac
+
+    [ ! -z "${PROFILE}" ] && unset -v PROFILE;
+    [ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
+done
+
+[ ! -z "${PROFILE}" ] && unset -v PROFILE;
+[ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
+
+if [ -d ${HOME}/.profile.d/profiles/ ]
+then
+    for PROFILE in ${HOME}/.profile.d/profiles/*
+    do
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE -> ${PROFILE}";
+
+        [ -z "${PROFILE}" ] && continue;
+
+        case "${ENABLE_VERBOSE}" in
+            "${_TRUE}")
+                [ -f ${PROFILE} ] && . ${PROFILE} 2>&1 | tee -a .log/load-profile.log;
+
+                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+                ;;
+            *)
+                . ${PROFILE} >| /dev/null 2>&1;
+                ;;
+        esac
+
+        [ ! -z "${PROFILE}" ] && unset -v PROFILE;
+        [ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
+    done
+fi
+
+[ ! -z "${INPUT}" ] && unset -v INPUT;
+[ ! -z "${PROFILE}" ] && unset -v PROFILE;
+[ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
+
+case "${ENABLE_VERBOSE}" in
+    "${_TRUE}")
+        [ -f ${HOME}/.alias ] && . ${HOME}/.alias 2>&1 | tee -a .log/load-aliases.log;
+
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+        [ -f ${HOME}/.functions ] && . ${HOME}/.functions 2>&1 | tee -a .log/load-functions.log;
+
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+        ;;
+    *)
+        [ -f ${HOME}/.alias ] && . ${HOME}/.alias >| /dev/null 2>&1;
+        [ -f ${HOME}/.functions ] && . ${HOME}/.functions >| /dev/null 2>&1;
+        ;;
+esac
+
+if [ ! -f /etc/profile.d/cws.sh ]
+then
+    ## system information
+    typeset HOST_SYSTEM_NAME="$(/usr/bin/env hostname -f | /usr/bin/env tr '[A-Z]' '[a-z]')";
+    typeset HOST_IP_ADDRESS="$(/usr/bin/env ip addr show 2>/dev/null | /usr/bin/env egrep inet | /usr/bin/env egrep -v "127.0.0.1/8" | /usr/bin/env head -1 | /usr/bin/env awk '{print $2}')";
+    typeset HOST_KERNEL_VERSION="$(/usr/bin/env uname -r)";
+    typeset -i HOST_CPU_COUNT=$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env egrep "model name" | /usr/bin/env wc -l);
+    typeset HOST_CPU_INFO="$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env egrep "model name" | /usr/bin/env uniq | /usr/bin/env cut -d ":" -f 2 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g' | /usr/bin/env tr -s " ")";
+    typeset HOST_MEMORY_SIZE="$(echo $(( $(( $(/usr/bin/env egrep MemTotal /proc/meminfo | /usr/bin/env awk '{print $2}') / 1024 ^ 2 )) / 2 )) ) MB";
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_SYSTEM_NAME -> ${HOST_SYSTEM_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_IP_ADDRESS -> ${HOST_IP_ADDRESS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_KERNEL_VERSION -> ${HOST_KERNEL_VERSION}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_CPU_COUNT -> ${HOST_CPU_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_CPU_INFO -> ${HOST_CPU_INFO}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
+
+    ## user information
+    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ | /usr/bin/env awk '{print $1}');
+    typeset -i SYSTEM_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env wc -l | /usr/bin/env awk '{print $1}');
+    typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env egrep "${LOGNAME}" | /usr/bin/env wc -l);
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_DISK_USAGE -> ${USER_DISK_USAGE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_PROCESS_COUNT -> ${SYSTEM_PROCESS_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_PROCESS_COUNT -> ${USER_PROCESS_COUNT}";
+
+    clear;
+
+    printf "\n";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "%40s\n" "Welcome to ${HOST_SYSTEM_NAME}";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "%s\n" "+---------------------- System Information -------------------------+";
+    printf "%-14s : %-10s\n" "+ IP Address" "${HOST_IP_ADDRESS}";
+    printf "%-14s : %-10s\n" "+ Kernel version" "$(uname -r)";
+    printf "%-14s : %-10s\n" "+ CPU" "${HOST_CPU_COUNT} / ${HOST_CPU_INFO}";
+    printf "%-14s : %-10s\n" "+ Memory" "${HOST_MEMORY_SIZE}";
+    printf "%s\n" "+-------------------------------------------------------------------+";
+    printf "\n";
+    printf "%s\n" "+----------------------- User Information --------------------------+";
+    printf "%-14s : %-10s\n" "+ Username" "${LOGNAME}";
+    printf "%-14s : %-10s %sMB %s\n" "+ Disk Usage" "You're currently using" "${USER_DISK_USAGE}" "in ${HOME}";
+    printf "%-14s : %s of which %s are yours\n" "+ Processes" "${SYSTEM_PROCESS_COUNT}" "${USER_PROCESS_COUNT}";
+    printf "+-------------------------------------------------------------------+";
+    printf "\n";
+
+    [ ! -z "${HOST_SYSTEM_NAME}" ] && unset -v HOST_SYSTEM_NAME;
+    [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
+    [ ! -z "${HOST_IP_ADDRESS}" ] && unset -v HOST_IP_ADDRESS;
+    [ ! -z "${HOST_KERNEL_VERSION}" ] && unset -v HOST_KERNEL_VERSION;
+    [ ! -z "${HOST_CPU_COUNT}" ] && unset -v HOST_CPU_COUNT;
+    [ ! -z "${HOST_CPU_INFO}" ] && unset -v HOST_CPU_INFO;
+    [ ! -z "${HOST_MEMORY_SIZE}" ] && unset -v HOST_MEMORY_SIZE;
+    [ ! -z "${USER_DISK_USAGE}" ] && unset -v USER_DISK_USAGE;
+    [ ! -z "${SYSTEM_PROCESS_COUNT}" ] && unset -v SYSTEM_PROCESS_COUNT;
+    [ ! -z "${USER_PROCESS_COUNT}" ] && unset -v USER_PROCESS_COUNT;
+fi
+
+## trap logout
+trap 'source ${HOME}/.dotfiles/functions.d/F01-userProfile; logoutUser; exit' 0;
+
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";

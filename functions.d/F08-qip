@@ -6,7 +6,7 @@
 #==============================================================================
 function qipDeleteAddresses
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
 
@@ -43,7 +43,7 @@ function qipDeleteAddresses
     fi
 
     [ -f "${1}" ] && setArray ADDRESSES $(<${1}) || typeset ADDRESSES="${1}";
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
 
@@ -97,7 +97,7 @@ function qipDeleteAddresses
 #==============================================================================
 function addQIPObjectRecords
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset ADD_RECORD_HOME="${HOME}/Changes/RecordAdds";
 
@@ -213,7 +213,7 @@ function addQIPObjectRecords
 #==============================================================================
 function addQIPObjects
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset ADD_RECORD_HOME="${HOME}/Changes/ObjectAdds";
 
@@ -350,7 +350,7 @@ function addQIPObjects
 #==============================================================================
 function pushDNS
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i RET_CODE=0;
     typeset -i ERROR_COUNT=0;
@@ -400,7 +400,7 @@ function pushDNS
         if [ ! -z "${RET_CODE}" -a ${RET_CODE} -ne 0 ]
         then
             writeLogEntry "ERROR" "DNS push FAILED. Please review QIP logs.";
-            writeLogEntry "STDERR" "DNS push FAILED. Please review QIP logs.";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "DNS push FAILED. Please review QIP logs.";
 
             (( ERROR_COUNT += 1 ));
         fi
@@ -447,7 +447,7 @@ function pushDNS
 #==============================================================================
 function fixPrinterRecords
 {
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
 
@@ -484,7 +484,7 @@ function fixPrinterRecords
     fi
 
     [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
-    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
+    typeset METHOD_NAME="${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
 
@@ -500,21 +500,21 @@ function fixPrinterRecords
         if [ -z "${SUBNET}" ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
 
             (( ERROR_COUNT += 1 ));
 
             continue;
         fi
 
-        typeset DNSSVR=$(qip-getsubnetprof -a ${SUBNET} | grep DNSServers | cut -d "=" -f 2 | awk '{print $1});
+        typeset DNSSVR=$(qip-getsubnetprof -a ${SUBNET} | grep DNSServers | cut -d "=" -f 2 | awk '{print $1}');
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "DNSSVR -> ${DNSSVR}";
 
         if [ -z "${DNSSVR}" ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
 
             (( ERROR_COUNT += 1 ));
 
@@ -529,7 +529,7 @@ function fixPrinterRecords
         if [ -z "${RET_CODE}" || ${RET_CODE} != 0 ]
         then
             writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
 
             (( ERROR_COUNT += 1 ));
 

@@ -16,12 +16,6 @@
 #
 #==============================================================================
 
-Host github.com
-    HostName                    = github.com
-    User                        = git
-    IdentitiesOnly              = yes
-    IdentityFile                = ~/.ssh/id_cws-khuntly
-
 Host *
     AddressFamily               = inet
     CheckHostIP                 = yes
@@ -47,7 +41,7 @@ Host *
     TCPKeepAlive                = yes
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
-    User                        = tdpokh2
+    User                        = khuntly
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     UseRoaming                  = no
