@@ -23,8 +23,8 @@ function qipDeleteAddresses
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Deletes a provided list of addresses";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ (address|address list) ]
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Deletes a provided list of addresses";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ (address|address list) ]
                 -> A single address to remove, or the full path to a list of addresses to remove.";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
@@ -42,24 +42,25 @@ function qipDeleteAddresses
         return ${RETURN_CODE};
     fi
 
-    [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
+    [ -f "${1}" ] && setArray ADDRESSES $(<${1}) || typeset ADDRESSES="${1}";
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
 
     for ADDRESS in ${ADDRESSES[@]}
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS} ...";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Executing command ${QIPHOME}/cli/qip-cli -c v4address,delete -a ${ADDRESS} ...";
 
-        /opt/qip/cli/qip-cli -c v4address,delete -a ${ADDRESS};
+        ${QIPHOME}/cli/qip-del -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -a "${ADDRESS}" -t object -e;
         typeset -i RETURN_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
 
         if [ ${RETURN_CODE} -ne 0 ]
         then
-            writeLogEntry "ERROR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
-            writeLogEntry "STDERR" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to remove address ${ADDRESS}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to remove address ${ADDRESS}";
 
             (( ERROR_COUNT += 1 ));
         fi
@@ -117,8 +118,8 @@ function addQIPObjectRecords
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Add resource records to a provided object";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} ( filename )
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Add resource records to a provided object";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} ( filename )
                  -> The file name containing the necessary data";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -135,9 +136,9 @@ function addQIPObjectRecords
         [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
         [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
         [ ! -z "${RESOURCE_ENTRY}" ] && unset -v RESOURCE_ENTRY;
-        [ ! -z "${ownerName}" ] && unset -v ownerName;
-        [ ! -z "${recordType}" ] && unset -v recordType;
-        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+        [ ! -z "${RECORD_TYPE}" ] && unset -v RECORD_TYPE;
+        [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
         [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -158,25 +159,25 @@ function addQIPObjectRecords
     do
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RESOURCE_ENTRY -> ${RESOURCE_ENTRY}";
 
-        ownerName="$(cut -d "," -f 1 <<< "${RESOURCE_ENTRY}")";
-        recordType="$(cut -d "," -f 2 <<< "${RESOURCE_ENTRY}")";
-        objectAddress="$(cut -d "," -f 3 <<< "${RESOURCE_ENTRY}")";
+        typeset OWNER_NAME="$(cut -d "," -f 1 <<< "${RESOURCE_ENTRY}")";
+        typeset RECORD_TYPE="$(cut -d "," -f 2 <<< "${RESOURCE_ENTRY}")";
+        typeset OBJECT_ADDRESS="$(cut -d "," -f 3 <<< "${RESOURCE_ENTRY}")";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ownerName -> ${ownerName}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "recordType -> ${recordType}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "objectAddress -> ${objectAddress}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OWNER_NAME -> ${OWNER_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RECORD_TYPE -> ${RECORD_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_ADDRESS -> ${OBJECT_ADDRESS}";
 
-        sed -e "s/@ownerName/${ownerName}/g" -e "s/@recordType/${recordType}//g" -e "s/@objectAddress/${objectAddress}/g" "${RECORD_TEMPLATE}" >> "${ADD_INPUT_FILE}";
+        /usr/bin/env sed -e "s/@OWNER_NAME/${OWNER_NAME}/g" -e "s/@RECORD_TYPE/${RECORD_TYPE}//g" -e "s/@OBJECT_ADDRESS/${OBJECT_ADDRESS}/g" "${RECORD_TEMPLATE}" >> "${ADD_INPUT_FILE}";
 
-        [ ! -z "${ownerName}" ] && unset -v ownerName;
-        [ ! -z "${recordType}" ] && unset -v recordType;
-        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+        [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+        [ ! -z "${RECORD_TYPE}" ] && unset -v RECORD_TYPE;
+        [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
         [ ! -z "${object}" ] && unset -v object;
     done
 
     [ -s "${CLI_LOG_FILE}" ] && cat /dev/null > "${CLI_LOG_FILE}";
 
-    /opt/qip/cli/qip-cli -c v4address,add --input "${ADD_INPUT_FILE}" -r "${CLI_LOG_FILE}" --addselected --format xml;
+    ${QIPHOME}/cli/qip-cli -c v4address,add --input "${ADD_INPUT_FILE}" -r "${CLI_LOG_FILE}" --addselected --format xml;
     typeset RETURN_CODE=${?};
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -193,9 +194,9 @@ function addQIPObjectRecords
     [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
     [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
     [ ! -z "${RESOURCE_ENTRY}" ] && unset -v RESOURCE_ENTRY;
-    [ ! -z "${ownerName}" ] && unset -v ownerName;
-    [ ! -z "${recordType}" ] && unset -v recordType;
-    [ ! -z "${objectAddress}" ] && unset -v objectAddress;
+    [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+    [ ! -z "${RECORD_TYPE}" ] && unset -v RECORD_TYPE;
+    [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -233,8 +234,8 @@ function addQIPObjects
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Add new objects to QIP";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} ( filename )
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Add new objects to QIP";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} ( filename )
                  -> The file name containing the necessary data";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
@@ -252,9 +253,9 @@ function addQIPObjects
         [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
         [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
         [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
-        [ ! -z "${ownerName}" ] && unset -v ownerName;
-        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
-        [ ! -z "${domainName}" ] && unset -v domainName;
+        [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+        [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
+        [ ! -z "${DOMAIN_NAME}" ] && unset -v DOMAIN_NAME;
         [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
         [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -275,23 +276,23 @@ function addQIPObjects
 
         [[ "${OBJECT_ENTRY}" =~ ^#.* ]] && continue;
 
-        ownerName="$(cut -d "," -f 1 <<< "${OBJECT_ENTRY}")";
-        objectAddress="$(cut -d "," -f 2 <<< "${OBJECT_ENTRY}")";
-        domainName="$(cut -d "," -f 3 <<< "${OBJECT_ENTRY}")";
+        typeset OWNER_NAME="$(cut -d "," -f 1 <<< "${OBJECT_ENTRY}")";
+        typeset OBJECT_ADDRESS="$(cut -d "," -f 2 <<< "${OBJECT_ENTRY}")";
+        typeset DOMAIN_NAME="$(cut -d "," -f 3 <<< "${OBJECT_ENTRY}")";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ownerName -> ${ownerName}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "objectAddress -> ${objectAddress}";
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "domainName -> ${domainName}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OWNER_NAME -> ${OWNER_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_ADDRESS -> ${OBJECT_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DOMAIN_NAME -> ${DOMAIN_NAME}";
 
-        [ -z "${domainName}" ] && domainName="prod.mtb.com";
+        [ -z "${DOMAIN_NAME}" ] && DOMAIN_NAME="prod.mtb.com";
 
-        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "domainName -> ${domainName}";
+        [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DOMAIN_NAME -> ${DOMAIN_NAME}";
 
-        sed -e "s/@ownerName/${ownerName}/g" -e "s/@objectAddress/${objectAddress}/g" -e "s/@domainName/${domainName}/g" "${OBJECT_TEMPLATE}" > "${ADD_TEMP_DIR}/${ownerName}.xml";
+        /usr/bin/env sed -e "s/@OWNER_NAME/${OWNER_NAME}/g" -e "s/@OBJECT_ADDRESS/${OBJECT_ADDRESS}/g" -e "s/@DOMAIN_NAME/${DOMAIN_NAME}/g" "${OBJECT_TEMPLATE}" > "${ADD_TEMP_DIR}/${OWNER_NAME}.xml";
 
-        [ ! -z "${ownerName}" ] && unset -v ownerName;
-        [ ! -z "${objectAddress}" ] && unset -v objectAddress;
-        [ ! -z "${domainName}" ] && unset -v domainName;
+        [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+        [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
+        [ ! -z "${DOMAIN_NAME}" ] && unset -v DOMAIN_NAME;
         [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
     done
 
@@ -330,9 +331,9 @@ function addQIPObjects
     [ ! -z "${ADD_INPUT_FILE}" ] && unset -v ADD_INPUT_FILE;
     [ ! -z "${CLI_LOG_FILE}" ] && unset -v CLI_LOG_FILE;
     [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
-    [ ! -z "${ownerName}" ] && unset -v ownerName;
-    [ ! -z "${objectAddress}" ] && unset -v objectAddress;
-    [ ! -z "${domainName}" ] && unset -v domainName;
+    [ ! -z "${OWNER_NAME}" ] && unset -v OWNER_NAME;
+    [ ! -z "${OBJECT_ADDRESS}" ] && unset -v OBJECT_ADDRESS;
+    [ ! -z "${DOMAIN_NAME}" ] && unset -v DOMAIN_NAME;
     [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
 
     [ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
@@ -367,7 +368,7 @@ function pushDNS
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Pushes updates (configuration/data and reload) to all enterprise DNS servers";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Pushes updates (configuration/data and reload) to all enterprise DNS servers";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -391,7 +392,7 @@ function pushDNS
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "QIP_SERVER -> ${QIP_SERVER}";
 
-        /opt/qip/cli/qip-dnsgen -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -n "${QIP_SERVER}" 1>/dev/null 2>;
+        ${QIPHOME}/cli/qip-dnsgen -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -n "${QIP_SERVER}" 1>/dev/null 2>${LOG_ROOT}/${QIP_SERVER}.err;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
@@ -463,9 +464,9 @@ function fixPrinterRecords
     then
         RETURN_CODE=3;
 
-        writeLogEntry "STDERR" "${METHOD_NAME} - Performs a DNS generation against DNS servers to re-populate removed records of printers";
-        writeLogEntry "STDERR" "Usage: ${METHOD_NAME} [ (address|address list) ]
-                -> A single address to remove, or the full path to a list of address(es) to re-populate.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} - Performs a DNS generation against DNS servers to re-populate removed records of printers";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Usage: ${METHOD_NAME} [ address|address list ]
+                -> The domain that the printer is housed in.";
 
         [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
 
@@ -483,6 +484,7 @@ function fixPrinterRecords
     fi
 
     [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
+    typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
 
     [ ! -z "${ENABLE_DEBUG}" ] && [ "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
 

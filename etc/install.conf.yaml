@@ -19,16 +19,16 @@
 - link:
   ~/.dotfiles: ''
   ~/.alias: alias
-  ~/.bashrc: bin/login
-  ~/.bash_profile: bin/login
-  ~/.bash_logout: bin/logout
+  ~/.bashrc: bin/profile
+  ~/.bash_profile: bin/profile
   ~/.curlrc: etc/curlrc
   ~/.wgetrc: etc/wgetrc
   ~/.netrc: etc/netrc
   ~/.digrc: etc/digrc
-  ~/.kshrc: bin/profile
+  ~/.kshrc: bin/kshrc
+  ~/.profile: bin/kshrc
   ~/.ldaprc: etc/ldaprc
-  ~/.profile: bin/profile
+  ~/.profile: bin/kshrc
   ~/.screenrc: etc/screenrc
   ~/.functions: functions
   ~/.alias.d: alias.d/
@@ -67,6 +67,9 @@
   - [chmod 755 ~/.dotbot/lib/*, Ensuring file permissions are 755 on ~/.lib/*]
   - [chmod 644 ~/.ssh/config, Ensuring file permissions are 644 on ~/.ssh/config]
   - [chmod 644 ~/.ssh/config/config.d/cws, Ensuring file permissions are 644 on ~/.ssh/config.d/cws]
-  - [ ! -f ~/.ssh/id_rsa ] && ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH RSA Keypair ]
-  - [ ! -f ~/.ssh/id_dsa ] && ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH DSA Keypair ]
-  - [chmod 600 ~/.ssh/id_rsa, Ensuring file permissions are 600 on ~/.ssh/id_rsa]
+  - [ ! -f ~/.ssh/id_rsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa, Creating SSH RSA Keypair ]
+  - [ ! -f ~/.ssh/id_dsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH DSA Keypair ]
+  - [ ! -f ~/.ssh/id_ecdsa -a -f ~/.ssh/known_hosts ] && ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_dsa, Creating SSH ECDSA Keypair ]
+  - [ -f ~/.ssh/id_rsa ] && chmod 600 ~/.ssh/id_rsa, Ensuring file permissions are 600 on ~/.ssh/id_rsa]
+  - [ -f ~/.ssh/id_dsa ] && chmod 600 ~/.ssh/id_dsa, Ensuring file permissions are 600 on ~/.ssh/id_dsa]
+  - [ -f ~/.ssh/id_ecdsa ] && chmod 600 ~/.ssh/id_ecdsa, Ensuring file permissions are 600 on ~/.ssh/id_ecdsa]

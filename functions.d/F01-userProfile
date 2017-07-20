@@ -176,6 +176,7 @@ function logoutUser
 {
     typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
+    typeset SHELL_NAME="$(/usr/bin/env ps -ef | /usr/bin/env grep "${PPID}" | /usr/bin/env head -1 | /usr/bin/env awk '{print $NF}' | /usr/bin/env cut -d "-" -f 2)";
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
@@ -185,6 +186,7 @@ function logoutUser
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Provided arguments: ${*}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SHELL_NAME -> ${SHELL_NAME}";
 
     ## check in everything in git
     if [ -d "${HOME}/workspace/cws-esolutions" ]
@@ -246,6 +248,21 @@ function logoutUser
     [ -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-fish-gpg;
     [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
+    ## rsync some shit here
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Distributing profile changes...";
+
+    for HOST in $(/usr/bin/env cat ${HOME}/.ssh/config | grep HostName | /usr/bin/env awk '{print $NF}')
+    do
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST -> ${HOST}";
+
+        /usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp \
+            --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" ${HOME} ${HOST}:/home;
+
+        /usr/bin/env ssh -qtl ${HOST} "[ ! -d ~/.log ] && mkdir ~/.log; ~/.dotfiles/bin/install 2>&1 | tee -a ~/.log/install.out"
+
+        [ ! -z "${HOST}" ] && unset -v HOST;
+    done
+
     ## clear terminal scrollback
     /usr/bin/env printf "\033c";
 
@@ -266,7 +283,9 @@ function logoutUser
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
 
-    return ${RETURN_CODE};
+    ## terminate the session
+    ## SOME OF US DONT WANT KSH AS A SHELL BUT ARE FORCED.
+    [ "${SHELL_NAME}" == "ksh" ] && kill -9 ${PPID} || exit;
 }
 
 #=====  FUNCTION  =============================================================

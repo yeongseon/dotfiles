@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #==============================================================================
 #
-#          FILE:  watchdog
-#         USAGE:  ./watchdog
+#          FILE:  profile
+#         USAGE:  . ~/profile
 #   DESCRIPTION:
 #
 #       OPTIONS:  ---
@@ -419,12 +419,16 @@ function installFiles
 
     printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Creating SSH keypairs..." >&1;
 
-    cd ~/.ssh; [ ! -f id_rsa ] && /usr/bin/env ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa;
-    cd ~/.ssh; [ ! -f id_dsa ] && /usr/bin/env ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa;
-    cd ~/.ssh; [ ! -f id_ecdsa ] && /usr/bin/env ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_ecdsa;
-    /usr/bin/env chmod 600 ~/.ssh/id_rsa ~/.ssh/id_dsa ~/.ssh/id_ecdsa
+    if [ -f ~/.ssh/known_hosts ]
+    then
+        [ ! -f ~/.ssh/id_rsa ] && /usr/bin/env ssh-keygen -t rsa -b 4096 -N "" -C "" -f ~/.ssh/id_rsa;
+        [ ! -f ~/.ssh/id_dsa ] && /usr/bin/env ssh-keygen -t dsa -b 1024 -N "" -C "" -f ~/.ssh/id_dsa;
+        [ ! -f ~/.ssh/id_ecdsa ] && /usr/bin/env ssh-keygen -t ecdsa -b 521 -N "" -C "" -f ~/.ssh/id_ecdsa;
 
-    printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypairs created." >&1;
+        /usr/bin/env chmod 600 ~/.ssh/id_rsa ~/.ssh/id_dsa ~/.ssh/id_ecdsa
+
+        printf "%s %s %s %s %s\n" "STDOUT" "${METHOD_NAME}" "${0}" "${LINENO}" "Keypairs created." >&1;
+    fi
 
     [ ${ERROR_COUNT} -ne 0 ] && typeset -i RETURN_CODE=${ERROR_COUNT} || typeset -i RETURN_CODE=0;
 
