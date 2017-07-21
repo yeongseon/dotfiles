@@ -1,7 +1,7 @@
 #==============================================================================
 #
-#          FILE:  .alias
-#         USAGE:  . .alias
+#          FILE:  alias
+#         USAGE:  . alias
 #   DESCRIPTION:  Sets application-wide aliases
 #
 #       OPTIONS:  ---
@@ -17,48 +17,34 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
 ## load aliases
 for ALIAS in ${HOME}/.alias.d/*
 do
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ALIAS -> ${ALIAS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "alias" "${0}" "${LINENO}" "ALIAS -> ${ALIAS}";
 
     [ -z "${ALIAS}" ] && continue;
     [ -d "${ALIAS}" ] && continue;
 
-    case "${ENABLE_VERBOSE}" in
-        "${_TRUE}")
-            . ${ALIAS};
-            ;;
-        *)
-            . ${ALIAS} > /dev/null 2>&1;
-            ;;
-    esac
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${ALIAS} 2>&1 | tee -a ${LOG_ROOT}/$(basename ${ALIAS}).${DATE_PATTERN}.log || . ${ALIAS};
 
     [ ! -z "${ALIAS}" ] && unset -v ALIAS;
 done
 
+[ ! -z "${ALIAS}" ] && unset -v ALIAS;
+
 ## look for any directories that might contain specifics
 for ALIAS in ${HOME}/.alias.d/*
 do
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ALIAS => ${ALIAS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "alias" "${0}" "${LINENO}" "ALIAS -> ${ALIAS}";
 
     [ -z "${ALIAS}" ] && continue;
     [ ! -d "${ALIAS}" ] && continue;
 
     for ALIAS1 in ${ALIAS}/*
     do
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ALIAS1 => ${ALIAS1}";
-
-        case "${ENABLE_VERBOSE}" in
-            "${_TRUE}")
-                . ${ALIAS1};
-                ;;
-            *)
-                . ${ALIAS1} > /dev/null 2>&1;
-                ;;
-        esac
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${ALIAS1} 2>&1 | tee -a ${LOG_ROOT}/$(basename ${ALIAS1}).${DATE_PATTERN}.log || . ${ALIAS1};
 
         [ ! -z "${ALIAS1}" ] && unset -v ALIAS1;
     done
@@ -67,9 +53,8 @@ do
     [ ! -z "${ALIAS}" ] && unset -v ALIAS;
 done
 
-[ ! -z "${ALIAS}" ] && unset -v ALIAS;
 [ ! -z "${ALIAS1}" ] && unset -v ALIAS1;
-[ ! -z "${INPUT}" ] && unset -v INPUT;
+[ ! -z "${ALIAS}" ] && unset -v ALIAS;
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

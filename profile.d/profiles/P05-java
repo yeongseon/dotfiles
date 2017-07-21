@@ -16,8 +16,8 @@
 #
 #==============================================================================
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set -v || set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
 
 [ -d "/usr/java/latest" -o -l "/usr/java/latest" ] && typeset -x JAVA_HOME="/usr/java/latest";
 [ -d "/usr/java/latest/jre" ] && typeset -x JRE_HOME="/usr/java/latest/jre";
@@ -45,5 +45,5 @@
 [ ! -z "${JRE_HOME}" ] && typeset -x LIBPATH="${LD_LIBRARY_PATH}:${JRE_HOME}/bin:${JRE_HOME}/lib";
 [ ! -z "${JRE_HOME}" ] && typeset -x LIB_PATH="${LD_LIBRARY_PATH}:${JRE_HOME}/bin:${JRE_HOME}/lib";
 
-[ ! -z "${ENABLE_VERBOSE}" ] && [ "${ENABLE_VERBOSE}" = "true" ] && set +x;
-[ ! -z "${ENABLE_TRACE}" ] && [ "${ENABLE_TRACE}" = "true" ] && set +v;
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;

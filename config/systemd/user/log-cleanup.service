@@ -23,7 +23,7 @@ IgnoreOnIsolate=true
 [Service]
 Type=simple
 ExecStartPre=source %u/.etc/logging.properties
-ExecStartPre=source %u/.functions.d/F00-logging
+ExecStartPre=source %u/.lib/logging.sh
 ExecStart=rotateLogsBySize
 ExecStart=rotateLogsByTime
 

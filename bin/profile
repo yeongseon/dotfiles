@@ -19,11 +19,12 @@
 [[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
 
 [ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
+[ -f "${HOME}/.lib/logger.sh" ] && . "${HOME}/.lib/logger.sh";
 
-typeset METHOD_NAME="${0}#${FUNCNAME[0]}";
-typeset -i RETURN_CODE=0;
+typeset SCRIPT_NAME="profile";
+typeset FUNCTION_NAME="${FUNCNAME[0]}";
 
-[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${METHOD_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
 [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
@@ -34,76 +35,37 @@ typeset -x PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin";
 ## load profile
 for PROFILE in ${HOME}/.profile.d/*
 do
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE -> ${PROFILE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "PROFILE -> ${PROFILE}";
 
     [ -z "${PROFILE}" ] && continue;
     [ -d "${PROFILE}" ] && continue;
 
-    case "${ENABLE_VERBOSE}" in
-        "${_TRUE}")
-            [ -f ${PROFILE} ] && . ${PROFILE} 2>&1 | tee -a .log/load-profile.log;
-
-            [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-            [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-            ;;
-        *)
-            . ${PROFILE} >| /dev/null 2>&1;
-            ;;
-    esac
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${PROFILE} 2>&1 | tee -a ${LOG_ROOT}/$(basename ${PROFILE}).${DATE_PATTERN}.log || . ${PROFILE};
 
     [ ! -z "${PROFILE}" ] && unset -v PROFILE;
-    [ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
 done
 
 [ ! -z "${PROFILE}" ] && unset -v PROFILE;
-[ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
 
 if [ -d ${HOME}/.profile.d/profiles/ ]
 then
     for PROFILE in ${HOME}/.profile.d/profiles/*
     do
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "PROFILE -> ${PROFILE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "PROFILE -> ${PROFILE}";
 
         [ -z "${PROFILE}" ] && continue;
 
-        case "${ENABLE_VERBOSE}" in
-            "${_TRUE}")
-                [ -f ${PROFILE} ] && . ${PROFILE} 2>&1 | tee -a .log/load-profile.log;
-
-                [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-                [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-                ;;
-            *)
-                . ${PROFILE} >| /dev/null 2>&1;
-                ;;
-        esac
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${PROFILE} 2>&1 | tee -a ${LOG_ROOT}/$(basename ${PROFILE}).${DATE_PATTERN}.log || . ${PROFILE};
 
         [ ! -z "${PROFILE}" ] && unset -v PROFILE;
         [ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
     done
 fi
 
-[ ! -z "${INPUT}" ] && unset -v INPUT;
 [ ! -z "${PROFILE}" ] && unset -v PROFILE;
-[ ! -z "${IS_VALID_PROFILE}" ] && unset -v IS_VALID_PROFILE;
 
-case "${ENABLE_VERBOSE}" in
-    "${_TRUE}")
-        [ -f ${HOME}/.alias ] && . ${HOME}/.alias 2>&1 | tee -a .log/load-aliases.log;
-
-        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-
-        [ -f ${HOME}/.functions ] && . ${HOME}/.functions 2>&1 | tee -a .log/load-functions.log;
-
-        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-        ;;
-    *)
-        [ -f ${HOME}/.alias ] && . ${HOME}/.alias >| /dev/null 2>&1;
-        [ -f ${HOME}/.functions ] && . ${HOME}/.functions >| /dev/null 2>&1;
-        ;;
-esac
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${HOME}/.alias 2>&1 | tee -a ${LOG_ROOT}/load-aliases.${DATE_PATTERN}.log || . ${HOME}/.alias;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && . ${HOME}/.functions 2>&1 | tee -a ${LOG_ROOT}/load-functions.${DATE_PATTERN}.log || . ${HOME}/.functions;
 
 if [ ! -f /etc/profile.d/cws.sh ]
 then
@@ -115,22 +77,22 @@ then
     typeset HOST_CPU_INFO="$(/usr/bin/env cat /proc/cpuinfo | /usr/bin/env egrep "model name" | /usr/bin/env uniq | /usr/bin/env cut -d ":" -f 2 | /usr/bin/env sed -e 's/^ *//g;s/ *$//g' | /usr/bin/env tr -s " ")";
     typeset HOST_MEMORY_SIZE="$(echo $(( $(( $(/usr/bin/env egrep MemTotal /proc/meminfo | /usr/bin/env awk '{print $2}') / 1024 ^ 2 )) / 2 )) ) MB";
 
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_SYSTEM_NAME -> ${HOST_SYSTEM_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_IP_ADDRESS -> ${HOST_IP_ADDRESS}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_KERNEL_VERSION -> ${HOST_KERNEL_VERSION}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_CPU_COUNT -> ${HOST_CPU_COUNT}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_CPU_INFO -> ${HOST_CPU_INFO}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_SYSTEM_NAME -> ${HOST_SYSTEM_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_IP_ADDRESS -> ${HOST_IP_ADDRESS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_KERNEL_VERSION -> ${HOST_KERNEL_VERSION}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_CPU_COUNT -> ${HOST_CPU_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_CPU_INFO -> ${HOST_CPU_INFO}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
 
     ## user information
     typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ | /usr/bin/env awk '{print $1}');
     typeset -i SYSTEM_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env wc -l | /usr/bin/env awk '{print $1}');
     typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env egrep "${LOGNAME}" | /usr/bin/env wc -l);
 
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_DISK_USAGE -> ${USER_DISK_USAGE}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SYSTEM_PROCESS_COUNT -> ${SYSTEM_PROCESS_COUNT}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "USER_PROCESS_COUNT -> ${USER_PROCESS_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "USER_DISK_USAGE -> ${USER_DISK_USAGE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SYSTEM_PROCESS_COUNT -> ${SYSTEM_PROCESS_COUNT}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "USER_PROCESS_COUNT -> ${USER_PROCESS_COUNT}";
 
     clear;
 
@@ -170,9 +132,12 @@ trap 'source ${HOME}/.dotfiles/functions.d/F01-userProfile; logoutUser; exit' 0;
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} -> exit";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${METHOD_NAME} -> exit";
+
+[ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
+[ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
 
 [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
 [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( ${START_EPOCH} - ${END_EPOCH} ));
-[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
-[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${METHOD_NAME} TOTAL RUNTIME: $((${RUNTIME} / 60)) MINUTES, TOTAL ELAPSED: $((${RUNTIME} % 60)) SECONDS";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
