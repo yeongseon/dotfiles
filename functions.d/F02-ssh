@@ -756,49 +756,40 @@ function getSshKeys
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HASH_KEYS -> ${HASH_KEYS}";
             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SHOW_KEYS -> ${SHOW_KEYS}";
 
-            [ -f "${2}" ] && for ENTRY in $(<"${2}"); do setArray HOSTLIST "${ENTRY}"; done || setArray HOSTLIST "${2}";
+            ## set up the host array list
+            setArray HOSTLIST ${2};
+
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOSTLIST -> ${HOSTLIST[@]}";
 
             case ${#} in
                 3)
                     [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
 
-                    [ "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ ! -z "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     ;;
                 4)
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
-
-                    typeset KNOWN_HOSTS_FILE="${3}";
-                    typeset REPLACE_INVALID_KEYS="${4}";
+                    [ ! -z "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ ! -z "${4}" ] && typeset REPLACE_INVALID_KEYS="${4}";
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
                     ;;
                 5)
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
-                    [ ! -z "${HASH_KEYS}" ] && unset -v HASH_KEYS;
-
-                    typeset KNOWN_HOSTS_FILE="${3}";
-                    typeset REPLACE_INVALID_KEYS="${4}";
-                    typeset HASH_KEYS="${5}";
+                    [ ! -z "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ ! -z "${4}" ] && typeset REPLACE_INVALID_KEYS="${4}";
+                    [ ! -z "${5}" ] && typeset HASH_KEYS="${5}";
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HASH_KEYS -> ${HASH_KEYS}";
                     ;;
                 6)
-                    [ ! -z "${KNOWN_HOSTS_FILE}" ] && unset -v KNOWN_HOSTS_FILE;
-                    [ ! -z "${REPLACE_INVALID_KEYS}" ] && unset -v REPLACE_INVALID_KEYS;
-                    [ ! -z "${HASH_KEYS}" ] && unset -v HASH_KEYS;
-                    [ ! -z "${SHOW_KEYS}" ] && unset -v SHOW_KEYS;
-
-                    typeset KNOWN_HOSTS_FILE="${3}";
-                    typeset REPLACE_INVALID_KEYS="${4}";
-                    typeset HASH_KEYS="${5}";
-                    typeset SHOW_KEYS="${6}";
+                    [ ! -z "${3}" ] && typeset KNOWN_HOSTS_FILE="${3}";
+                    [ ! -z "${4}" ] && typeset REPLACE_INVALID_KEYS="${4}";
+                    [ ! -z "${5}" ] && typeset HASH_KEYS="${5}";
+                    [ ! -z "${6}" ] && typeset SHOW_KEYS="${6}";
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KNOWN_HOSTS_FILE -> ${KNOWN_HOSTS_FILE}";
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "REPLACE_INVALID_KEYS -> ${REPLACE_INVALID_KEYS}";
@@ -884,18 +875,19 @@ function getSshKeys
 
                 [ ! -z "$(/usr/bin/env grep "\#" <<< "${KEY_HOSTNAME}")" ] && continue;
 
-                ## convert it to a management host as necessary
-                typeset HOST_DOMAIN_NAME="$(/usr/bin/env cut -d "." -f 2- <<< "${KEY_HOSTNAME}" | sed -e "s/ /./g")"
-                typeset MGMT_FULL_HOST_NAME="$(/usr/bin/env sed -e "s/o-/s-/;s/-crs.${HOST_DOMAIN_NAME}$/-mgt.${HOST_DOMAIN_NAME}/;s/o.${HOST_DOMAIN_NAME}$/s.${HOST_DOMAIN_NAME}/" <<< "${KEY_HOSTNAME}")";
+                typeset -i IS_FQDN=$(/usr/bin/env tr -cd "." <<< "${KEY_HOSTNAME}" | /usr/bin/env wc -c);
 
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_DOMAIN_NAME -> ${HOST_DOMAIN_NAME}";
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "MGMT_FULL_HOST_NAME -> ${MGMT_FULL_HOST_NAME}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "IS_FQDN -> ${IS_FQDN}";
+
+                [ ${IS_FQDN} -eq 0 ] && typeset FULLY_QUALIFIED_NAME="$(/usr/bin/env host ${KEY_HOSTNAME} | awk '{print $1}')" || typeset FULLY_QUALIFIED_NAME="${KEY_HOSTNAME}";
+
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "FULLY_QUALIFIED_NAME -> ${FULLY_QUALIFIED_NAME}";
 
                 ## make sure its a valid host
                 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
                 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
 
-                validateServerAvailability "${MGMT_FULL_HOST_NAME}" 22;
+                validateServerAvailability "${FULLY_QUALIFIED_NAME}" 22;
                 typeset -i RET_CODE=${?};
 
                 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
@@ -908,8 +900,8 @@ function getSshKeys
 
                 if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
                 then
-                    writeLogEntry "ERROR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
-                    writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Target host ${MGMT_FULL_HOST_NAME} does not appear to be available.";
+                    writeLogEntry "ERROR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Target host ${FULLY_QUALIFIED_NAME} does not appear to be available.";
+                    writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Target host ${FULLY_QUALIFIED_NAME} does not appear to be available.";
 
                     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
                     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
@@ -925,16 +917,16 @@ function getSshKeys
                 fi
 
                 ## make sure the host presents an ssh key, if not, skip it
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keyscan -t rsa \"${MGMT_FULL_HOST_NAME}\" 2>&1 | grep -v \"getaddrinfo\" | head -1";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keyscan -t rsa \"${FULLY_QUALIFIED_NAME}\" 2>&1 | grep -v \"getaddrinfo\" | head -1";
 
-                typeset SSH_HOST_ENTRY="$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>&1 | grep -v "getaddrinfo" | head -1)";
+                typeset SSH_HOST_ENTRY="$(/usr/bin/env ssh-keyscan -t rsa ${FULLY_QUALIFIED_NAME} 2>&1 | grep -v "getaddrinfo" | head -1)";
 
                 [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SSH_HOST_ENTRY -> ${SSH_HOST_ENTRY}";
 
                 if [ -z "${SSH_HOST_ENTRY}" ]
                 then
-                    writeLogEntry "ERROR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "No SSH entry was found for ${MGMT_FULL_HOST_NAME}. Skipping.";
-                    writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "No SSH entry was found for ${MGMT_FULL_HOST_NAME}. Skipping.";
+                    writeLogEntry "ERROR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "No SSH entry was found for ${FULLY_QUALIFIED_NAME}. Skipping.";
+                    writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "No SSH entry was found for ${FULLY_QUALIFIED_NAME}. Skipping.";
 
                     typeset -x IFS="${CURR_IFS}";
 
@@ -952,18 +944,20 @@ function getSshKeys
                     continue;
                 fi
 
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t dsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
-                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t ecdsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
-
                 case "${HASH_KEYS}" in
                     "${_TRUE}") typeset SSH_KEYSCAN="/usr/bin/env ssh-keyscan -Ht"; ;;
                     *) typeset SSH_KEYSCAN="/usr/bin/env ssh-keyscan -t"; ;;
                 esac
 
-                typeset HOST_RSA_KEY="$(${SSH_KEYSCAN} rsa ${MGMT_FULL_HOST_NAME} 2>/dev/null)";
-                typeset HOST_DSA_KEY="$(${SSH_KEYSCAN} dsa ${MGMT_FULL_HOST_NAME} 2>/dev/null)";
-                typeset HOST_ECDSA_KEY="$(${SSH_KEYSCAN} ecdsa ${MGMT_FULL_HOST_NAME} 2>/dev/null)";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SSH_KEYSCAN -> ${SSH_KEYSCAN}";
+
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t rsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)"
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t dsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RUN COMMAND -> /usr/bin/env awk '{print \$NF}' <<< \$(/usr/bin/env ssh-keyscan -t ecdsa ${MGMT_FULL_HOST_NAME} 2>/dev/null\)";
+
+                typeset HOST_RSA_KEY="$(${SSH_KEYSCAN} rsa ${FULLY_QUALIFIED_NAME} 2>/dev/null)";
+                typeset HOST_DSA_KEY="$(${SSH_KEYSCAN} dsa ${FULLY_QUALIFIED_NAME} 2>/dev/null)";
+                typeset HOST_ECDSA_KEY="$(${SSH_KEYSCAN} ecdsa ${FULLY_QUALIFIED_NAME} 2>/dev/null)";
 
                 case "${SHOW_KEYS}" in
                     "${_TRUE}")
@@ -975,12 +969,16 @@ function getSshKeys
                         ;;
                 esac
 
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SSH_HOST_ENTRY}/RSA -> ${HOST_RSA_KEY}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SSH_HOST_ENTRY}/DSA -> ${HOST_DSA_KEY}";
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${SSH_HOST_ENTRY}/ECDSA -> ${HOST_ECSA_KEY}";
+
                 for KEYTYPE in "ssh-rsa" "ssh-dss" "ecdsa-sha2-nistp256"
                 do
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KEYTYPE -> ${KEYTYPE}";
-                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMP_KNOWN_HOSTS}\" -F \"${MGMT_FULL_HOST_NAME}\" | grep \"${KEYTYPE}\" | wc -l";
+                    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMP_KNOWN_HOSTS}\" -F \"${FULLY_QUALIFIED_NAME}\" | grep \"${KEYTYPE}\" | wc -l";
 
-                    typeset -i KEY_COUNT=$(/usr/bin/env ssh-keygen -f "${TEMP_KNOWN_HOSTS}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | wc -l);
+                    typeset -i KEY_COUNT=$(/usr/bin/env ssh-keygen -f "${TEMP_KNOWN_HOSTS}" -F "${FULLY_QUALIFIED_NAME}" | grep "${KEYTYPE}" | wc -l);
 
                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KEY_COUNT -> ${KEY_COUNT}";
 
@@ -989,16 +987,42 @@ function getSshKeys
                             ## just add them, they don't currently exist
                             [ -z "$(grep "${SSH_HOST_ENTRY}" "${TEMP_KNOWN_HOSTS}")" ] && /usr/bin/env printf "%s\n" "${SSH_HOST_ENTRY}" >> "${TEMP_KNOWN_HOSTS}";
 
-                            [ "${KEYTYPE}" == "ssh-rsa" -a ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
-                            [ "${KEYTYPE}" == "ssh-dss" -a ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
-                            [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" -a ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}" && typeset KEY_WRITTEN="${_TRUE}";
+                            case "${KEYTYPE}" in
+                                ssh-rsa)
+                                    [ -z "${HOST_RSA_KEY}" ] && continue;
+
+                                    /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                    /usr/bin/env printf "%s\n" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    typeset KEY_WRITTEN="${_TRUE}";
+
+                                    continue;
+                                    ;;
+                                ssh-dss)
+                                    [ -z "${HOST_DSA_KEY}" ] && continue;
+
+                                    /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                    /usr/bin/env printf "%s\n" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    typeset KEY_WRITTEN="${_TRUE}";
+
+                                    continue;
+                                    ;;
+                                ecdsa-sha2-nistp256)
+                                    [ -z "${HOST_ECDSA_KEY}" ] && continue;
+
+                                    /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                    /usr/bin/env printf "%s\n" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    typeset KEY_WRITTEN="${_TRUE}";
+
+                                    continue;
+                                    ;;
+                            esac
 
                             [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
 
                             continue;
                             ;;
                         1)
-                            typeset CURRENT_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_KNOWN_HOSTS}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
+                            typeset CURRENT_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_KNOWN_HOSTS}" -F "${FULLY_QUALIFIED_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
                             case "${KEYTYPE}" in
                                 ssh-rsa)
@@ -1006,12 +1030,12 @@ function getSshKeys
 
                                     if [ "${REPLACE_INVALID_KEYS}" = "${_TRUE}" ]
                                     then
-                                        /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_RSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
+                                        /usr/bin/env sed -e "/${FULLY_QUALIFIED_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_RSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_RSA_KEY} ${TEMP_WRITE_FILE}";
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
-                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
+                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${FULLY_QUALIFIED_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
                                         if [ "${REPLACED_KEY}" != "${HOST_RSA_KEY}" ]
                                         then
@@ -1046,12 +1070,12 @@ function getSshKeys
 
                                     if [ "${REPLACE_INVALID_KEYS}" = "${_TRUE}" ]
                                     then
-                                        /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_DSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
+                                        /usr/bin/env sed -e "/${FULLY_QUALIFIED_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_DSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_DSA_KEY} ${TEMP_WRITE_FILE}";
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
-                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
+                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${FULLY_QUALIFIED_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
                                         if [ "${REPLACED_KEY}" != "${HOST_DSA_KEY}" ]
                                         then
@@ -1086,12 +1110,12 @@ function getSshKeys
 
                                     if [ "${REPLACE_INVALID_KEYS}" = "${_TRUE}" ]
                                     then
-                                        /usr/bin/env sed -e "/${MGMT_FULL_HOST_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_ECDSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
+                                        /usr/bin/env sed -e "/${FULLY_QUALIFIED_NAME} ${KEYTYPE}/s^${CURRENT_KEY}^${HOST_ECDSA_KEY}^g" "${TEMP_KNOWN_HOSTS}" > "${TEMP_WRITE_FILE}";
 
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${HOST_ECSA_KEY} ${TEMP_WRITE_FILE}";
                                         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env grep -c ${KNOWN_KEY_VALUE} ${TEMP_WRITE_FILE}";
 
-                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${MGMT_FULL_HOST_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
+                                        typeset REPLACED_KEY="$(/usr/bin/env ssh-keygen -f "${TEMP_WRITE_FILE}" -F "${FULLY_QUALIFIED_NAME}" | grep "${KEYTYPE}" | awk '{print $NF}')";
 
                                         if [ "${REPLACED_KEY}" != "${HOST_ECDSA_KEY}" ]
                                         then
@@ -1180,9 +1204,9 @@ function getSshKeys
                             ;;
                         *)
                             ## remove ALL keys associated with the entry and start new
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMPFILE}\" -R \"${MGMT_FULL_HOST_NAME}\"";
+                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "RUN COMMAND -> /usr/bin/env ssh-keygen -f \"${TEMPFILE}\" -R \"${FULLY_QUALIFIED_NAME}\"";
 
-                            /usr/bin/env ssh-keygen -f "${TEMPFILE}" -R "${MGMT_FULL_HOST_NAME}";
+                            /usr/bin/env ssh-keygen -f "${TEMPFILE}" -R "${FULLY_QUALIFIED_NAME}";
 
                             ## now we're going to remove any lines that have the given RSA/DSA or ECDSA keys
                             ## sed doesnt work well for this because the delimiter cant be ^
@@ -1203,11 +1227,35 @@ function getSshKeys
 
                                     [ -z "$(grep "${SSH_HOST_ENTRY}" "${TEMP_KNOWN_HOSTS}")" ] && /usr/bin/env printf "%s\n" "${SSH_HOST_ENTRY}" >> "${TEMP_KNOWN_HOSTS}";
 
-                                    [ "${KEYTYPE}" == "ssh-rsa" -a ! -z "${HOST_RSA_KEY}" ] && /usr/bin/env printf "%s ssh-rsa %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
-                                    [ "${KEYTYPE}" == "ssh-dss" -a ! -z "${HOST_DSA_KEY}" ] && /usr/bin/env printf "%s ssh-dss %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
-                                    [ "${KEYTYPE}" == "ecdsa-sha2-nistp256" -a ! -z "${HOST_ECDSA_KEY}" ] && /usr/bin/env printf "%s ecdsa-sha2-nistp256 %s\n" "${MGMT_FULL_HOST_NAME}" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                    case "${KEYTYPE}" in
+                                        ssh-rsa)
+                                            [ -z "${HOST_RSA_KEY}" ] && continue;
 
-                                    typeset KEY_WRITTEN="${_TRUE}";
+                                            /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                            /usr/bin/env printf "%s\n" "${HOST_RSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                            typeset KEY_WRITTEN="${_TRUE}";
+
+                                            continue;
+                                            ;;
+                                        ssh-dss)
+                                            [ -z "${HOST_DSA_KEY}" ] && continue;
+
+                                            /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                            /usr/bin/env printf "%s\n" "${HOST_DSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                            typeset KEY_WRITTEN="${_TRUE}";
+
+                                            continue;
+                                            ;;
+                                        ecdsa-sha2-nistp256)
+                                            [ -z "${HOST_ECDSA_KEY}" ] && continue;
+
+                                            /usr/bin/env printf "# %s %s\n" "${FULLY_QUALIFIED_NAME}" "${KEYTYPE}" >> "${TEMP_KNOWN_HOSTS}";
+                                            /usr/bin/env printf "%s\n" "${HOST_ECDSA_KEY}" >> "${TEMP_KNOWN_HOSTS}";
+                                            typeset KEY_WRITTEN="${_TRUE}";
+
+                                            continue;
+                                            ;;
+                                    esac
 
                                     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "KEY_WRITTEN -> ${KEY_WRITTEN}";
 
@@ -1220,10 +1268,7 @@ function getSshKeys
                                     [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
                                     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
                                     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-                                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
-                                    [ ! -z "${MGMT_SHORT_HOST_NAME}" ] && unset -v MGMT_SHORT_HOST_NAME;
-                                    [ ! -z "${MGMT_TERT_HOST_NAME}" ] && unset -v MGMT_TERT_HOST_NAME;
-                                    [ ! -z "${MGMT_IP_ADDRESS}" ] && unset -v MGMT_IP_ADDRESS;
+                                    [ ! -z "${FULLY_QUALIFIED_NAME}" ] && unset -v FULLY_QUALIFIED_NAME;
                                     [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
                                     [ ! -z "${HOST_DSA_KEY}" ] && unset -v HOST_DSA_KEY;
                                     [ ! -z "${HOST_ECDSA_KEY}" ] && unset -v HOST_ECDSA_KEY;
@@ -1251,7 +1296,6 @@ function getSshKeys
                 [ ! -z "${KEY_WRITTEN}" ] && unset -v KEY_WRITTEN;
                 [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
                 [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-                [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
                 [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
                 [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
                 [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
@@ -1318,7 +1362,7 @@ function getSshKeys
                     [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
                     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
                     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${FULLY_QUALIFIED_NAME}" ] && unset -v FULLY_QUALIFIED_NAME;
                     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
                     [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
                     [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
@@ -1413,7 +1457,7 @@ function getSshKeys
                     [ ! -z "${HASH_KEYS}" ] && unset -v HASH_KEYS;
                     [ ! -z "${SSH_KEYSCAN}" ] && unset -v SSH_KEYSCAN;
                     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-                    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+                    [ ! -z "${FULLY_QUALIFIED_NAME}" ] && unset -v FULLY_QUALIFIED_NAME;
                     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
                     [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
                     [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
@@ -1488,7 +1532,7 @@ function getSshKeys
             [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
             [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
             [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-            [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+            [ ! -z "${FULLY_QUALIFIED_NAME}" ] && unset -v FULLY_QUALIFIED_NAME;
             [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
             [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
             [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
@@ -1546,7 +1590,7 @@ function getSshKeys
     [ ! -z "${TEMP_KNOWN_CKSUM}" ] && unset -v TEMP_KNOWN_CKSUM;
     [ ! -z "${KEY_HOSTNAME}" ] && unset -v KEY_HOSTNAME;
     [ ! -z "${HOST_DOMAIN_NAME}" ] && unset -v HOST_DOMAIN_NAME;
-    [ ! -z "${MGMT_FULL_HOST_NAME}" ] && unset -v MGMT_FULL_HOST_NAME;
+    [ ! -z "${FULLY_QUALIFIED_NAME}" ] && unset -v FULLY_QUALIFIED_NAME;
     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
     [ ! -z "${SSH_HOST_ENTRY}" ] && unset -v SSH_HOST_ENTRY;
     [ ! -z "${HOST_RSA_KEY}" ] && unset -v HOST_RSA_KEY;
@@ -1745,7 +1789,7 @@ function fssh
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
         [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
 
-        validateServerAvailability "${TARGET_HOST}" 22;
+        validateServerAvailability "${TARGET_HOST}" 22 > /dev/null 2>&1;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;

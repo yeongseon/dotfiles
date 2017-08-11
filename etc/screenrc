@@ -1,6 +1,9 @@
 # GNU Screen - main configuration file
 # All other .screenrc files will source this file to inherit settings.
 # Author: Christian Wills - cwills.sys@gmail.com
+# GNU Screen - main configuration file
+# All other .screenrc files will source this file to inherit settings.
+# Author: Christian Wills - cwills.sys@gmail.com
 
 # Allow bold colors - necessary for some reason
 attrcolor b ".I"
@@ -23,15 +26,18 @@ defscrollback 30000
 hardstatus alwayslastline
 
 # Very nice tabbed colored hardstatus line
-hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}|%{KY}%101`%{KW}|%D %M %d %Y%{= Kc} %C%A%{-}'
-
-# change command character from ctrl-a to ctrl-b (emacs users may want this)
-#escape ^Bb
+hardstatus string '%{= Kd} %{= Kd}%-w%{= Kr}[%{= KW}%n %t%{= Kr}]%{= Kd}%+w %-= %{KG} %H%{KW}'
 
 # Hide hardstatus: ctrl-a f
 bind f eval "hardstatus ignore"
 
 # Show hardstatus: ctrl-a F
 bind F eval "hardstatus alwayslastline"
+startup_message off
+altscreen on
+windowlist string "%4n %h%=%f"
+shell -${SHELL}
+pow_detach_msg "Screen session for \${LOGNAME} \$:cr:\$:nl:ended"
 
-password password
+## logging
+logfile "$HOME/.log/screen.%n.%Y-%m-%d"

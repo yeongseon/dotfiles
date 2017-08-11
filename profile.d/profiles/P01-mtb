@@ -23,7 +23,7 @@ typeset -x http_proxy="http://tdpokh2:sUGCUt8u@proxy.prod.mtb.com:8080/";
 typeset -x https_proxy="http://tdpokh2:sUGCUt8u@proxy.prod.mtb.com:8080/";
 typeset -x ftp_proxy="http://tdpokh2:sUGCUt8u@proxy.prod.mtb.com:8080/";
 
-/usr/bin/env umask 0022;
+[ $(umask) -ne 0022 ] && umask 0022;
 
 [ "${SHELL}" == "ksh" ] && typeset -x SHELL="bash";
 

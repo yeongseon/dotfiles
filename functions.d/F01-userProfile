@@ -178,8 +178,6 @@ function setPromptCommand
 #==============================================================================
 function logoutUser
 {
-    [ -f ${HOME}/.skipLogout ] && return;
-
     typeset SCRIPT_NAME="F01-userProfile";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
     typeset -i RETURN_CODE=0;
@@ -256,19 +254,22 @@ function logoutUser
     [ -f ${HOME}/.keychain/${HOSTNAME}-lockf ] && /usr/bin/env rm -f ${HOME}/.keychain/${HOSTNAME}-lockf;
 
     ## rsync some shit here
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Distributing profile changes...";
+    if [ ! -f ${HOME}/.skipSync ]
+    then
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Distributing profile changes...";
 
-    for HOST in $(/usr/bin/env cat ${HOME}/.ssh/config | grep HostName | /usr/bin/env awk '{print $NF}')
-    do
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST -> ${HOST}";
+        for HOST in $(/usr/bin/env cat ${HOME}/.ssh/config | grep HostName | /usr/bin/env awk '{print $NF}')
+        do
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST -> ${HOST}";
 
-        /usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10 --temp-dir=/var/tmp \
-            --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" ${HOME} ${HOST}:/home;
+            /usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --exclude-from=${HOME}/.etc/remote-excludes --timeout 10 --temp-dir=/var/tmp \
+                --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" ${HOME} ${HOST}:/home;
 
-        /usr/bin/env ssh -qtl ${HOST} "[ ! -d ~/.log ] && mkdir ~/.log; ~/.dotfiles/bin/install 2>&1 | tee -a ~/.log/install.out"
+            /usr/bin/env ssh -qtl ${HOST} "[ ! -d ~/.log ] && mkdir ~/.log; ~/.dotfiles/bin/install 2>&1 | tee -a ~/.log/install.out"
 
-        [ ! -z "${HOST}" ] && unset -v HOST;
-    done
+            [ ! -z "${HOST}" ] && unset -v HOST;
+        done
+    fi
 
     ## clear terminal scrollback
     /usr/bin/env printf "\033c";
@@ -286,6 +287,9 @@ function logoutUser
 
     [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
     [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
+
+    ## if screen is running, detach
+    [ $(/usr/bin/env screen -ls | grep -q pts) ] && /usr/bin/env screen -d;
 
     ## terminate the session
     ## SOME OF US DONT WANT KSH AS A SHELL BUT ARE FORCED.
