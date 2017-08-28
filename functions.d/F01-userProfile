@@ -98,7 +98,7 @@ function showHostInfo
 #    PARAMETERS:  None
 #       RETURNS:  0 if success, non-zero otherwise
 #==============================================================================
-function reloadDotfiles
+function reloadDotFiles
 {
     typeset SCRIPT_NAME="F01-userProfile";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
