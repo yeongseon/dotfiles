@@ -20,7 +20,6 @@
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
 ## defaults
-alias diff='/usr/bin/env colordiff';
 alias mountt='/usr/bin/env mount | column -t';
 alias ls='/usr/bin/env ls -lhpF --color=auto';
 alias grep='/usr/bin/env grep --color=auto';
@@ -28,6 +27,7 @@ alias egrep='/usr/bin/env egrep --color=auto';
 alias fgrep='/usr/bin/env fgrep --color=auto';
 alias wget='/usr/bin/env wget -c';
 alias stat='/usr/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
+alias scp='/usr/bin/env scp -qr';
 alias ssh-keygen='/usr/bin/env ssh-keygen -C ""';
 alias ssh-keyscan='/usr/bin/env ssh-keyscan -H';
 alias ssh-copy-id='/usr/bin/env ssh-copy-id -i ~/.ssh/id_rsa';
@@ -46,10 +46,13 @@ alias pssh="/usr/bin/env pssh -p 5 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 
 alias prsync="/usr/bin/env prsync -p 5 -o ${HOME}/.log/pssh -e ${HOME}/.log/pssh -t 900 -l ${LOGNAME} -h ~/.etc/pssh/hosts";
 alias recode='/usr/bin/env recode -qt';
 alias sshfs="/usr/bin/env sshfs -o sshfs_sync,reconnect,no_readahead,idmap=user,umask=644,uid=$(/usr/bin/env id -u),gid=$(/usr/bin/env id -g)";
-[ $(command -v vim > /dev/null 2>&1 > /dev/null 2>&1; echo ${?}) -eq 0 ] && alias vi='/usr/bin/env vim';
 alias apg='/usr/bin/env apg -M SNCL';
 alias curl='/usr/bin/env curl --dump-header ${HOME}/.log/curl-headers';
 alias xlaunch='nohup /usr/bin/env xlaunch -run ${HOME}/.etc/config.xlaunch &';
+
+## make some customizations IF the command exists
+[ $(command -v vim > /dev/null 2>&1 > /dev/null 2>&1; echo ${?}) -eq 0 ] && alias vi='/usr/bin/env vim';
+[ $(command -v colordiff > /dev/null 2>&1 > /dev/null 2>&1; echo ${?}) -eq 0 ] && alias diff='/usr/bin/env colordiff';
 
 case $(uname) in
     [Ss][Uu][Nn][Oo][Ss]|[Ss][Oo]][Ll][Aa][Rr][Ii][Ss])
