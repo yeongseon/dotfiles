@@ -65,6 +65,8 @@ alias qip-move='/opt/qip/cli/qip-move -u "${LOGNAME}" -p "$(<~/.etc/qip/password
 alias qip-getdnsrr='/opt/qip/cli/qip-getdnsrr -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-rptobjectlst='/opt/qip/cli/qip-rptobjectlst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
 alias qip-getnetlst='/opt/qip/cli/qip-getnetlst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)"';
+alias qip-getloclst='/opt/qip/cli/qip-getloclst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -t ~/workspace/locations.txt';
+alias qip-getfreesubnetlst='/opt/qip/cli/qip-getfreesubnetlst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -t new';
 alias qip-cli='/opt/qip/cli/qip-cli -c';
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
