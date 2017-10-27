@@ -36,7 +36,7 @@ function showHostInfo
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "HOST_MEMORY_SIZE -> ${HOST_MEMORY_SIZE}";
 
     ## user information
-    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ | /usr/bin/env awk '{print $1}');
+    typeset -i USER_DISK_USAGE=$(/usr/bin/env du -ms ${HOME}/ 2>/dev/null | /usr/bin/env awk '{print $1}');
     typeset -i SYSTEM_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env wc -l | /usr/bin/env awk '{print $1}');
     typeset -i USER_PROCESS_COUNT=$(/usr/bin/env ps -ef | /usr/bin/env egrep "${LOGNAME}" | /usr/bin/env wc -l);
 
@@ -93,7 +93,7 @@ function showHostInfo
 }
 
 #=====  FUNCTION  =============================================================
-#          NAME:  reloadDotfiles
+#          NAME:  reloadDotFiles
 #   DESCRIPTION:  Re-loads existing dotfiles for use
 #    PARAMETERS:  None
 #       RETURNS:  0 if success, non-zero otherwise

@@ -465,17 +465,20 @@ function pushDNS
 }
 
 #=====  FUNCTION  =============================================================
-#          NAME:  fixPrinterRecords
-#   DESCRIPTION:  Fixes printer A records removed by printer DDNS updates
-#    PARAMETERS:  Address or path to file containing addresses
+#          NAME:  listCurrentAdmins
+#   DESCRIPTION:  Lists all current administrators housed in QIP
+#    PARAMETERS:  None
 #       RETURNS:  0 if success, 1 otherwise
 #==============================================================================
-function fixPrinterRecords
+function listCurrentAdmins
 {
     typeset SCRIPT_NAME="F08-qip";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
-    typeset -i RETURN_CODE=0;
     typeset -i ERROR_COUNT=0;
+    typeset -i RETURN_CODE=0;
+    typeset OUTPUT_FILE=$(mktemp -p /var/tmp);
+    typeset SHAREPOINT_URL="https://sharepoint.mandtbank.com/sites/teamTI/Telecom/Ops%20Doc/QIP%20Documents";
+    typeset REPORT_HEADERS=("Admin Name," "Admin Type," "First Name," "Last Name," "Email Address," "Phone Number");
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
@@ -486,99 +489,87 @@ function fixPrinterRecords
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Provided arguments: ${*}";
 
-    if [ ${#} -ne 1 ]
-    then
-        RETURN_CODE=3;
+    /usr/bin/env printf "%s\n" "${REPORT_HEADERS[*]}" > ${OUTPUT_FILE};
 
-        writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} - Performs a DNS generation against DNS servers to re-populate removed records of printers";
-        writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Usage: ${FUNCTION_NAME} [ address|address list ]
-                -> The domain that the printer is housed in.";
-
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
-
-        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
-
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} END: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
-
-        [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
-        [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
-
-        return ${RETURN_CODE};
-    fi
-
-    [ -f "${1}" ] && setArray ADDRESSES ${1} || typeset ADDRESSES="${1}";
-    typeset SCRIPT_NAME="F08-qip";
-    typeset FUNCTION_NAME="${FUNCNAME[0]}";
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "ADDRESSES -> ${ADDRESSES}";
-
-    for ADDRESS in ${ADDRESSES[@]}
+    for ADMIN in $(qip-admin -ac get | /usr/bin/env grep "Login Name" | /usr/bin/env cut -d "=" -f 2)
     do
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Removing address: ${ADDRESS}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Executing command qip-getobjectprof -a ${ADDRESS} | grep SubnetAddress | cut -d \"=\" -f 2 ...";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "ADMIN -> ${ADMIN}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "EXEC -> qip-admin -ac get -n \"${ADMIN}\" -df n -f /var/tmp/${ADMIN}.txt";
 
-        typset SUBNET=$(qip-getobjectprof -a ${ADDRESS} | grep SubnetAddress | cut -d "=" -f 2);
-
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "SUBNET -> ${SUBNET}";
-
-        if [ -z "${SUBNET}" ]
-        then
-            writeLogEntry "ERROR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
-            writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain subnet address for ${ADDRESS}";
-
-            (( ERROR_COUNT += 1 ));
-
-            continue;
-        fi
-
-        typeset DNSSVR=$(qip-getsubnetprof -a ${SUBNET} | grep DNSServers | cut -d "=" -f 2 | awk '{print $1}');
-
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "DNSSVR -> ${DNSSVR}";
-
-        if [ -z "${DNSSVR}" ]
-        then
-            writeLogEntry "ERROR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
-            writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain DNS server for ${SUBNET}";
-
-            (( ERROR_COUNT += 1 ));
-
-            continue;
-        fi
-
-        qip-dnsgen -n "${DNSSVR}";
+        ## get the admin detail
+        qip-admin -ac get -n ${ADMIN} -df n -f /var/tmp/${ADMIN}.txt;
         typeset -i RET_CODE=${?};
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
 
-        if [ -z "${RET_CODE}" || ${RET_CODE} != 0 ]
+        if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
         then
-            writeLogEntry "ERROR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
-            writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Failed to perform DNS generation against for ${DNSSVR}";
+            writeLogEntry "ERROR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain user data for ${ADMIN}";
+            writeLogEntry "STDERR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to obtain user data for ${ADMIN}";
 
             (( ERROR_COUNT += 1 ));
 
             continue;
         fi
 
-        [ ! -z "${SUBNET}" ] && unset -v SUBNET;
-        [ ! -z "${DNSSVR}" ] && unset -v DNSSVR;
+        typeset ADMIN_TYPE="$(/usr/bin/env grep "Type" /var/tmp/${ADMIN}.txt | /usr/bin/env cut -d "=" -f 2)";
+        typeset FIRST_NAME="$(/usr/bin/env grep "First Name" /var/tmp/${ADMIN}.txt | /usr/bin/env cut -d "=" -f 2)";
+        typeset LAST_NAME="$(/usr/bin/env grep "Last Name" /var/tmp/${ADMIN}.txt | /usr/bin/env cut -d "=" -f 2)";
+        typeset EMAIL_ADDR="$(/usr/bin/env grep "Email" /var/tmp/${ADMIN}.txt | /usr/bin/env cut -d "=" -f 2)";
+        typeset PHONE_NUMBER="$(/usr/bin/env grep "Phone" /var/tmp/${ADMIN}.txt | /usr/bin/env cut -d "=" -f 2)";
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "ADMIN_TYPE -> ${ADMIN_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "FIRST_NAME -> ${FIRST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "LAST_NAME -> ${LAST_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "EMAIL_ADDR -> ${EMAIL_ADDR}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "PHONE_NUMBER -> ${PHONE_NUMBER}";
+
+        /usr/bin/env printf "%s,%s,%s,%s,%s,%s\n" "${ADMIN}" "${ADMIN_TYPE}" "${FIRST_NAME}" "${LAST_NAME}" "${EMAIL_ADDR}" "${PHONE_NUMBER}" >> ${OUTPUT_FILE};
+
+        [ -f /var/tmp/${ADMIN}.txt ] && /usr/bin/env rm -f /var/tmp/${ADMIN}.txt;
+
+        [ ! -z "${ADMIN_TYPE}" ] && unset -v ADMIN_TYPE;
+        [ ! -z "${FIRST_NAME}" ] && unset -v FIRST_NAME;
+        [ ! -z "${LAST_NAME}" ] && unset -v LAST_NAME;
+        [ ! -z "${EMAIL_ADDR}" ] && unset -v EMAIL_ADDR;
+        [ ! -z "${PHONE_NUMBER}" ] && unset -v PHONE_NUMBER;
         [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-        [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+        [ ! -z "${ADMIN}" ] && unset -v ADMIN;
     done
+
+    if [ -s "${OUTPUT_FILE}" ]
+    then
+        /usr/bin/env curl --ntlm --user "$(<${HOME}/.etc/sharepoint.creds)" --upload-file "${OUTPUT_FILE}" "${SHAREPOINT_URL}/QIPAdminList-$(date +"%m-%d-%Y").csv" | \
+            /usr/bin/env tee -a ${LOG_ROOT}/${SCRIPT_NAME}-${FUNCTION_NAME}.log;
+        typeset -i RET_CODE=${?};
+
+        if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
+        then
+            writeLogEntry "ERROR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to upload report data to Sharepoint.";
+            writeLogEntry "STDERR" "${FUNCTION_NAME}" "${CNAME}" "${LINENO}" "Unable to upload report data to Sharepoint.";
+
+            (( ERROR_COUNT += 1 ));
+        else
+            /usr/bin/env rm -f ${OUTPUT_FILE};
+        fi
+    fi
 
     typeset -i RETURN_CODE=${ERROR_COUNT};
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
 
+    [ ! -z "${ADMIN_TYPE}" ] && unset -v ADMIN_TYPE;
+    [ ! -z "${FIRST_NAME}" ] && unset -v FIRST_NAME;
+    [ ! -z "${LAST_NAME}" ] && unset -v LAST_NAME;
+    [ ! -z "${EMAIL_ADDR}" ] && unset -v EMAIL_ADDR;
+    [ ! -z "${PHONE_NUMBER}" ] && unset -v PHONE_NUMBER;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${ADMIN}" ] && unset -v ADMIN;
     [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
-    [ ! -z "${ADDRESSES}" ] && unset -v ADDRESSES;
-    [ ! -z "${ADDRESS}" ] && unset -v ADDRESS;
+    [ ! -z "${RETURN_CODE}" ] && unset -v RETURN_CODE;
+    [ ! -z "${OUTPUT_FILE}" ] && unset -v OUTPUT_FILE;
+    [ ! -z "${REPORT_HEADERS}" ] && unset -v REPORT_HEADERS;
 
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
     [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;

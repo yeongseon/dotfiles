@@ -16,7 +16,7 @@
 #
 #==============================================================================
 
-[ "$-" != *i* -o ! -z "${PS1}" -o ! -z "${SSH_TTY}" ] || return;
+[[ "$-" != *i* ]] || [ -z "${PS1}" ] && return;
 
 [ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
 [ -f "${HOME}/.lib/logger.sh" ] && . "${HOME}/.lib/logger.sh";

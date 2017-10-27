@@ -1,15 +1,15 @@
 #======  FUNCTION  ============================================================
-#          NAME:  rotateLogsByTime
-#   DESCRIPTION:  Rotates log files based on size or time.
-#    PARAMETERS:  The log file name to take action against
+#          NAME:  rotateArchiveLogs
+#   DESCRIPTION:  Rotates log files in archive directory
+#    PARAMETERS:  None
 #       RETURNS:  0 regardless of result.
 #==============================================================================
-function rotateLogsByTime
+function rotateArchiveLogs
 {
     set +o noclobber;
     typeset SCRIPT_NAME="logging.sh";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
-    typeset -i COUNTER=0;
+    typeset -i COUNTER=${LOG_RETENTION_PERIOD};
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -21,166 +21,56 @@ function rotateLogsByTime
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Provided arguments: ${*}";
 
-    typeset -i DATESTAMP=$(/usr/bin/env date +"%s");
-    typeset -i ROLLOVER_CHECK=$(echo "${ROLLOVER_PERIOD} * 60 * 60" | /usr/bin/env bc);
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "DATESTAMP -> ${DATESTAMP}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ROLLOVER_CHECK -> ${ROLLOVER_CHECK}";
-
-    for LOG_FILE in $(/usr/bin/env ls -ltr ${LOG_ROOT} | /usr/bin/env egrep "^-" | /usr/bin/env tail -n +2 | /usr/bin/env awk '{print $NF}')
+    for LOG_FILE in $(/usr/bin/env | /usr/bin/env grep "LOG_FILE" | /usr/bin/env cut -d "=" -f 2)
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "LOG_FILE -> ${LOG_FILE}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env stat -L --format %Y \"${LOG_ROOT}/${LOG_FILE}\"";
 
-        typeset -i FILE_STAT_TIME=$(/usr/bin/env stat -L --format %Y "${LOG_ROOT}/${LOG_FILE}");
+        for ARCHIVE_FILE in $(/usr/bin/env ls -ltr ${ARCHIVE_LOG_ROOT} | /usr/bin/env grep "$(/usr/bin/env cut -d "." -f 1 <<< "${LOG_FILE}")" | /usr/bin/env awk '{print $NF}')
+        do
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE -> ${ARCHIVE_FILE}";
 
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "FILE_STAT_TIME -> ${FILE_STAT_TIME}";
+            typeset -i FILE_COUNT="$(/usr/bin/env awk -F "." '{print $NF}' <<< "${ARCHIVE_FILE}")";
+            typeset -i NEW_FILE_COUNT=$(( FILE_COUNT + 1 ));
+            typeset BASE_FILE_NAME="$(/usr/bin/env basename $(/usr/bin/env awk 'BEGIN{FS=OFS="."}{$NF=""; NF--; print}' <<< ${ARCHIVE_FILE}))";
 
-        if [ ${FILE_STAT_TIME} -gt ${ROLLOVER_CHECK} ]
-        then
-            case "${ARCHIVE_ENABLED}" in
-                "${_TRUE}")
-                    while [ ${COUNTER} -le $(echo ${LOG_RETENTION_PERIOD} + 1 | /usr/bin/env bc) ]
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "A -> ${COUNTER}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "FILE_COUNT -> ${FILE_COUNT}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "NEW_FILE_COUNT -> ${NEW_FILE_COUNT}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "BASE_FILE_NAME -> ${BASE_FILE_NAME}";
 
-                        if [ -f "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" ]
-                        then
-                            typeset ELIGIBLE_FILE="${LOG_FILE}.${COUNTER}";
-                            typeset -i CURRENT_NUMBER=$(cut -d "." -f 3 <<< "${ELIGIBLE_FILE}");
-                            typeset -i ADD_NUMBER=$(echo ${CURRENT_NUMBER} + 1 | /usr/bin/env bc);
+            case ${FILE_COUNT} in
+                ${LOG_RETENTION_PERIOD})
+                    ## delete
+                    /usr/bin/env rm -f ${ARCHIVE_FILE};
 
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ELIGIBLE_FILE -> ${ELIGIBLE_FILE}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_NUMBER -> ${CURRENT_NUMBER}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ADD_NUMBER -> ${ADD_NUMBER}";
+                    [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+                    [ ! -z "${NEW_FILE_COUNT}" ] && unset -v NEW_FILE_COUNT;
+                    [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+                    [ ! -z "${ARCHIVE_FILE}" ] && unset -v ARCHIVE_FILE;
 
-                            if [ -f "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" ]
-                            then
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}\" \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\"";
-
-                                /usr/bin/env cp "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}";
-
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
-
-                                typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" | awk '{print $1}');
-                                typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}" | awk '{print $1}');
-
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
-
-                                if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-                                then
-                                    writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                    writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                fi
-
-                                [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-                                [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-                            fi
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\"";
-
-                            /usr/bin/env cp "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}";
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
-
-                            typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" | awk '{print $1}');
-                            typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}" | awk '{print $1}');
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
-
-                            if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-                            then
-                                writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                            else
-                                /usr/bin/env rm -f "${LOG_ROOT}/${LOG_FILE}.${COUNTER}";
-                            fi
-                        fi
-
-                        (( COUNTER += 1 ));
-
-                        [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-                        [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-                        [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-                        [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-                        [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-                    done
-
-                    ## clean up anything higher than the retention count
-                    for ARCHIVED_FILE in ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.*
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVED_FILE -> ${ARCHIVED_FILE}";
-
-                        [ -z "${ARCHIVED_FILE}" ] || [ ! -f "${ARCHIVED_FILE}" ] && continue || typeset -i ARCHIVE_NUMBER=$(awk -F "." '{print $NF}' <<< "${ARCHIVED_FILE}");
-
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVED_FILE -> ${ARCHIVED_FILE}";
-
-                        [ ${ARCHIVE_NUMBER} -ge ${LOG_RETENTION_PERIOD} ] && rm -f "${ARCHIVED_FILE}";
-
-                        [ ! -z "${ARCHIVE_NUMBER}" ] && unset -v ARCHIVE_NUMBER;
-                        [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-                    done
+                    continue;
+                    ;;
+                *)
+                    /usr/bin/env cat ${ARCHIVE_FILE} >| ${ARCHIVE_LOG_ROOT}/${BASE_FILE_NAME}.${NEW_FILE_COUNT};
                     ;;
             esac
 
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${LOG_ROOT}/${LOG_FILE}\" \"${LOG_ROOT}/${LOG_FILE}.0\"";
+            [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+            [ ! -z "${NEW_FILE_COUNT}" ] && unset -v NEW_FILE_COUNT;
+            [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+            [ ! -z "${ARCHIVE_FILE}" ] && unset -v ARCHIVE_FILE;
+        done
 
-            /usr/bin/env cp "${LOG_ROOT}/${LOG_FILE}" "${LOG_FILE}.0";
-
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
-
-            typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}" | awk '{print $1}');
-            typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}.0" | awk '{print $1}');
-
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
-
-            if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-            then
-                writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE} and ${LOG_ROOT}/${LOG_FILE}.0 do NOT match";
-                writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE} and ${LOG_ROOT}/${LOG_FILE}.0 do NOT match";
-            fi
-
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cat /dev/null >| \"${LOG_FILE}\"";
-
-            /usr/bin/env cat /dev/null >| ${LOG_ROOT}/${LOG_FILE};
-        fi
-
-        [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-        [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-        [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-        [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-        [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-        [ ! -z "${ARCHIVE_NUMBER}" ] && unset -v ARCHIVE_NUMBER;
-        [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-        [ ! -z "${FILE_STAT_TIME}" ] && unset -v FILE_STAT_TIME;
         [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
     done
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} -> exit";
 
+    [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+    [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+    [ ! -z "${ARCHIVE_FILE}" ] && unset -v ARCHIVE_FILE;
+    [ ! -z "${FUNCNAME}" ] && unset -v FUNCNAME;
     [ ! -z "${COUNTER}" ] && unset -v COUNTER;
-    [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
-    [ ! -z "${DATESTAMP}" ] && unset -v DATESTAMP;
-    [ ! -z "${ROLLOVER_CHECK}" ] && unset -v ROLLOVER_CHECK;
-    [ ! -z "${FILE_STAT_TIME}" ] && unset -v FILE_STAT_TIME;
-    [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-    [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-    [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-    [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-    [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-    [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-    [ ! -z "${FILE_STAT_TIME}" ] && unset -v FILE_STAT_TIME;
-    [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
-
-    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
@@ -194,17 +84,17 @@ function rotateLogsByTime
 }
 
 #======  FUNCTION  ============================================================
-#          NAME:  rotateLogsBySize
-#   DESCRIPTION:  Rotates log files based on size or time.
-#    PARAMETERS:  The log file name to take action against
+#          NAME:  rotateLogs
+#   DESCRIPTION:  Rotates log files in logs directory
+#    PARAMETERS:  None
 #       RETURNS:  0 regardless of result.
 #==============================================================================
-function rotateLogsBySize
+function rotateLogs
 {
     set +o noclobber;
     typeset SCRIPT_NAME="logging.sh";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
-    typeset -i COUNTER=0;
+    typeset -i COUNTER=${LOG_RETENTION_PERIOD};
     typeset -i RETURN_CODE=0;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
@@ -216,166 +106,68 @@ function rotateLogsBySize
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} -> enter";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Provided arguments: ${*}";
 
-    typeset -i MAX_FILE_SIZE=$(echo "${FILE_SIZE_LIMIT} / 1024" | /usr/bin/env bc);
+    ## rotate archive logs first
+    rotateArchiveLogs;
 
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "MAX_FILE_SIZE -> ${MAX_FILE_SIZE}";
-
-    for LOG_FILE in $(/usr/bin/env ls -ltr ${LOG_ROOT} | /usr/bin/env egrep "^-" | /usr/bin/env tail -n +2 | /usr/bin/env awk '{print $NF}')
+    for LOG_FILE in $(/usr/bin/env | /usr/bin/env grep "LOG_FILE" | /usr/bin/env cut -d "=" -f 2)
     do
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "LOG_FILE -> ${LOG_FILE}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env stat -L --format %s \"${LOG_ROOT}/${LOG_FILE}\" ) / 1024 / 1024";
 
-        typeset -i FILE_STAT_SIZE=$(echo $(( $( /usr/bin/env stat -L --format %s "${LOG_ROOT}/${LOG_FILE}" ) / 1024 / 1024 )));
+        for FILE in $(/usr/bin/env ls -ltr ${LOG_ROOT} | /usr/bin/env grep "$(/usr/bin/env cut -d "." -f 1 <<< "${LOG_FILE}")" | /usr/bin/env awk '{print $NF}')
+        do
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "FILE -> ${FILE}";
 
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "FILE_STAT_SIZE -> ${FILE_STAT_SIZE}";
+            typeset -i FILE_COUNT="$(/usr/bin/env awk -F "." '{print $NF}' <<< "${FILE}")";
+            typeset -i NEW_FILE_COUNT=$(( FILE_COUNT + 1 ));
+            typeset BASE_FILE_NAME="$(/usr/bin/env basename $(/usr/bin/env awk 'BEGIN{FS=OFS="."}{$NF=""; NF--; print}' <<< ${FILE}))";
 
-        if [ ${FILE_STAT_SIZE} -gt ${MAX_FILE_SIZE} ]
-        then
-            case "${ARCHIVE_ENABLED}" in
-                "${_TRUE}")
-                    while [ ${COUNTER} -le $(echo ${LOG_RETENTION_PERIOD} + 1 | /usr/bin/env bc) ]
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "A -> ${COUNTER}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "FILE_COUNT -> ${FILE_COUNT}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "NEW_FILE_COUNT -> ${NEW_FILE_COUNT}";
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "BASE_FILE_NAME -> ${BASE_FILE_NAME}";
 
-                        if [ -f "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" ]
-                        then
-                            typeset ELIGIBLE_FILE="${LOG_FILE}.${COUNTER}";
-                            typeset -i CURRENT_NUMBER=$(cut -d "." -f 3 <<< "${ELIGIBLE_FILE}");
-                            typeset -i ADD_NUMBER=$(echo ${CURRENT_NUMBER} + 1 | /usr/bin/env bc);
+            case ${FILE_COUNT} in
+                ${LOG_RETENTION_PERIOD})
+                    ## mv it straight off to arhive dir
+                    /usr/bin/env mv ${FILE} ${ARCHIVE_LOG_ROOT}/${BASE_FILE_NAME};
 
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ELIGIBLE_FILE -> ${ELIGIBLE_FILE}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_NUMBER -> ${CURRENT_NUMBER}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ADD_NUMBER -> ${ADD_NUMBER}";
+                    [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+                    [ ! -z "${NEW_FILE_COUNT}" ] && unset -v NEW_FILE_COUNT;
+                    [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+                    [ ! -z "${FILE}" ] && unset -v FILE;
 
-                            if [ -f "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" ]
-                            then
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}\" \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\"";
-
-                                /usr/bin/env cp "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}";
-
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
-
-                                typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER}" | awk '{print $1}');
-                                typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}" | awk '{print $1}');
-
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-                                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
-
-                                if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-                                then
-                                    writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                    writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                fi
-
-                                [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-                                [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-                            fi
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\"";
-
-                            /usr/bin/env cp "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}";
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
-
-                            typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}.${COUNTER}" | awk '{print $1}');
-                            typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}" | awk '{print $1}');
-
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-                            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
-
-                            if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-                            then
-                                writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                                writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE}.${COUNTER} and ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER} do NOT match";
-                            else
-                                /usr/bin/env rm -f "${LOG_ROOT}/${LOG_FILE}.${COUNTER}";
-                            fi
-                        fi
-
-                        (( COUNTER += 1 ));
-
-                        [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-                        [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-                        [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-                        [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-                        [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-                    done
-
-                    ## clean up anything higher than the retention count
-                    for ARCHIVED_FILE in ${ARCHIVE_LOG_ROOT}/${LOG_FILE}.*
-                    do
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVED_FILE -> ${ARCHIVED_FILE}";
-
-                        [ -z "${ARCHIVED_FILE}" ] || [ ! -f "${ARCHIVED_FILE}" ] && continue || typeset -i ARCHIVE_NUMBER=$(awk -F "." '{print $NF}' <<< "${ARCHIVED_FILE}");
-
-                        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVED_FILE -> ${ARCHIVED_FILE}";
-
-                        [ ${ARCHIVE_NUMBER} -ge ${LOG_RETENTION_PERIOD} ] && rm -f "${ARCHIVED_FILE}";
-
-                        [ ! -z "${ARCHIVE_NUMBER}" ] && unset -v ARCHIVE_NUMBER;
-                        [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-                    done
+                    continue;
+                    ;;
+                *)
+                    /usr/bin/env cat ${FILE} >| ${LOG_ROOT}/${BASE_FILE_NAME}.${NEW_FILE_COUNT};
                     ;;
             esac
 
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cp \"${LOG_ROOT}/${LOG_FILE}\" \"${LOG_ROOT}/${LOG_FILE}.0\"";
+            [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+            [ ! -z "${NEW_FILE_COUNT}" ] && unset -v NEW_FILE_COUNT;
+            [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+            [ ! -z "${FILE}" ] && unset -v FILE;
+        done
 
-            /usr/bin/env cp "${LOG_ROOT}/${LOG_FILE}" "${LOG_FILE}.0";
 
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${LOG_ROOT}/${LOG_FILE}.${COUNTER}\" | awk '{print $1}'";
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cksum \"${ARCHIVE_LOG_ROOT}/${LOG_FILE}.${ADD_NUMBER}\" | awk '{print $1}'";
+        typeset TOUCH_LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${LOG_FILE}")";
 
-            typeset -i CURRENT_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}" | awk '{print $1}');
-            typeset -i ARCHIVE_FILE_CKSUM=$(/usr/bin/env cksum "${LOG_ROOT}/${LOG_FILE}.0" | awk '{print $1}');
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "TOUCH_LOG_FILE -> ${TOUCH_LOG_FILE}";
 
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "CURRENT_FILE_CKSUM -> ${CURRENT_FILE_CKSUM}";
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "ARCHIVE_FILE_CKSUM -> ${ARCHIVE_FILE_CKSUM}";
+        /usr/bin/env touch ${TOUCH_LOG_FILE};
 
-            if [ ${ARCHIVE_FILE_CKSUM} -ne ${CURRENT_FILE_CKSUM} ]
-            then
-                writeLogEntry "ERROR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE} and ${LOG_ROOT}/${LOG_FILE}.0 do NOT match";
-                writeLogEntry "STDERR" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "Checksums for file ${LOG_ROOT}/${LOG_FILE} and ${LOG_ROOT}/${LOG_FILE}.0 do NOT match";
-            fi
-
-            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "EXEC: /usr/bin/env cat /dev/null >| \"${LOG_FILE}\"";
-
-            /usr/bin/env cat /dev/null >| ${LOG_ROOT}/${LOG_FILE};
-        fi
-
-        [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-        [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-        [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-        [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-        [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-        [ ! -z "${ARCHIVE_NUMBER}" ] && unset -v ARCHIVE_NUMBER;
-        [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-        [ ! -z "${FILE_STAT_SIZE}" ] && unset -v FILE_STAT_SIZE;
-        [ ! -z "${FILE_STAT_SIZE}" ] && unset -v FILE_STAT_SIZE;
+        [ ! -z "${TOUCH_LOG_FILE}" ] && unset -v TOUCH_LOG_FILE;
+        [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
     done
 
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "RETURN_CODE -> ${RETURN_CODE}";
     [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${FUNCTION_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME} -> exit";
 
-    [ ! -z "${COUNTER}" ] && unset -v COUNTER;
     [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
-    [ ! -z "${DATESTAMP}" ] && unset -v DATESTAMP;
-    [ ! -z "${ROLLOVER_CHECK}" ] && unset -v ROLLOVER_CHECK;
-    [ ! -z "${FILE_STAT_TIME}" ] && unset -v FILE_STAT_TIME;
-    [ ! -z "${ELIGIBLE_FILE}" ] && unset -v ELIGIBLE_FILE;
-    [ ! -z "${CURRENT_NUMBER}" ] && unset -v CURRENT_NUMBER;
-    [ ! -z "${ADD_NUMBER}" ] && unset -v ADD_NUMBER;
-    [ ! -z "${CURRENT_FILE_CKSUM}" ] && unset -v CURRENT_FILE_CKSUM;
-    [ ! -z "${ARCHIVE_FILE_CKSUM}" ] && unset -v ARCHIVE_FILE_CKSUM;
-    [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-    [ ! -z "${ARCHIVE_NUMBER}" ] && unset -v ARCHIVE_NUMBER;
-    [ ! -z "${ARCHIVED_FILE}" ] && unset -v ARCHIVED_FILE;
-    [ ! -z "${FILE_STAT_SIZE}" ] && unset -v FILE_STAT_SIZE;
-    [ ! -z "${FILE_STAT_SIZE}" ] && unset -v FILE_STAT_SIZE;
-
-    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${FILE_COUNT}" ] && unset -v FILE_COUNT;
+    [ ! -z "${NEW_FILE_COUNT}" ] && unset -v NEW_FILE_COUNT;
+    [ ! -z "${BASE_FILE_NAME}" ] && unset -v BASE_FILE_NAME;
+    [ ! -z "${FILE}" ] && unset -v FILE;
+    [ ! -z "${COUNTER}" ] && unset -v COUNTER;
 
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
     [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
@@ -433,16 +225,19 @@ function writeLogEntry
     typeset LOG_LINE="${4}";
     typeset LOG_MESSAGE="${5}";
 
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Oo][Uu][Tt] ]] && printf "%s\n" "${5}" >&1;
-    [[ ${LOG_LEVEL} =~ [Ss][Tt][Dd][Ee][Rr][Rr] ]] && printf "%s\n" "${5}" >&2;
-    [[ ${LOG_LEVEL} =~ [Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp] ]] && typeset LOG_FILE="${PERF_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ff][Aa][Tt][Aa][Ll]|[Ff] ]] && typeset LOG_FILE="${FATAL_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ee][Rr][Rr][Oo][Rr]|[Ee] ]] && typeset LOG_FILE="${ERROR_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ww][Aa][Rr][Nn]|[Ww] ]] && typeset LOG_FILE="${WARN_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Ii][Nn][Ff][Oo]|[Ii] ]] && typeset LOG_FILE="${INFO_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Aa][Uu][Dd][Ii][Tt]|[Aa] ]] && typeset LOG_FILE="${AUDIT_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Dd][Ee][Bb][Uu][Gg]|[Dd] ]] && typeset LOG_FILE="${DEBUG_LOG_FILE}";
-    [[ ${LOG_LEVEL} =~ [Mm][Oo][Nn][Ii][Tt][Oo][Rr]|[Mm] ]] && typeset LOG_FILE="${MONITOR_LOG_FILE}";
+    case ${LOG_LEVEL} in
+        [Ss][Tt][Dd][Oo][Uu][Tt]) printf "%s\n" "${5}" >&1; ;;
+        [Ss][Tt][Dd][Ee][Rr][Rr]) printf "%s\n" "${5}" >&2; ;;
+        [Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${PERF_LOG_FILE}")"; ;;
+        [Ff][Aa][Tt][Aa][Ll]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${FATAL_LOG_FILE}")"; ;;
+        [Ee][Rr][Rr][Oo][Rr]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${ERROR_LOG_FILE}")"; ;;
+        [Ww][Aa][Rr][Nn]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${WARN_LOG_FILE}")"; ;;
+        [Ii][Nn][Ff][Oo]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${INFO_LOG_FILE}")"; ;;
+        [Aa][Uu][Dd][Ii][Tt]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${AUDIT_LOG_FILE}")"; ;;
+        [Dd][Ee][Bb][Uu][Gg]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${DEBUG_LOG_FILE}")"; ;;
+        [Mm][Oo][Nn][Ii][Tt][Oo][Rr]) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${MONITOR_LOG_FILE}")"; ;;
+        *) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${DEFAULT_LOG_FILE}")"; ;;
+    esac
 
     [ ! -z "${LOG_FILE}" ] && printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
 

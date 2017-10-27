@@ -34,6 +34,7 @@
   ~/.digrc: etc/digrc
   ~/.ldaprc: etc/ldaprc
   ~/.screenrc: etc/screenrc
+  ~/.mailrc: etc/mailrc
   ~/.lib: lib/
   ~/.config/git: config/git
   ~/.config/systemd: config/systemd

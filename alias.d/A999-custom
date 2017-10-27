@@ -54,10 +54,14 @@ alias fortune='/usr/bin/env fortune -a -e -o';
 alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
 
 ## script tracing
-alias debug="[[ ! -z \"${ENABLE_DEBUG}\" && \"${ENABLE_DEBUG}\" = \"${_TRUE}\" ]] && export ENABLE_DEBUG=\"${_FALSE}\" || export ENABLE_DEBUG=\"${_TRUE}\"";
-alias verbose="[[ ! -z \"${ENABLE_VERBOSE}\" && \"${ENABLE_VERBOSE}\" = \"${_TRUE}\" ]] && export ENABLE_VERBOSE=\"${_FALSE}\" || export ENABLE_VERBOSE=\"${_TRUE}\"";
-alias trace="[[ ! -z \"${ENABLE_TRACE}\" && \"${ENABLE_TRACE}\" = \"${_TRUE}\" ]] && export ENABLE_TRACE=\"${_FALSE}\" || export ENABLE_TRACE=\"${_TRUE}\"";
-alias performance="[[ ! -z \"${ENABLE_PERFORMANCE}\" && \"${ENABLE_PERFORMANCE}\" = \"${_TRUE}\" ]] && export ENABLE_PERFORMANCE=\"${_FALSE}\" || export ENABLE_PERFORMANCE=\"${_TRUE}\"";
+alias debug='typeset -x ENABLE_DEBUG="true"';
+alias verbose='typeset -x ENABLE_VERBOSE="true"';
+alias trace='typeset -x ENABLE_TRACE="true"';
+alias perf='typeset -x ENABLE_PERFORMANCE="true"';
+alias nodebug='typeset -x ENABLE_DEBUG="false"';
+alias noverbose='typeset -x ENABLE_VERBOSE="false"';
+alias notrace='typeset -x ENABLE_TRACE="false"';
+alias noperf='typeset -x ENABLE_PERFORMANCE="false"';
 
 ## expect
 alias scp.exp="${HOME}/.lib/scp.exp";
