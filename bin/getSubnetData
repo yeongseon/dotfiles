@@ -1,0 +1,458 @@
+#!/usr/bin/env bash
+#==============================================================================
+#
+#          FILE:  DODQIPExport.sh
+#         USAGE:  ./DODQIPExport.sh
+#   DESCRIPTION:  Obtains, formats and transfers a report of all DHCP objects
+#                 in the organization
+#
+#       OPTIONS:  ---
+#  REQUIREMENTS:  ---
+#          BUGS:  ---
+#         NOTES:  ---
+#        AUTHOR:  Kevin Huntly <khuntly@mtb.com>
+#       COMPANY:  M&T Bank, Infrastructure and Engineering, Telecom QIP
+#       VERSION:  1.0
+#       CREATED:  2/3/2017 14:54:54 EST
+#      REVISION:  0
+#
+#==============================================================================
+
+typeset -i ERROR_COUNT=${ERROR_COUNT:=0};
+typeset ROOT_DIR="${ROOT_DIR:=${HOME}}";
+typeset TMP_DIR"=${TMP_DIR:=/var/tmp}";
+typeset METHOD_NAME"=${METHOD_NAME:=FullQIPExport}";
+typeset FULL_REPORT_FILE_NAME="${FULL_REPORT_FILE_NAME:=${METHOD_NAME}}";
+typeset REPORTS_DIR"=${REPORTS_DIR:=/var/tmp/reports}";
+typeset TMP_SUBNET_ORGS"=${TMP_SUBNET_ORGS:=${TMP_DIR}/subnetorgs.csv}";
+typeset TMP_SUBNET_FILE"=${TMP_SUBNET_FILE:=${TMP_DIR}/subnet.txt}";
+typeset SUBNET_LIST"=${SUBNET_LIST:=${HOME}/workspace/subnets.in}";
+typeset OUTPUT_FILE"=${OUTPUT_FILE:=${REPORTS_DIR}/${DOD_REPORT_FILE_NAME}.csv}";
+typeset FULL_OUTPUT_FILE="${FULL_OUTPUT_FILE:=${TMP_DIR}/${METHOD_NAME}.csv}";
+typeset FULL_TMP_REPORT_FILE="${FULL_TMP_REPORT_FILE:=${TMP_DIR}/${METHOD_NAME}.csv}";
+typeset QIP_ORGANIZATION"=${QIP_ORGANIZATION:=M&T Internal}";
+typeset CURR_IFS"=${IFS}";
+typeset MODIFIED_IFS"=${MODIFIED_IFS:=$'\n'}";
+typeset SEND_FTP"=${SEND_FTP:=false}";
+typeset REPORT_HEADERS=("Network Address," "Network Name," "Subnet Org," "Subnet Address," "Subnet Mask," "Subnet Name," "Object Address," "Object Name," "Object Class," "Dynamic Config," "MAC Address," "DHCP Server," "Lease Time," "Lease Start," "Lease End," "Status");
+
+echo "ERROR_COUNT; ${ERROR_COUNT}"
+echo "ROOT_DIR: ${ROOT_DIR}"
+echo "TMP_DIR: ${TMP_DIR}"
+echo "METHOD_NAME: ${METHOD_NAME}"
+echo "FULL_REPORT_FILE_NAME: ${FULL_REPORT_FILE_NAME}"
+echo "REPORTS_DIR: ${REPORTS_DIR}"
+echo "TMP_SUBNET_ORGS: ${TMP_SUBNET_ORGS}"
+echo "TMP_SUBNET_FILE: ${TMP_SUBNET_FILE}"
+echo "SUBNET_LIST: ${SUBNET_LIST}"
+echo "OUTPUT_FILE: ${OUTPUT_FILE}"
+echo "FULL_OUTPUT_FILE: ${FULL_OUTPUT_FILE}"
+echo "FULL_TMP_REPORT_FILE: ${FULL_TMP_REPORT_FILE}"
+echo "QIP_ORGANIZATION: ${QIP_ORGANIZATION}"
+echo "CURR_IFS; ${CURR_IFS}"
+echo "MODIFIED_IFS: ${MODIFIED_IFS}"
+echo "SEND_FTP: ${SEND_FTP}"
+echo "REPORT_HEADERS: ${REPORT_HEADERS}"
+
+if [ -z "${ROOT_DIR}" ]
+then
+    writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIR is not set. Cannot execute.";
+    writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIR is not set. Cannot execute.";
+
+    ## reset the ifs
+    typeset IFS="${CURR_IFS}";
+
+    ## clear variables
+    /usr/bin/env find ${TMP_DIR} -type f -exec /usr/bin/env rm -f {} \; 2>/dev/null;
+
+    [ ! -z "${SCRIPTDIR}" ] && unset -v SCRIPTDIR;
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${ROOT_DIR}" ] && unset -v ROOT_DIR;
+    [ ! -z "${TMP_DIR}" ] && unset -v TMP_DIR;
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+    [ ! -z "${FULL_REPORT_FILE_NAME}" ] && unset -v FULL_REPORT_FILE_NAME;
+    [ ! -z "${REPORTS_DIR}" ] && unset -v REPORTS_DIR;
+    [ ! -z "${DHCP_SERVERS}" ] && unset -v DHCP_SERVERS;
+    [ ! -z "${TMP_SUBNET_ORGS}" ] && unset -v TMP_SUBNET_ORGS;
+    [ ! -z "${TMP_SUBNET_FILE}" ] && unset -v TMP_SUBNET_FILE;
+    [ ! -z "${SUBNET_LIST}" ] && unset -v SUBNET_LIST;
+    [ ! -z "${FULL_TMP_OUTPUT_FILE}" ] && unset -v FULL_TMP_OUTPUT_FILE;
+    [ ! -z "${TMP_REPORT_FILE}" ] && unset -v TMP_REPORT_FILE;
+    [ ! -z "${QIP_ORGANIZATION}" ] && unset -v QIP_ORGANIZATION;
+    [ ! -z "${MODIFIED_IFS}" ] && unset -v MODIFIED_IFS;
+    [ ! -z "${GET_LEASE_DATA}" ] && unset -v GET_LEASE_DATA;
+    [ ! -z "${SEND_FTP}" ] && unset -v SEND_FTP;
+    [ ! -z "${REPORT_HEADERS}" ] && unset -v REPORT_HEADERS;
+    [ ! -z "${CURR_IFS}" ] && unset -v CURR_IFS;
+    [ ! -z "${MODIFIED_IFS}" ] && unset -v MODIFIED_IFS;
+    [ ! -z "${GET_LEASE_DATA}" ] && unset -v GET_LEASE_DATA;
+    [ ! -z "${SEND_FTP}" ] && unset -v SEND_FTP;
+    [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${SUBNET_ORG}" ] && unset -v SUBNET_ORG;
+    [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+    [ ! -z "${ORG_NAME}" ] && unset -v ORG_NAME;
+    [ ! -z "${SUBNET_ADDR}" ] && unset -v SUBNET_ADDR;
+    [ ! -z "${TMP_SUBNET_LIST}" ] && unset -v TMP_SUBNET_LIST;
+    [ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+    [ ! -z "${NETWORK_DATA}" ] && unset -v NETWORK_DATA;
+    [ ! -z "${RM_TMPFILE}" ] && unset -v RM_TMPFILE;
+    [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+    [ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+    [ ! -z "${SUBNET_ADDRESS}" ] && unset -v SUBNET_ADDRESS;
+    [ ! -z "${OBJECT_NAME}" ] && unset -v OBJECT_NAME;
+    [ ! -z "${OBJECT_CLASS}" ] && unset -v OBJECT_CLASS;
+    [ ! -z "${MAC_ADDRESS}" ] && unset -v MAC_ADDRESS;
+    [ ! -z "${ADDRESS_TYPE}" ] && unset -v ADDRESS_TYPE;
+    [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+    [ ! -z "${LEASE_DATA}" ] && unset -v LEASE_DATA;
+    [ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+    [ ! -z "${SUBNET_ADDRESS}" ] && unset -v SUBNET_ADDRESS;
+    [ ! -z "${SUBNET_MASK}" ] && unset -v SUBNET_MASK;
+    [ ! -z "${OBJECT_NAME}" ] && unset -v OBJECT_NAME;
+    [ ! -z "${OBJECT_CLASS}" ] && unset -v OBJECT_CLASS;
+    [ ! -z "${MAC_ADDRESS}" ] && unset -v MAC_ADDRESS;
+    [ ! -z "${ADDRESS_TYPE}" ] && unset -v ADDRESS_TYPE;
+    [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+    [ ! -z "${LEASE_DATA}" ] && unset -v LEASE_DATA;
+    [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+    [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+    [ ! -z "${LEASE_DATA}" ] && unset -v LEASE_DATA;
+    [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+    [ ! -z "${ADDRESS_TYPE}" ] && unset -v ADDRESS_TYPE;
+    [ ! -z "${MAC_ADDRESS}" ] && unset -v MAC_ADDRESS;
+    [ ! -z "${OBJECT_CLASS}" ] && unset -v OBJECT_CLASS;
+    [ ! -z "${OBJECT_NAME}" ] && unset -v OBJECT_NAME;
+    [ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+    [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+    [ ! -z "${RM_TMPFILE}" ] && unset -v RM_TMPFILE;
+    [ ! -z "${NETWORK_DATA}" ] && unset -v NETWORK_DATA;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+    [ ! -z "${SUBNET_ADDRESS}" ] && unset -v SUBNET_ADDRESS;
+    [ ! -z "${SUBNET_MASK}" ] && unset -v SUBNET_MASK;
+    [ ! -z "${TMP_SUBNET_LIST}" ] && unset -v TMP_SUBNET_LIST;
+    [ ! -z "${SUBNET_ADDR}" ] && unset -v SUBNET_ADDR;
+    [ ! -z "${ORG_NAME}" ] && unset -v ORG_NAME;
+    [ ! -z "${SERVER}" ] && unset -v SERVER;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} ${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    [ ! -z "${METHOD_NAME}" ] && unset -v METHOD_NAME;
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+    exit 1;
+fi
+
+## debug logging for variables
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ERROR_COUNT -> ${ERROR_COUNT}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ROOT_DIR -> ${ROOT_DIR}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_DIR -> ${TMP_DIR}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPORTS_DIR -> ${REPORTS_DIR}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DHCP_SERVERS -> ${DHCP_SERVERS}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_SUBNET_ORGS -> ${TMP_SUBNET_ORGS}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "FULL_TMP_OUTPUT_FILE -> ${FULL_TMP_OUTPUT_FILE}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "TMP_REPORT_FILE -> ${TMP_REPORT_FILE}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "QIP_ORGANIZATION -> ${QIP_ORGANIZATION}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPORT_SERVERS -> ${REPORT_SERVERS[*]}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "REPORT_HEADERS -> ${REPORT_HEADERS[*]}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "CURR_IFS -> ${CURR_IFS}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MODIFIED_IFS -> ${MODIFIED_IFS}";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SEND_FTP -> ${SEND_FTP}";
+
+## clean up any files
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Cleaning temporary files (if exists)";
+
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Writing out the headers...";
+
+## prime the file
+/usr/bin/env printf "%s\n" "${REPORT_HEADERS[*]}" > ${FULL_TMP_OUTPUT_FILE};
+
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining subnet lists...";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining subnet organization list...";
+
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNETORG SEARCH/START: $(date +"${TIMESTAMP_OPTS}")";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+for SUBNET in $(<~/workspace/subnets.in)
+do
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET LOOP:${SUBNET}/START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SUBNET -> ${SUBNET}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining DHCP object report...";
+
+    ## ...get a dhcp object report for the subnet addr, cutting out some info we don't need or care about
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET PROFILE - ${SUBNET_ADDR}/START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining subnet profile...";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXECUTE: ${QIPHOME}/cli/qip-getsubnetprof -a \"${SUBNET_ADDR}\" -f \"${TMP_SUBNET_FILE}\"";
+
+    ## get the subnet profile
+    ${QIPHOME}/cli/qip-getsubnetprof -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -a "${SUBNET}" -f "${TMP_SUBNET_FILE}";
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
+    then
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain subnet profile. Please review QIP logs.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain subnet profile. Please review QIP logs.";
+
+        (( ERROR_COUNT += 1 ));
+
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET LOOP:${SUBNET}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+    fi
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET PROFILE - ${SUBNET}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+    typeset SUBNET_NAME="$(/usr/bin/env egrep "^SubnetName=" "${TMP_SUBNET_FILE}" | /usr/bin/env cut -d "=" -f 2)";
+    typeset SUBNET_ADDRESS="$(/usr/bin/env egrep "^SubnetAddress=" "${TMP_DIR}/${SUBNET_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+    typeset SUBNET_MASK="$(/usr/bin/env egrep "^SubnetMask=" "${TMP_DIR}/${SUBNET_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SUBNET_NAME -> ${SUBNET_NAME}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SUBNET_ADDRESS -> ${SUBNET_ADDRESS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SUBNET_MASK -> ${SUBNET_MASK}";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET OBJECT LIST: ${SUBNET_ADDRESS}/START: $(date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining DHCP object report for subnet ${SUBNET_ADDR}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXECUTE: ${QIPHOME}/cli/qip-rptobjectlst -o \"${QIP_ORGANIZATION}\" -t subnet -a \"${SUBNET_ADDR}\" -l dynamic -d all -c";
+
+    ${QIPHOME}/cli/qip-rptobjectlst -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -o "${QIP_ORGANIZATION}" -t subnet -a "${SUBNET_ADDR}" -l dynamic -d all -c | \
+        /usr/bin/env tail -n +8 | /usr/bin/env sed -e "s/^IP Address.*//g" -e "/^$/d" > ${TMP_REPORT_FILE};
+    typeset -i RET_CODE=${?};
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+    if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
+    then
+        writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain DHCP object report. Please review QIP logs.";
+        writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain DHCP object report. Please review QIP logs.";
+
+        (( ERROR_COUNT += 1 ));
+
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:DHCPSUBNET LOOP:${DHCPSUBNET}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+        [ ! -z "${SUBNET_ADDRESS}" ] && unset -v SUBNET_ADDRESS;
+        [ ! -z "${SUBNET_MASK}" ] && unset -v SUBNET_MASK;
+        [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+    fi
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:SUBNET OBJECT LIST: ${SUBNET_ADDRESS}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+    typeset IFS="${MODIFIED_IFS}";
+    typeset NETWORK_DATA="$(/usr/bin/env egrep "^Network" "${TMP_REPORT_FILE}" | /usr/bin/env cut -d "," -f 2,3)";
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "IFS -> ${IFS}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "NETWORK_DATA -> ${NETWORK_DATA}";
+
+    typeset RM_TMPFILE="$(/usr/bin/env mktemp -p ${TMP_DIR})";
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RM_TMPFILE -> ${RM_TMPFILE}";
+
+    /usr/bin/env sed -e "/^Network.*/d" -e "/^Subnet.*/d" "${TMP_REPORT_FILE}" > "${RM_TMPFILE}";
+    /usr/bin/env cat "${RM_TMPFILE}" > "${TMP_REPORT_FILE}";
+    /usr/bin/env rm -f "${RM_TMPFILE}";
+
+    ## ...loop through the objects found in the dhcp report
+    for OBJECT_ENTRY in $(<${TMP_REPORT_FILE})
+    do
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:OBJECT ENTRY/START: $(date +"${TIMESTAMP_OPTS}")";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(date +"%s");
+
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_ENTRY -> ${OBJECT_ENTRY}";
+
+        typeset IP_ADDRESS="$(/usr/bin/env cut -d "," -f 1 <<< "${OBJECT_ENTRY}")";
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "IP_ADDRESS -> ${IP_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Obtaining object profile for ${IP_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXECUTE: ${QIPHOME}/cli/qip-getobjectprof -a \"${IP_ADDRESS}\" -f \"${TMP_DIR}/${IP_ADDRESS}.txt\"";
+
+        ${QIPHOME}/cli/qip-getobjectprof -u "${LOGNAME}" -p "$(<~/.etc/qip/password)" -a "${IP_ADDRESS}" -f "${TMP_DIR}/${IP_ADDRESS}.txt";
+        typeset -i RET_CODE=${?};
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "RET_CODE -> ${RET_CODE}";
+
+        if [ -z "${RET_CODE}" -o ${RET_CODE} -ne 0 ]
+        then
+            writeLogEntry "ERROR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain object profile for ${IP_ADDRESS}. RET_CODE -> ${RET_CODE}";
+            writeLogEntry "STDERR" "${METHOD_NAME}" "${0}" "${LINENO}" "Failed to obtain object profile for ${IP_ADDRESS}. RET_CODE -> ${RET_CODE}";
+
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+            [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:GET LEASE DATA: ${DHCP_SERVER}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+            [ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+            [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+            [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+
+            continue;
+        fi
+
+        typeset OBJECT_NAME="$(/usr/bin/env grep "^ObjectName=" "${TMP_DIR}/${IP_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+        typeset OBJECT_CLASS="$(/usr/bin/env grep "^ObjectClass=" "${TMP_DIR}/${IP_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+        typeset MAC_ADDRESS="$(/usr/bin/env grep "^MACAddress=" "${TMP_DIR}/${IP_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+        typeset ADDRESS_TYPE="$(/usr/bin/env grep "^DynamicConfig=" "${TMP_DIR}/${IP_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+        typeset DHCP_SERVER="$(/usr/bin/env grep "^DHCPServer=" "${TMP_DIR}/${IP_ADDRESS}.txt" | /usr/bin/env cut -d "=" -f 2)";
+
+        if [ ! -z "${GET_LEASE_DATA}" -a "${GET_LEASE_DATA}" == "${_TRUE}" ]
+        then
+            [ -s "${TMP_DIR}/${DHCP_SERVER}.txt" ] && typeset LEASE_DATA="$(/usr/bin/env grep "${MAC_ADDRESS}" "${TMP_DIR}/$(/usr/bin/env cut -d "." -f 1 <<< "${DHCP_SERVER}").txt" | /usr/bin/env awk -F "|" '{print $5 "," $6 "," $7}')";
+
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LEASE_DATA -> ${LEASE_DATA}";
+        fi
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "SUBNET_ADDRESS -> ${SUBNET_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_NAME -> ${OBJECT_NAME}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "OBJECT_CLASS -> ${OBJECT_CLASS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "MAC_ADDRESS -> ${MAC_ADDRESS}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "ADDRESS_TYPE -> ${ADDRESS_TYPE}";
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "DHCP_SERVER -> ${DHCP_SERVER}";
+
+        typeset LINE_ENTRY="${NETWORK_DATA},";
+        typeset LINE_ENTRY+="${ORG_NAME},";
+        typeset LINE_ENTRY+="${SUBNET_NAME},";
+        typeset LINE_ENTRY+="${SUBNET_ADDRESS},";
+        typeset LINE_ENTRY+="${SUBNET_MASK},";
+        typeset LINE_ENTRY+="${IP_ADDRESS},";
+        typeset LINE_ENTRY+="${OBJECT_NAME},";
+        typeset LINE_ENTRY+="${OBJECT_CLASS},";
+        typeset LINE_ENTRY+="${ADDRESS_TYPE},";
+        typeset LINE_ENTRY+="${MAC_ADDRESS},";
+        typeset LINE_ENTRY+="${DHCP_SERVER},";
+
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "LINE_ENTRY -> ${LINE_ENTRY}";
+
+        /usr/bin/env printf "%s\n" "${LINE_ENTRY}" >> "${FULL_TMP_OUTPUT_FILE}"
+
+        [ -f "${TMP_DIR}/${IP_ADDRESS}.txt" ] && /usr/bin/env rm -f "${TMP_DIR}/${IP_ADDRESS}.txt";
+
+        [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+        [ ! -z "${LEASE_DATA}" ] && unset -v LEASE_DATA;
+        [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+        [ ! -z "${ADDRESS_TYPE}" ] && unset -v ADDRESS_TYPE;
+        [ ! -z "${MAC_ADDRESS}" ] && unset -v MAC_ADDRESS;
+        [ ! -z "${OBJECT_CLASS}" ] && unset -v OBJECT_CLASS;
+        [ ! -z "${OBJECT_NAME}" ] && unset -v OBJECT_NAME;
+        [ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+        [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} OBJECT ENTRY/END: $(date +"${TIMESTAMP_OPTS}")";
+
+        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+    done
+
+    typeset IFS="${CURR_IFS}";
+
+    [ -f "${TMP_DIR}/${IP_ADDRESS}.txt" ] && /usr/bin/env rm -f "${TMP_DIR}/${IP_ADDRESS}.txt";
+    [ -f "${TMP_SUBNET_LIST}" ] && /usr/bin/env rm -f "${TMP_SUBNET_LIST}";
+
+    [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+    [ ! -z "${LEASE_DATA}" ] && unset -v LEASE_DATA;
+    [ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+    [ ! -z "${ADDRESS_TYPE}" ] && unset -v ADDRESS_TYPE;
+    [ ! -z "${MAC_ADDRESS}" ] && unset -v MAC_ADDRESS;
+    [ ! -z "${OBJECT_CLASS}" ] && unset -v OBJECT_CLASS;
+    [ ! -z "${OBJECT_NAME}" ] && unset -v OBJECT_NAME;
+    [ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+    [ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+    [ ! -z "${RM_TMPFILE}" ] && unset -v RM_TMPFILE;
+    [ ! -z "${NETWORK_DATA}" ] && unset -v NETWORK_DATA;
+    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+    [ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+    [ ! -z "${SUBNET_ADDRESS}" ] && unset -v SUBNET_ADDRESS;
+    [ ! -z "${SUBNET_MASK}" ] && unset -v SUBNET_MASK;
+    [ ! -z "${TMP_SUBNET_LIST}" ] && unset -v TMP_SUBNET_LIST;
+    [ ! -z "${SUBNET_ADDR}" ] && unset -v SUBNET_ADDR;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME}:DHCPSUBNET LOOP:${DHCPSUBNET}/END: $(date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+done
+
+## convert lf to crlf
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "Converting file to Windows (CR/LF) line endings";
+[ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${0}" "${LINENO}" "EXECUTE: /usr/bin/env dos2unix \"${REPORTS_DIR}/${FULL_REPORT_FILE_NAME}.csv\"";
+
+/usr/bin/env unix2dos "${REPORTS_DIR}/${FULL_REPORT_FILE_NAME}.csv";
+
+## cleanup
+/usr/bin/env find "${TMP_DIR}" -type f -exec /usr/bin/env rm -f {} \; 2>/dev/null;
+
+[ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
+[ ! -z "${SERVER}" ] && unset -v SERVER;
+[ ! -z "${OBJECT_ENTRY}" ] && unset -v OBJECT_ENTRY;
+[ ! -z "${SUBNET_ADDR}" ] && unset -v SUBNET_ADDR;
+[ ! -z "${SUBNET_ORG}" ] && unset -v SUBNET_ORG;
+[ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+[ ! -z "${IP_ADDRESS}" ] && unset -v IP_ADDRESS;
+[ ! -z "${DHCP_SERVER}" ] && unset -v DHCP_SERVER;
+[ ! -z "${ROOT_DIR}" ] && unset -v ROOT_DIR;
+[ ! -z "${TMP_DIR}" ] && unset -v TMP_DIR;
+[ ! -z "${FTP_CONFIG}" ] && unset -v FTP_CONFIG;
+[ ! -z "${REPORTS_DIR}" ] && unset -v REPORTS_DIR;
+[ ! -z "${FULL_TMP_OUTPUT_FILE}" ] && unset -v FULL_TMP_OUTPUT_FILE;
+[ ! -z "${TMP_REPORT_FILE}" ] && unset -v TMP_REPORT_FILE;
+[ ! -z "${TMP_SUBNET_ORGS}" ] && unset -v TMP_SUBNET_ORGS;
+[ ! -z "${QIP_ORGANIZATION}" ] && unset -v QIP_ORGANIZATION;
+[ ! -z "${QIP_USERNAME}" ] && unset -v QIP_USERNAME;
+[ ! -z "${#REPORT_SERVERS[@]}" ] && unset -v REPORT_SERVERS;
+[ ! -z "${#REPORT_HEADERS[@]}" ] && unset -v REPORT_HEADERS;
+[ ! -z "${DHCP_SERVERS}" ] && unset -v DHCP_SERVERS;
+[ ! -z "${CURR_IFS}" ] && unset -v CURR_IFS;
+[ ! -z "${MODIFIED_IFS}" ] && unset -v MODIFIED_IFS;
+[ ! -z "${ORG_NAME}" ] && unset -v ORG_NAME;
+[ ! -z "${SUBNET_MASK}" ] && unset -v SUBNET_MASK;
+[ ! -z "${SUBNET_NAME}" ] && unset -v SUBNET_NAME;
+
+[ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set +x;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set +v;
+
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(date +"%s");
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} TOTAL RUNTIME: $(( RUNTIME / 60 )) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60 )) SECONDS";
+[ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${METHOD_NAME}" "${0}" "${LINENO}" "${METHOD_NAME} END: $(date +"${TIMESTAMP_OPTS}")";
+
+## and return
+exit ${ERROR_COUNT};
+

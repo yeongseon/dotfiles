@@ -113,9 +113,7 @@
 .yubico
 
 ## exclude certain files from .ssh
-.ssh/known_hosts
 .ssh/id_*
-.ssh/config.d/
 
 ## exclude password files
 .etc/salt.properties
@@ -147,5 +145,4 @@ Podcasts
 Templates
 Videos
 VMs
-workspace
 VirtualBox*

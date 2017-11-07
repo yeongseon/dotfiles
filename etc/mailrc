@@ -4,14 +4,7 @@ set verbose
 set EDITOR=/usr/bin/vi
 set VISUAL=/usr/bin/vi
 
-account gmail {
-    set smtp-use-starttls
-    set ssl-verify=ignore
-    set smtp-auth=login
-    set smtp=smtp://smtp.gmail.com:587
-    set from="Kevin Huntly <kmhuntly@gmail.com>"
-    set smtp-auth-user=kmhuntly@gmail.com
-    set smtp-auth-password=<password>
-    set ssl-verify=ignore
-    set nss-config-dir=/home/path/to/.certs
-}
+set smtp=smtp://smtp.cert.mtb.com:25
+set from="ex10testa@mtbcert.com"
+set smtp-auth-user=tdpoex10a
+set smtp-auth-password=Pa33word

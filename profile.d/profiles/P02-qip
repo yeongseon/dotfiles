@@ -1,8 +1,8 @@
 #==============================================================================
 #
-#          FILE:  mail
-#         USAGE:  . mail
-#   DESCRIPTION:  Configures mail handling
+#          FILE:  PA1-qip
+#         USAGE:  . PA1-qip
+#   DESCRIPTION:  Sets environment path
 #
 #       OPTIONS:  ---
 #  REQUIREMENTS:  ---
@@ -17,13 +17,11 @@
 #==============================================================================
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+[ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
 
-typeset -x MAIL="/var/spool/mail/${LOGNAME:?}";
-typeset -ix MAILCHECK=10;
-
-[ ! -d ${HOME}/.mail ] && mkdir ${HOME}/.mail;
-#[ ! -z "$(/usr/bin/env mail -E 2>/dev/null)" ] && echo "$(/usr/bin/env mail -E)";
+[ -r /opt/qip/etc/qiprc ] && source /opt/qip/etc/qiprc;
+[ -r /opt/sybase/SYBASE.sh ] && source /opt/sybase/SYBASE.sh;
+typeset -x QIPLOGIN=10.96.18.18;
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;

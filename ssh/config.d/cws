@@ -1,6 +1,6 @@
 #==============================================================================
 #
-#          FILE:  cws
+#          FILE:  config
 #         USAGE:  n/a
 #   DESCRIPTION:  ssh client configuration file
 #
@@ -18,77 +18,9 @@
 
 Host github.com
     HostName                    = github.com
-    IdentityFile                = ~/.ssh/id_cws-khuntly
+    User                        = git
     IdentitiesOnly              = yes
-
-Host caspersb-cs2811.network.caspersbox.com caspersb-cs2811 192.168.10.1
-    HostName                    = caspersb-cs2811.network.caspersbox.com.
-
-Host caspersb-cs3750.network.caspersbox.com caspersb-cs3750 192.168.10.2
-    HostName                    = caspersb-cs3750.network.caspersbox.com.
-
-Host caspersb-haproxy1.caspersbox.com caspersb-haproxy1 192.168.10.200
-    HostName                    caspersb-haproxy1.caspersbox.com.
-
-Host caspersb-websrv1.caspersbox.com caspersb-websrv1 192.168.10.201
-    HostName                    caspersb-websrv1.caspersbox.com.
-
-Host caspersb-websrv2.caspersbox.com caspersb-websrv2 192.168.10.202
-    HostName                    caspersb-websrv2.caspersbox.com.
-
-Host caspersb-appsrv1.caspersbox.com caspersb-appsrv1 192.168.10.203
-    HostName                    caspersb-appsrv1.caspersbox.com.
-
-Host caspersb-appsrv2.caspersbox.com caspersb-appsrv2 192.168.10.204
-    HostName                    caspersb-appsrv2.caspersbox.com.
-
-Host caspersb-mysql1.caspersbox.com caspersb-mysql1.caspersbox 192.168.10.205
-    HostName                    caspersb-mysql1.caspersbox.com.
-
-Host caspersb-ldap1.caspersbox.com caspersb-ldap1 192.168.10.206
-    HostName                    caspersb-ldap1.caspersbox.com.
-
-Host caspersb-proxy1.caspersbox.com caspersb-proxy1 192.168.10.207
-    HostName                    caspersb-proxy1.caspersbox.com.
-
-Host caspersb-proxy2.caspersbox.com caspersb-proxy2 192.168.10.208
-    HostName                    caspersb-proxy2.caspersbox.com.
-
-Host caspersb-mdns1.caspersbox.com caspersb-mdns1 192.168.10.209
-    HostName                    caspersb-mdns1.caspersbox.com.
-
-Host caspersb-sdns1.caspersbox.com caspersb-sdns1 192.168.10.210
-    HostName                    caspersb-sdns1.caspersbox.com.
-
-Host caspersb-sdns2.caspersbox.com caspersb-sdns2 192.168.10.211
-    HostName                    caspersb-sdns2.caspersbox.com.
-
-Host caspersb-sdns3.caspersbox.com caspersb-sdns3 192.168.10.212
-    HostName                    caspersb-sdns3.caspersbox.com.
-
-Host caspersb-sdns4.caspersbox.com caspersb-sdns4 192.168.10.213
-    HostName                    caspersb-sdns4.caspersbox.com.
-
-Host caspersb-dhcp1.caspersbox.com caspersb-dhcp1 192.168.10.214
-    HostName                    caspersb-dhcp1.caspersbox.com.
-
-Host caspersb-dhcp2.caspersbox.com caspersb-dhcp2 192.168.10.215
-    HostName                    caspersb-dhcp2.caspersbox.com.
-
-Host caspersb-webmin.caspersbox.com caspersb-webmin 192.168.10.216
-    HostName                    caspersb-webmin.caspersbox.com.
-
-Host caspersb-owncloud.caspersbox.com caspersb-owncloud 192.168.10.217
-    HostName                    caspersb-owncloud.caspersbox.com.
-
-Host caspersb-build1.caspersbox.com caspersb-build1 192.168.10.218
-    HostName                    caspersb-build1.caspersbox.com.
-
-Host caspersb-netadm.caspersbox.com caspersb-netadm 192.168.10.219
-    HostName                    caspersb-netadm.caspersbox.com.
-
-Host caspersb-ipam.caspersbox.com caspersb-ipam 192.168.10.220
-    HostName                    caspersb-ipam.caspersbox.com.
+    IdentityFile                = ~/.ssh/id_cws-khuntly
 
 Host *
     AddressFamily               = inet
@@ -115,7 +47,8 @@ Host *
     TCPKeepAlive                = yes
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
-    User                        = kmhuntly
+    User                        = khuntly
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     UseRoaming                  = no
+

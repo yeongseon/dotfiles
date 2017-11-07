@@ -218,12 +218,12 @@ function stringCrypt
             else
                 if [ -f ${SALT_FILE} ]
                 then
-                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass file:${SALT_FILE};
+                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass pass:$(<${SALT_FILE});
                 else
                     ## generate a salt file
                     /usr/bin/env cat /dev/urandom | /usr/bin/env tr -dc 'a-zA-Z0-9' | /usr/bin/env fold -w 512 | /usr/bin/env head -n 1 > ${SALT_FILE};
 
-                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass file:${SALT_FILE};
+                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -aes-256-cbc -a -salt -pass "$(<${SALT_FILE})";
                 fi
             fi
             ;;
@@ -234,7 +234,7 @@ function stringCrypt
             else
                 if [ -f ${SALT_FILE} ]
                 then
-                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -d -aes-256-cbc -a -salt -pass file:${SALT_FILE};
+                    echo "${AUTH_STRING}" | /usr/bin/env openssl enc -d -aes-256-cbc -a -salt -pass pass:$(<${SALT_FILE});
                 else
                     while ${_TRUE}
                     do
@@ -1850,88 +1850,6 @@ function generateKeyPair
 
     [ ! -z "${KEYFILE}" ] && unset -v KEYFILE;
     [ ! -z "${KEYSIZE}" ] && unset -v KEYSIZE;
-    [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-
-    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
-
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${DEBUG_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${DEBUG_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${DEBUG_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${DEBUG_NAME} END: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
-
-    [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
-    [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
-
-    return ${RETURN_CODE};
-}
-
-#=====  FUNCTION  =============================================================
-#          NAME:  logrm
-#   DESCRIPTION:  Logs file rmeovals
-#    PARAMETERS:  Filename
-#       RETURNS:  0 regardless of result.
-#==============================================================================
-function logrm
-{
-    typeset SCRIPT_NAME="F05-security";
-    typeset FUNCTION_NAME="${FUNCNAME[0]}";
-    typeset -i RETURN_CODE=0;
-
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
-    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
-
-    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> enter";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Provided arguments: ${*}";
-
-    if [ ${#} -eq 0 ]
-    then
-        RETURN_CODE=3;
-
-        writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} - Log a file removal operation";
-        writeLogEntry "STDERR" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Usage: ${FUNCTION_NAME} [ file ]
-            -> The filename to remove";
-
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
-        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
-
-        [ ! -z "${KEYFILE}" ] && unset -v KEYFILE;
-        [ ! -z "${KEYSIZE}" ] && unset -v KEYSIZE;
-        [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
-
-        [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
-        [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
-
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${DEBUG_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${DEBUG_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
-        [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${DEBUG_NAME}" "${SCRIPT_NAME}" "${LINENO}" "${DEBUG_NAME} END: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
-
-        [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
-        [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
-
-        return ${RETURN_CODE};
-    fi
-
-    typeset FILENAME="${1}";
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "FILENAME -> FILENAME";
-
-    writeLogEntry "INFO" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${LOGNAME} removing file ${FILENAME}";
-
-    [ -f "${FILENAME}" ] && /usr/bin/rm -f "${FILENAME}";
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RET_CODE -> ${RET_CODE}";
-
-    typeset -i RETURN_CODE=${RET_CODE};
-
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
-    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
-
-    [ ! -z "${FILENAME}" ] && unset -v FILENAME;
     [ ! -z "${RET_CODE}" ] && unset -v RET_CODE;
 
     [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;

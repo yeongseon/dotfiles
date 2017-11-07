@@ -188,6 +188,9 @@ function rotateLogs
 #==============================================================================
 function writeLogEntry
 {
+    [ "$(/usr/bin/env | /usr/bin/env grep "ENABLE_VERBOSE" | /usr/bin/env cut -d "=" -f 2)" == "${_TRUE}" -a -z "${ENABLE_LOGGER_VERBOSE}" -o "${ENABLE_LOGGER_VERBOSE}" == "${_FALSE}" ] && set +x;
+    [ "$(/usr/bin/env | /usr/bin/env grep "ENABLE_TRACE" | /usr/bin/env cut -d "=" -f 2)" == "${_TRUE}" -a -z "${ENABLE_LOGGER_TRACE}" -o "${ENABLE_LOGGER_TRACE}" == "${_FALSE}" ] && set +v;
+
     set +o noclobber;
     typeset SCRIPT_NAME="logging.sh";
     typeset FUNCTION_NAME="${FUNCNAME[0]}";
@@ -198,9 +201,9 @@ function writeLogEntry
     then
         typeset RETURN_CODE=3;
 
-        printf "${FUNCTION_NAME} - Write a log message to stdout/err or to a logfile\n" >&2;
-        printf "Usage: ${FUNCTION_NAME} [ <level> ] [ <class/script> ] [ <method> ] [ <line> ] [ <message> ]
-                 -> The level to write for. Supported levels:
+        /usr/bin/env printf "${FUNCTION_NAME} - Write a log message to stdout/err or to a logfile\n" >&2;
+        /usr/bin/env printf "Usage: ${FUNCTION_NAME} [ <level> ] [ <class/script> ] [ <method> ] [ <line> ] [ <message> ]
+                 -> The level to write for. Supported levels (not case-sensitive):
                      STDOUT
                      STDERR
                      PERFORMANCE
@@ -239,7 +242,8 @@ function writeLogEntry
         *) typeset LOG_FILE="$(/usr/bin/env sed -e "s/.log/.${DATE_PATTERN}.log/" <<< "${DEFAULT_LOG_FILE}")"; ;;
     esac
 
-    [ ! -z "${LOG_FILE}" ] && printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
+    [ ! -z "${LOG_FILE}" ] && /usr/bin/env printf "${CONVERSION_PATTERN}\n" "${LOG_DATE}" "${PPID}" "${LOG_FILE}" "${LOG_LEVEL}" \
+        "${LOG_SOURCE}" "${LOG_LINE}" "${LOG_METHOD}" "${LOG_MESSAGE}" >> "${LOG_ROOT}/${LOG_FILE}";
 
     [ ! -z "${LOG_DATE}" ] && unset -v LOG_DATE;
     [ ! -z "${LOG_LEVEL}" ] && unset -v LOG_LEVEL;
@@ -249,5 +253,9 @@ function writeLogEntry
     [ ! -z "${LOG_MESSAGE}" ] && unset -v LOG_MESSAGE;
     [ ! -z "${LOG_FILE}" ] && unset -v LOG_FILE;
 
+    [ "$(/usr/bin/env | grep "ENABLE_VERBOSE" | /usr/bin/env cut -d "=" -f 2)" == "${_TRUE}" ] && set -x;
+    [ "$(/usr/bin/env | grep "ENABLE_TRACE" | /usr/bin/env cut -d "=" -f 2)" == "${_TRUE}" ] && set -v;
+
     return ${RETURN_CODE};
 }
+
