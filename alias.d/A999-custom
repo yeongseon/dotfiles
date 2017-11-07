@@ -36,7 +36,7 @@ alias stamp='/usr/bin/env date "+%Y%m%d%a%H%M"';
 alias da='/usr/bin/env date "+%Y-%m-%d %A    %T %Z"';
 alias zero='/usr/bin/env cat /dev/null >|';
 alias netbackup="${NB_HOME}/bp";
-alias ssh='/usr/bin/env ssh -qt4ACXY'
+alias ssh='/usr/bin/env ssh -qt4AC'
 alias removeKey='/usr/bin/env ssh-keygen -R';
 alias win2unix="/usr/bin/env sed 's/$/\r/'";
 alias fixtty='/usr/bin/env stty sane';
@@ -52,6 +52,7 @@ alias sshd='/usr/bin/env ssh -F ~/.ssh/config.dev';
 alias scpd='/usr/bin/env scp -F ~/.ssh/config.dev';
 alias fortune='/usr/bin/env fortune -a -e -o';
 alias bofh='/usr/bin/env fortune -a -e -o bofh-excuses';
+alias ipv4sort='/usr/bin/env sort -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4';
 
 ## script tracing
 alias debug='typeset -x ENABLE_DEBUG="true"';
