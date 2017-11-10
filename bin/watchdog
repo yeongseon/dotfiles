@@ -19,6 +19,7 @@
 # Make sure backgrounded processes are not auto-niced.  Needed for ksh.
 set +o bgnice;
 
+[ -f "${HOME}/.etc/logging.properties" ] && . "${HOME}/.etc/logging.properties";
 [ -f "${HOME}/.lib/logger.sh" ] && . "${HOME}/.lib/logger.sh";
 
 trap 'set -o bgnice; set +v; set +x' INT TERM EXIT;
@@ -104,7 +105,7 @@ function timeoutHandler
 
         if [ ! -z "$(/usr/bin/env ps -ef 2>/dev/null | grep "${KILL_PID}" | grep -v grep)" ]
         then
-            kill -9 "${KILL_PID}" >/dev/null 2<&1;
+            /usr/bin/env kill -9 "${KILL_PID}" >/dev/null 2<&1;
 
             continue;
         fi
@@ -201,8 +202,8 @@ typeset -i WATCH_PID=${$}
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "ELAPSED -> ${ELAPSED}";
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Sleeping for ${INTERVAL} seconds..";
 
-        sleep ${INTERVAL};
-        kill -0 ${WATCH_PID} || return ${RETURN_CODE};
+        /usr/bin/env sleep ${INTERVAL};
+        /usr/bin/env kill -0 ${WATCH_PID} || return ${RETURN_CODE};
 
         [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${METHOD_NAME}" "${CNAME}" "${LINENO}" "Process remains. Continuing..";
 
@@ -234,6 +235,6 @@ typeset -i WATCH_PID=${$}
 
 exec ${WATCHED_COMMAND} ${COMMAND_ARGS};
 
-wait ${WATCH_PID};
+/usr/bin/env wait ${WATCH_PID};
 
 exit ${?};

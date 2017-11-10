@@ -1,11 +1,9 @@
 SHELL=/bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+MAILTO=${LOGNAME}
 
-## +------------- minute (0 - 59)
-## | +------------- hour (0 - 23)
-## | | +------------- day of month (1 - 31)
-## | | | +------------- month (1 - 12)
-## | | | | +------------- day of week (0 - 6) (Sunday to Saturday;
-## | | | | |                                       7 is also Sunday)
-## | | | | |
-## | | | | |
-## * * * * *  command to execute
+#=====================================================================#
+# General                                                             #
+#=====================================================================#
+#  Minute  |  Hour  |  Day of Month  |  Month  |  Weekday  |  Command #
+#=====================================================================#

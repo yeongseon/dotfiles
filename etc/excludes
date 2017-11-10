@@ -111,9 +111,11 @@
 .xsel.log
 .xsession*
 .yubico
+.runscreen
+.skipSync
 
-## exclude certain files from .ssh
-.ssh/id_*
+## exclude .ssh
+.ssh
 
 ## exclude password files
 .etc/salt.properties
