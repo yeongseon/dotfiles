@@ -19,64 +19,67 @@
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
 
-[ ! -d /opt/qip ] && return;
+[ ! -d ${QIPHOME} ] && return;
 
-alias qip-zoneserveroptions='/opt/qip/cli/qip-zoneserveroptions -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setzoneprof='/opt/qip/cli/qip-setzoneprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setuser='/opt/qip/cli/qip-setuser -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdnssvrlst='/opt/qip/cli/qip-getdnssvrlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdhcpsvrlst='/opt/qip/cli/qip-getdhcpsvrlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-syncexternal='/opt/qip/cli/qip-syncexternal -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getzoneprof='/opt/qip/cli/qip-getzoneprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-dhcpgen='/opt/qip/cli/qip-dhcpgen -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getzoneext='/opt/qip/cli/qip-getzoneext -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getobjname='/opt/qip/cli/qip-getobjname -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdnssvrzonelst='/opt/qip/cli/qip-getdnssvrzonelst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getsubnetprof='/opt/qip/cli/qip-getsubnetprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getsubnetlst='/opt/qip/cli/qip-getsubnetlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getsnorglst='/opt/qip/cli/qip-getsnorglst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getrevzonelst='/opt/qip/cli/qip-getrevzonelst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdhcpsubnetlst='/opt/qip/cli/qip-getdhcpsubnetlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setzoneext='/opt/qip/cli/qip-setzoneext -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setobject='/opt/qip/cli/qip-setobject -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setlocation='/opt/qip/cli/qip-setlocation -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setdnszoneserver='/opt/qip/cli/qip-setdnszoneserver -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setdnsrr='/opt/qip/cli/qip-setdnsrr -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setsnorgprof='/opt/qip/cli/qip-setsnorgprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getsecdnssvrlst='/opt/qip/cli/qip-getsecdnssvrlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-dhcpsync='/opt/qip/cli/qip-dhcpsync -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-del='/opt/qip/cli/qip-del -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setsubnet='/opt/qip/cli/qip-setsubnet -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setzonednsoptions='/opt/qip/cli/qip--u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-search='/opt/qip/cli/qip-search -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-scope='/opt/qip/cli/qip-scope -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getprimdnssvrlst='/opt/qip/cli/qip-getprimdnssvrlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-dnsgen='/opt/qip/cli/qip-dnsgen -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-dnsupdate='/opt/qip/cli/qip-dnsupdate -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-sitegen='/opt/qip/cli/qip-sitegen -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getsnorgprof='/opt/qip/cli/qip-getsnorgprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getobjectprof='/opt/qip/cli/qip-getobjectprof -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdomnlst='/opt/qip/cli/qip-getdomnlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdhcpscopes='/opt/qip/cli/qip-getdhcpscopes -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-active='/opt/qip/cli/qip-active -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setzoneserveroptions='/opt/qip/cli/qip-setzoneserveroptions -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-setsubnets='/opt/qip/cli/qip-setsubnets -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-move='/opt/qip/cli/qip-move -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getdnsrr='/opt/qip/cli/qip-getdnsrr -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-rptobjectlst='/opt/qip/cli/qip-rptobjectlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getnetlst='/opt/qip/cli/qip-getnetlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-getloclst='/opt/qip/cli/qip-getloclst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)" -t ~/workspace/locations.txt';
-alias qip-getfreesubnetlst='/opt/qip/cli/qip-getfreesubnetlst -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)" -t new';
-alias qip-getrtrlst='/opt/qip/cli/qip-getrtrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-admin='/opt/qip/cli/qip-admin -o "M&T Internal" -u "${LOGNAME}" -p "$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)"';
-alias qip-cli='/opt/qip/cli/qip-cli -c';
+alias qip-zoneserveroptions='${QIPHOME}/cli/qip-zoneserveroptions -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setzoneprof='${QIPHOME}/cli/qip-setzoneprof -u "${LOGNAME}" -p " "';
+alias qip-setuser='${QIPHOME}/cli/qip-setuser -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdnssvrlst='${QIPHOME}/cli/qip-getdnssvrlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdhcpsvrlst='${QIPHOME}/cli/qip-getdhcpsvrlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-syncexternal='${QIPHOME}/cli/qip-syncexternal -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getzoneprof='${QIPHOME}/cli/qip-getzoneprof -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-dhcpgen='${QIPHOME}/cli/qip-dhcpgen -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getzoneext='${QIPHOME}/cli/qip-getzoneext -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getobjname='${QIPHOME}/cli/qip-getobjname -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdnssvrzonelst='${QIPHOME}/cli/qip-getdnssvrzonelst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getsubnetprof='${QIPHOME}/cli/qip-getsubnetprof -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getsubnetlst='${QIPHOME}/cli/qip-getsubnetlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getsnorglst='${QIPHOME}/cli/qip-getsnorglst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getrevzonelst='${QIPHOME}/cli/qip-getrevzonelst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdhcpsubnetlst='${QIPHOME}/cli/qip-getdhcpsubnetlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setzoneext='${QIPHOME}/cli/qip-setzoneext -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setobject='${QIPHOME}/cli/qip-setobject -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setlocation='${QIPHOME}/cli/qip-setlocation -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setdnszoneserver='${QIPHOME}/cli/qip-setdnszoneserver -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setdnsrr='${QIPHOME}/cli/qip-setdnsrr -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setsnorgprof='${QIPHOME}/cli/qip-setsnorgprof -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getsecdnssvrlst='${QIPHOME}/cli/qip-getsecdnssvrlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-dhcpsync='${QIPHOME}/cli/qip-dhcpsync -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-del='${QIPHOME}/cli/qip-del -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setsubnet='${QIPHOME}/cli/qip-setsubnet -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setzonednsoptions='${QIPHOME}/cli/qip--u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-search='${QIPHOME}/cli/qip-search -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-scope='${QIPHOME}/cli/qip-scope -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getprimdnssvrlst='${QIPHOME}/cli/qip-getprimdnssvrlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-dnsgen='${QIPHOME}/cli/qip-dnsgen -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-dnsupdate='${QIPHOME}/cli/qip-dnsupdate -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-sitegen='${QIPHOME}/cli/qip-sitegen -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getsnorgprof='${QIPHOME}/cli/qip-getsnorgprof -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getobjectprof='${QIPHOME}/cli/qip-getobjectprof -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdomnlst='${QIPHOME}/cli/qip-getdomnlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdhcpscopes='${QIPHOME}/cli/qip-getdhcpscopes -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-active='${QIPHOME}/cli/qip-active -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setzoneserveroptions='${QIPHOME}/cli/qip-setzoneserveroptions -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-setsubnets='${QIPHOME}/cli/qip-setsubnets -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-move='${QIPHOME}/cli/qip-move -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getdnsrr='${QIPHOME}/cli/qip-getdnsrr -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-rptobjectlst='${QIPHOME}/cli/qip-rptobjectlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getnetlst='${QIPHOME}/cli/qip-getnetlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-getloclst='${QIPHOME}/cli/qip-getloclst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')" -t ~/workspace/locations.txt';
+alias qip-getfreesubnetlst='${QIPHOME}/cli/qip-getfreesubnetlst -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')" -t new';
+alias qip-getrtrlst='${QIPHOME}/cli/qip-getrtrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-admin='${QIPHOME}/cli/qip-admin -o "M&T Internal" -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')"';
+alias qip-cli='${QIPHOME}/cli/qip-cli -c';
 
 ## yeah why not
-alias allServers='echo qip-1dnses101.mandtbank.com qip-1dnses201.mandtbank.com $( (( qip-getdnssvrlst -o "M&T Internal" | grep qip | cut -d "," -f 1) && (qip-getdnssvrlst -o "M&T External" | grep qip | cut -d "," -f 1) && (qip-getdhcpsvrlst -all | cut -d "," -f 1 | grep qip)) | sort | uniq)';
+alias allServers='echo qip-1dnses101.mandtbank.com qip-1dnses201.mandtbank.com \
+    $( (( ${QIPHOME}/cli/qip-getdnssvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+    (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T External" -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}') | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+    (${QIPHOME}/cli/qip-getdhcpsvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}') -all | cut -d "," -f 1 | /usr/bin/env grep qip)) | \
+    /usr/bin/env sort | /usr/bin/env uniq)';
 
 ## ffs
-alias fixprinters="/opt/qip/cli/qip-dnsupdate -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(/usr/bin/env openssl enc -in ${HOME}/.etc/qip/password -d -aes-256-cbc -a -salt -pass file:${HOME}/.etc/salt 2>/dev/null)\" -n $(dig +short -t soa prod.mtb.com | awk '{print $1}')";
+alias fixprinters="${QIPHOME}/cli/qip-dnsupdate -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(passwordRepository decrypt QIPUSER ${LOGNAME} | /usr/bin/env awk '{print $NF}')\" -n $(/usr/bin/env dig +short -t soa prod.mtb.com | /usr/bin/env awk '{print $1}')";
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
-
