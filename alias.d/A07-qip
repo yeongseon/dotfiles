@@ -21,69 +21,68 @@
 
 [ ! -d ${QIPHOME} ] && return;
 
-alias qip-zoneserveroptions="${QIPHOME}/cli/qip-zoneserveroptions -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setzoneprof="${QIPHOME}/cli/qip-setzoneprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setuser="${QIPHOME}/cli/qip-setuser -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdnssvrlst="${QIPHOME}/cli/qip-getdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdhcpsvrlst="${QIPHOME}/cli/qip-getdhcpsvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-syncexternal="${QIPHOME}/cli/qip-syncexternal -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getzoneprof="${QIPHOME}/cli/qip-getzoneprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-dhcpgen="${QIPHOME}/cli/qip-dhcpgen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getzoneext="${QIPHOME}/cli/qip-getzoneext -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getobjname="${QIPHOME}/cli/qip-getobjname -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdnssvrzonelst="${QIPHOME}/cli/qip-getdnssvrzonelst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getsubnetprof="${QIPHOME}/cli/qip-getsubnetprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getsubnetlst="${QIPHOME}/cli/qip-getsubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getsnorglst="${QIPHOME}/cli/qip-getsnorglst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getrevzonelst="${QIPHOME}/cli/qip-getrevzonelst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdhcpsubnetlst="${QIPHOME}/cli/qip-getdhcpsubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setzoneext="${QIPHOME}/cli/qip-setzoneext -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setobject="${QIPHOME}/cli/qip-setobject -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setlocation="${QIPHOME}/cli/qip-setlocation -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setdnszoneserver="${QIPHOME}/cli/qip-setdnszoneserver -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setdnsrr="${QIPHOME}/cli/qip-setdnsrr -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setsnorgprof="${QIPHOME}/cli/qip-setsnorgprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getsecdnssvrlst="${QIPHOME}/cli/qip-getsecdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-dhcpsync="${QIPHOME}/cli/qip-dhcpsync -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-del="${QIPHOME}/cli/qip-del -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setsubnet="${QIPHOME}/cli/qip-setsubnet -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setzonednsoptions="${QIPHOME}/cli/qip--u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-search="${QIPHOME}/cli/qip-search -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-scope="${QIPHOME}/cli/qip-scope -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getprimdnssvrlst="${QIPHOME}/cli/qip-getprimdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-dnsgen="${QIPHOME}/cli/qip-dnsgen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-dnsupdate="${QIPHOME}/cli/qip-dnsupdate -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-sitegen="${QIPHOME}/cli/qip-sitegen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getsnorgprof="${QIPHOME}/cli/qip-getsnorgprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getobjectprof="${QIPHOME}/cli/qip-getobjectprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdomnlst="${QIPHOME}/cli/qip-getdomnlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdhcpscopes="${QIPHOME}/cli/qip-getdhcpscopes -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-active="${QIPHOME}/cli/qip-active -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setzoneserveroptions="${QIPHOME}/cli/qip-setzoneserveroptions -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-setsubnets="${QIPHOME}/cli/qip-setsubnets -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-move="${QIPHOME}/cli/qip-move -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getdnsrr="${QIPHOME}/cli/qip-getdnsrr -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-rptobjectlst="${QIPHOME}/cli/qip-rptobjectlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getnetlst="${QIPHOME}/cli/qip-getnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-getloclst="${QIPHOME}/cli/qip-getloclst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\" -t ~/workspace/locations.txt';
-alias qip-getfreesubnetlst="${QIPHOME}/cli/qip-getfreesubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\" -t new';
-alias qip-getrtrlst="${QIPHOME}/cli/qip-getrtrlst -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
-alias qip-admin="${QIPHOME}/cli/qip-admin -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\"";
+alias qip-zoneserveroptions="${QIPHOME}/cli/qip-zoneserveroptions -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setzoneprof="${QIPHOME}/cli/qip-setzoneprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setuser="${QIPHOME}/cli/qip-setuser -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdnssvrlst="${QIPHOME}/cli/qip-getdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdhcpsvrlst="${QIPHOME}/cli/qip-getdhcpsvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-syncexternal="${QIPHOME}/cli/qip-syncexternal -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getzoneprof="${QIPHOME}/cli/qip-getzoneprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-dhcpgen="${QIPHOME}/cli/qip-dhcpgen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getzoneext="${QIPHOME}/cli/qip-getzoneext -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getobjname="${QIPHOME}/cli/qip-getobjname -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdnssvrzonelst="${QIPHOME}/cli/qip-getdnssvrzonelst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getsubnetprof="${QIPHOME}/cli/qip-getsubnetprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getsubnetlst="${QIPHOME}/cli/qip-getsubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getsnorglst="${QIPHOME}/cli/qip-getsnorglst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getrevzonelst="${QIPHOME}/cli/qip-getrevzonelst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdhcpsubnetlst="${QIPHOME}/cli/qip-getdhcpsubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setzoneext="${QIPHOME}/cli/qip-setzoneext -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setobject="${QIPHOME}/cli/qip-setobject -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setlocation="${QIPHOME}/cli/qip-setlocation -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setdnszoneserver="${QIPHOME}/cli/qip-setdnszoneserver -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setdnsrr="${QIPHOME}/cli/qip-setdnsrr -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setsnorgprof="${QIPHOME}/cli/qip-setsnorgprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getsecdnssvrlst="${QIPHOME}/cli/qip-getsecdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-dhcpsync="${QIPHOME}/cli/qip-dhcpsync -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-del="${QIPHOME}/cli/qip-del -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setsubnet="${QIPHOME}/cli/qip-setsubnet -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setzonednsoptions="${QIPHOME}/cli/qip--u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-search="${QIPHOME}/cli/qip-search -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-scope="${QIPHOME}/cli/qip-scope -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getprimdnssvrlst="${QIPHOME}/cli/qip-getprimdnssvrlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-dnsgen="${QIPHOME}/cli/qip-dnsgen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-dnsupdate="${QIPHOME}/cli/qip-dnsupdate -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-sitegen="${QIPHOME}/cli/qip-sitegen -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getsnorgprof="${QIPHOME}/cli/qip-getsnorgprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getobjectprof="${QIPHOME}/cli/qip-getobjectprof -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdomnlst="${QIPHOME}/cli/qip-getdomnlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdhcpscopes="${QIPHOME}/cli/qip-getdhcpscopes -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-active="${QIPHOME}/cli/qip-active -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setzoneserveroptions="${QIPHOME}/cli/qip-setzoneserveroptions -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-setsubnets="${QIPHOME}/cli/qip-setsubnets -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-move="${QIPHOME}/cli/qip-move -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getdnsrr="${QIPHOME}/cli/qip-getdnsrr -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-rptobjectlst="${QIPHOME}/cli/qip-rptobjectlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getnetlst="${QIPHOME}/cli/qip-getnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-getloclst="${QIPHOME}/cli/qip-getloclst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\" -t ~/workspace/locations.txt';
+alias qip-getfreesubnetlst="${QIPHOME}/cli/qip-getfreesubnetlst -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\" -t new';
+alias qip-getrtrlst="${QIPHOME}/cli/qip-getrtrlst -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
+alias qip-admin="${QIPHOME}/cli/qip-admin -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\"";
 alias qip-cli="${QIPHOME}/cli/qip-cli -c";
 
-## yeah why not
 alias allServers="echo qip-1dnses101.mandtbank.com qip-1dnses201.mandtbank.com \
     $(
         (
-            (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
-            (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T External" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
-            (${QIPHOME}/cli/qip-getdhcpsvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')" -all | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1)
+            (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+            (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T External" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+            (${QIPHOME}/cli/qip-getdhcpsvrlst -o "M&T Internal" -u "${LOGNAME}" -p "$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)" -all | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1)
         ) | \
         /usr/bin/env sort | /usr/bin/env uniq
     )";
 
-## ffs
-alias fixprinters="${QIPHOME}/cli/qip-dnsupdate -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null | /usr/bin/env awk '{print $NF}')\" -n \"$(/usr/bin/env dig +short -t soa prod.mtb.com | /usr/bin/env awk '{print $1}')\"";
+alias fixprinters="${QIPHOME}/cli/qip-dnsupdate -o \"M&T Internal\" -u \"${LOGNAME}\" -p \"$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)\" -n \"$(/usr/bin/env dig +short -t soa prod.mtb.com | /usr/bin/env awk '{print $1}')\"";
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+

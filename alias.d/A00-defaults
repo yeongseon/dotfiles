@@ -30,9 +30,9 @@ alias stat='/usr/bin/env stat -c "%n: Permissions: %a, Owner: %U, Group: %G"';
 alias scp='/usr/bin/env scp -qr';
 alias ssh-keygen='/usr/bin/env ssh-keygen -C ""';
 alias ssh-keyscan='/usr/bin/env ssh-keyscan -H';
-alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "/usr/bin/env ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
-alias rsync-tools='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --exclude-from=${HOME}/.etc/tools-excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "/usr/bin/env ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync-tools.log'
-alias rsync-remotes='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --exclude-from=${HOME}/.etc/remote-excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "/usr/bin/env ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync-remote.log'
+alias rsync='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --delete-excluded --exclude-from=${HOME}/.etc/excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync.log';
+alias rsync-tools='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --exclude-from=${HOME}/.etc/tools-excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync-tools.log'
+alias rsync-remotes='/usr/bin/env rsync -vcarbupEogtIzChi4 --append --safe-links --delete --exclude-from=${HOME}/.etc/remote-excludes --timeout 10000 --temp-dir=/var/tmp --no-motd --blocking-io --stats --progress -e "ssh -qaCkT -E ${HOME}/.log/ssh.log" --log-file=${HOME}/.log/rsync-remote.log'
 alias mailx='/usr/bin/env mailx';
 alias du='/usr/bin/env du -sh';
 alias netstat='/usr/bin/env netstat -an';
@@ -66,3 +66,4 @@ esac
 
 [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
 [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
