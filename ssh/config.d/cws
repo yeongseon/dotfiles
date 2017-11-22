@@ -22,6 +22,48 @@ Host github.com
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_cws-khuntly
 
+Host caspersb-pfsense.network.caspersbox.com caspersb-pfsense
+    HostName                    = caspersb-pfsense.network.caspersbox.com
+
+Host caspersb-cs2811.network.caspersbox.com caspersb-cs2811
+    HostName                    = caspersb-cs2811.network.caspersbox.com
+
+Host caspersb-cs3750.network.caspersbox.com caspersb-cs3750
+    HostName                    = caspersb-cs3750.network.caspersbox.com
+
+Host caspersb-proxmox.caspersbox.com caspersb-proxmox
+    HostName                    = caspersb-proxmox.caspersbox.com
+
+Host caspersb-haproxy01.caspersbox.com caspersb-haproxy01
+    HostName                    = caspersb-haproxy01.caspersbox.com
+
+Host caspersb-proxy01.caspersbox.com caspersb-proxy01
+    HostName                    = caspersb-proxy01.caspersbox.com
+
+Host caspersb-proxy02.caspersbox.com caspersb-proxy02
+    HostName                    = caspersb-proxy02.caspersbox.com
+
+Host caspersb-mdns1.caspersbox.com caspersb-mdns1
+    HostName                    = caspersb-mdns1.caspersbox.com
+
+Host caspersb-sdns01.caspersbox.com caspersb-sdns01
+    HostName                    = caspersb-sdns01.caspersbox.com
+
+Host caspersb-sdns02.caspersbox.com caspersb-sdns02
+    HostName                    = caspersb-sdns02.caspersbox.com
+
+Host caspersb-sdns03.caspersbox.com caspersb-sdns03
+    HostName                    = caspersb-sdns03.caspersbox.com
+
+Host caspersb-sdns04.caspersbox.com caspersb-sdns04
+    HostName                    = caspersb-sdns04.caspersbox.com
+
+Host caspersb-dhcp01.caspersbox.com caspersb-dhcp01
+    HostName                    = caspersb-dhcp01.caspersbox.com
+
+Host caspersb-dhcp02.caspersbox.com caspersb-dhcp02
+    HostName                    = caspersb-dhcp02.caspersbox.com
+
 Host *
     AddressFamily               = inet
     CheckHostIP                 = yes
@@ -47,7 +89,7 @@ Host *
     TCPKeepAlive                = yes
     VerifyHostKeyDNS            = ask
     XAuthLocation               = /usr/bin/xauth
-    User                        = khuntly
+    User                        = kmhuntly
     IdentitiesOnly              = yes
     IdentityFile                = ~/.ssh/id_rsa
     IdentityFile                = ~/.ssh/id_dsa
