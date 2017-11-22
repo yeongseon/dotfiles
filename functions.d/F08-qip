@@ -715,3 +715,160 @@ function listCurrentAdmins
     return ${RETURN_CODE};
 }
 
+#=====  FUNCTION  =============================================================
+#          NAME:  listAllServers
+#   DESCRIPTION:  Lists all current QIP servers in the enterprise
+#    PARAMETERS:  None
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function listAllServers
+{
+    typeset SCRIPT_NAME="F08-qip";
+    typeset FUNCTION_NAME="${FUNCNAME[0]}";
+    typeset -i ERROR_COUNT=0;
+    typeset -i RETURN_CODE=0;
+    typeset QIP_PASSWD="$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Provided arguments: ${*}";
+
+    typeset QIP_SERVER_LIST="qip-1dnses101.mandtbank.com qip-1dnses201.mandtbank.com $((
+        (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T Internal" -u "${LOGNAME}" -p "${QIP_PASSWD}" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+        (${QIPHOME}/cli/qip-getdnssvrlst -o "M&T External" -u "${LOGNAME}" -p "${QIP_PASSWD}" | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1) && \
+        (${QIPHOME}/cli/qip-getdhcpsvrlst -o "M&T Internal" -u "${LOGNAME}" -p "${QIP_PASSWD}" -all | /usr/bin/env grep qip | /usr/bin/env cut -d "," -f 1)) | \
+        /usr/bin/env sort | /usr/bin/env uniq)";
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "QIP_SERVER_LIST -> ${QIP_SERVER_LIST[*]}";
+
+    for QIP_SERVER in ${QIP_SERVER_LIST[*]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "QIP_SERVER -> ${QIP_SERVER}";
+
+        echo "${QIP_SERVER}"
+
+        [ ! -z "${QIP_SERVER}" ] && unset -v QIP_SERVER;
+    done
+
+    typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
+
+    [ ! -z "${QIP_SERVER_LIST}" ] && unset -v QIP_SERVER_LIST;
+    [ ! -z "${QIP_PASSWD}" ] && unset -v QIP_PASSWD;
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} END: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
+    [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
+
+    return ${RETURN_CODE};
+}
+
+#=====  FUNCTION  =============================================================
+#          NAME:  listSubnetData
+#   DESCRIPTION:  Lists all current QIP servers in the enterprise
+#    PARAMETERS:  None
+#       RETURNS:  0 if success, 1 otherwise
+#==============================================================================
+function listSubnetData
+{
+    typeset SCRIPT_NAME="F08-qip";
+    typeset FUNCTION_NAME="${FUNCNAME[0]}";
+    typeset -i ERROR_COUNT=0;
+    typeset -i RETURN_CODE=0;
+    typeset LINE_ENTRY="";
+    typeset EXPORT_FILE="SubnetExportData.csv";
+    typeset REPORT_HEADERS=("Subnet Address," "Subnet Name," "Domains," "DNS Servers," "DHCP Server");
+    typeset QIP_PASSWD="$(javaPasswordRepository --decrypt --entry QIPUSER --username ${LOGNAME} 2>/dev/null)";
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} START: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i START_EPOCH=$(/usr/bin/env date +"%s");
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -v || set +v;
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> enter";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "Provided arguments: ${*}";
+
+    typeset QIP_SERVER_LIST=$(${QIPHOME}/cli/qip-getdhcpsvrlst -o "M&T Internal" -u "${LOGNAME}" -p "${QIP_PASSWD}" | /usr/bin/env cut -d "," -f 1);
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "QIP_SERVER_LIST -> ${QIP_SERVER_LIST[*]}";
+
+    /usr/bin/env printf "%s\n" ${REPORT_HEADERS[*]} >| ${EXPORT_FILE};
+
+    for QIP_SERVER in ${QIP_SERVER_LIST[*]}
+    do
+        [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "QIP_SERVER -> ${QIP_SERVER}";
+
+        for SUBNET in $(${QIPHOME}/cli/qip-getdhcpsubnetlst -o "M&T Internal" -u "${LOGNAME}" -p "${QIP_PASSWD}")
+        do
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SUBNET -> ${SUBNET}";
+
+            typeset SUBNET_DATA="$(${QIPHOME}/cli/qip-getsubnetprof -o "M&T Internal" -u "${LOGNAME}" -p "${QIP_PASSWD}" -a ${SUBNET} | \
+                /usr/bin/env egrep "SubnetAddress|SubnetName|Domain|DNSServers|DHCPServer")";
+
+            [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "SUBNET_DATA -> ${SUBNET_DATA}";
+
+            for DATA_POINT in ${SUBNET_DATA}
+            do
+                [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "DATA_POINT -> ${DATA_POINT}";
+
+                typeset LINE_ENTRY+="$(/usr/bin/env cut -d "=" -f 2 <<< ${DATA_POINT}),";
+
+                [ ! -z "${DATA_POINT}" ] && unset -v DATA_POINT;
+            done
+
+            /usr/bin/env printf "%s\n" "${LINE_ENTRY}" >> ${EXPORT_FILE};
+
+            [ ! -z "${SUBNET_DATA}" ] && unset -v SUBNET_DATA;
+            [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+            [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+        done
+
+        [ ! -z "${QIP_SERVER}" ] && unset -v QIP_SERVER;
+    done
+
+    typeset -i RETURN_CODE=${ERROR_COUNT};
+
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "RETURN_CODE -> ${RETURN_CODE}";
+    [ ! -z "${ENABLE_DEBUG}" -a "${ENABLE_DEBUG}" = "${_TRUE}" ] && writeLogEntry "DEBUG" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} -> exit";
+
+    [ ! -z "${QIP_SERVER_LIST}" ] && unset -v QIP_SERVER_LIST;
+    [ ! -z "${QIP_PASSWD}" ] && unset -v QIP_PASSWD;
+    [ ! -z "${ERROR_COUNT}" ] && unset -v ERROR_COUNT;
+    [ ! -z "${RETURN_CODE}" ] && unset -v RETURN_CODE;
+    [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+    [ ! -z "${EXPORT_FILE}" ] && unset -v EXPORT_FILE;
+    [ ! -z "${REPORT_HEADERS}" ] && unset -v REPORT_HEADERS;
+    [ ! -z "${QIP_PASSWD}" ] && unset -v QIP_PASSWD;
+    [ ! -z "${SUBNET_DATA}" ] && unset -v SUBNET_DATA;
+    [ ! -z "${SUBNET}" ] && unset -v SUBNET;
+    [ ! -z "${LINE_ENTRY}" ] && unset -v LINE_ENTRY;
+    [ ! -z "${QIP_SERVER}" ] && unset -v QIP_SERVER;
+
+    [ ! -z "${ENABLE_VERBOSE}" -a "${ENABLE_VERBOSE}" = "${_TRUE}" ] && set -x || set +x;
+    [ ! -z "${ENABLE_TRACE}" -a "${ENABLE_TRACE}" = "${_TRUE}" ] && set -x || set +x;
+
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i END_EPOCH=$(/usr/bin/env date +"%s");
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && typeset -i RUNTIME=$(( START_EPOCH - END_EPOCH ));
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} TOTAL RUNTIME: $(( RUNTIME / 60)) MINUTES, TOTAL ELAPSED: $(( RUNTIME % 60)) SECONDS";
+    [ ! -z "${ENABLE_PERFORMANCE}" -a "${ENABLE_PERFORMANCE}" = "${_TRUE}" ] && writeLogEntry "PERFORMANCE" "${SCRIPT_NAME}" "${LINENO}" "${FUNCTION_NAME}" "${FUNCTION_NAME} END: $(/usr/bin/env date +"${TIMESTAMP_OPTS}")";
+
+    [ ! -z "${FUNCTION_NAME}" ] && unset -v FUNCTION_NAME;
+    [ ! -z "${SCRIPT_NAME}" ] && unset -v SCRIPT_NAME;
+
+    return ${RETURN_CODE};
+}

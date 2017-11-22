@@ -14,6 +14,8 @@
         <passwordMaxLength />
         <authAlgorithm>SHA-256</authAlgorithm>
         <otpAlgorithm />
+        <keyBits>256</keyBits>
+        <secretKeyAlgorithm>PBKDF2WithHmacSHA1</secretKeyAlgorithm>
         <encryptionAlgorithm>AES</encryptionAlgorithm>
         <encryptionInstance>AES/CBC/PKCS5Padding</encryptionInstance>
         <saltLength>96</saltLength>
